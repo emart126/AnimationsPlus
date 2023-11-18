@@ -87,6 +87,17 @@ function pings.onHitDo()
     if (string.find(currItemStack, "Mage/Dark Wizard")) then
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
     end
+
+    -- Daggers --
+    if (string.find(currItemStack, "Assassin/Ninja")) then
+        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
+    end
+    
+    -- Reliks --
+    if (string.find(currItemStack, "Shaman/Skyseer")) then
+        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
+    end
+
 end
 
 hitKey.press = pings.onHitDo
@@ -108,6 +119,17 @@ function pings.onRightClickDo()
     if (string.find(currItemStack, "Mage/Dark Wizard")) then
         CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
     end
+
+    -- Daggers --
+    if (string.find(currItemStack, "Assassin/Ninja")) then
+        CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+    end
+    
+    -- Reliks --
+    if (string.find(currItemStack, "Shaman/Skyseer")) then
+        CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+    end
+
 end
 
 useKey.press = pings.onRightClickDo
