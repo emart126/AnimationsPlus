@@ -142,13 +142,15 @@ useKey.press = pings.onRightClickDo
 
 -- tick event, called 20 times per second ---------------------------------------------------------------
 function events.tick()
+  --print(player:getVelocity())
   local crouching = player:getPose() == "CROUCHING"
-  local swimming = player:getPose() == "SWIMMING" or player:isUnderwater()
+  local swimming = player:isVisuallySwimming()
   local floating = player:isInWater()
   local sprinting = player:isSprinting()
   local walking = player:getVelocity().xz:length() > .001
   local jumping = player:getVelocity().y > .01
-  local falling = player:getVelocity().y < 0
+  local falling = player:getVelocity().y < -0.4
+  local climbing = player:isClimbing()
 
   AnimSwing1:setPriority(1)
   AnimSwing2:setPriority(2)
@@ -160,6 +162,13 @@ function events.tick()
 
   -- AnimFalling:setPriority(1)
   -- AnimJumping:setPriority(1)
+  -- AnimSwimming:setPriority(2)
+  -- AnimFloating:setPriority(2)
+  -- AnimFloating:setPriority(3)
+
+  if (climbing) then
+      print("climbing")
+  end
 
   if (floating and not swimming) then
       print("floating")
