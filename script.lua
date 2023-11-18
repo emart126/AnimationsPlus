@@ -141,10 +141,30 @@ useKey.press = pings.onRightClickDo
 
 -- Key Bind (macros) detection --------------------------------------------------------------------------
 
+function pings.onZPressDo()
+    print("Z")
+end
+
+function pings.onXPressDo()
+    print("X")
+end
+
+function pings.onCPressDo()
+    print("C")
+end
+
+function pings.onVPressDo()
+    print("V")
+end
+
 local zKey = keybinds:of("Z","key.keyboard.z")
 local xKey = keybinds:of("X","key.keyboard.x")
 local cKey = keybinds:of("C","key.keyboard.c")
 local vKey = keybinds:of("V","key.keyboard.v")
+zKey.press = pings.onZPressDo
+xKey.press = pings.onXPressDo
+cKey.press = pings.onCPressDo
+vKey.press = pings.onVPressDo
 
 -- tick event, called 20 times per second ---------------------------------------------------------------
 function events.tick()
@@ -181,27 +201,27 @@ function events.tick()
       print("climbing")
   end
 
-  if (floating and not swimming) then
-      print("floating")
-  elseif (swimming) then
-      print("swimming")
-  end
+--   if (floating and not swimming) then
+--       print("floating")
+--   elseif (swimming) then
+--       print("swimming")
+--   end
 
-  if (jumping and not swimming) then
-      print("jumping")
-  elseif (falling and not swimming) then
-      print("falling")
-  end
+--   if (jumping and not swimming) then
+--       print("jumping")
+--   elseif (falling and not swimming) then
+--       print("falling")
+--   end
 
-  if (crouching) then
-      print("crouching")
-  elseif (walking and not crouching and not sprinting) then
-      print("walking")
-  elseif (sprinting) then
-      print("sprinting")
-  elseif (not walking and not crouching) then
-      print("idle")
-  end
+--   if (crouching) then
+--       print("crouching")
+--   elseif (walking and not crouching and not sprinting) then
+--       print("walking")
+--   elseif (sprinting) then
+--       print("sprinting")
+--   elseif (not walking and not crouching) then
+--       print("idle")
+--   end
 
 
   AnimIdle:setPlaying(not walking and not crouching)
