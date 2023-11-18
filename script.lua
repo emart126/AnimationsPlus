@@ -98,6 +98,11 @@ function pings.onHitDo()
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
     end
 
+    -- empty hands --
+    if (currItem.id == "minecraft:air") then
+        print("punch")
+    end
+
 end
 
 hitKey.press = pings.onHitDo
@@ -153,6 +158,9 @@ function events.tick()
   AnimSecondSpell:setPriority(4)
   AnimThirdSpell:setPriority(4)
 
+  -- AnimFalling:setPriority(1)
+  -- AnimJumping:setPriority(1)
+
   if (floating and not swimming) then
       print("floating")
   elseif (swimming) then
@@ -161,9 +169,7 @@ function events.tick()
 
   if (jumping and not swimming) then
       print("jumping")
-  end
-
-  if (falling and not swimming) then
+  elseif (falling and not swimming) then
       print("falling")
   end
 
