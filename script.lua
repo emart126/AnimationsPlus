@@ -142,7 +142,6 @@ useKey.press = pings.onRightClickDo
 
 -- tick event, called 20 times per second ---------------------------------------------------------------
 function events.tick()
-  --print(player:getVelocity())
   local crouching = player:getPose() == "CROUCHING"
   local swimming = player:isVisuallySwimming()
   local floating = player:isInWater()
@@ -152,6 +151,7 @@ function events.tick()
   local falling = player:getVelocity().y < -0.4
   local climbing = player:isClimbing()
 
+  -- Attack animation priorities
   AnimSwing1:setPriority(1)
   AnimSwing2:setPriority(2)
   AnimSwingCombo:setPriority(3)
@@ -160,12 +160,17 @@ function events.tick()
   AnimSecondSpell:setPriority(4)
   AnimThirdSpell:setPriority(4)
 
-  -- AnimFalling:setPriority(1)
-  -- AnimJumping:setPriority(1)
-  -- AnimSwimming:setPriority(2)
-  -- AnimFloating:setPriority(2)
+  -- Basic action animation prioirites
+  -- AnimWalk:setPriority(1)
+  -- AnimSprinting:setPriority(1)
+  -- AnimSprinting:setPriority(1)
+  -- AnimFalling:setPriority(2)
+  -- AnimJumping:setPriority(2)
+  -- AnimSwimming:setPriority(3)
   -- AnimFloating:setPriority(3)
+  -- AnimClimbing:setPriority(4)
 
+  -- Play animation under certain conditions
   if (climbing) then
       print("climbing")
   end
