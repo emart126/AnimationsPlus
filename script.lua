@@ -139,9 +139,9 @@ useKey.press = pings.onRightClickDo
 function events.tick()
   local crouching = player:getPose() == "CROUCHING"
   local swimming = player:getPose() == "SWIMMING" or player:isUnderwater()
+  local floating = player:isInWater()
   local sprinting = player:isSprinting()
-  local swinging = player:isSwingingArm()
-  local walking = player:getVelocity().xz:length() > .01
+  local walking = player:getVelocity().xz:length() > .001
   local jumping = player:getVelocity().y > .01
   local falling = player:getVelocity().y < 0
 
@@ -153,27 +153,29 @@ function events.tick()
   AnimSecondSpell:setPriority(4)
   AnimThirdSpell:setPriority(4)
 
---   if (swimming) then
---       print("swimming")
---   end
+  if (floating and not swimming) then
+      print("floating")
+  elseif (swimming) then
+      print("swimming")
+  end
 
---   if (jumping and not swimming) then
---       print("jumping")
---   end
+  if (jumping and not swimming) then
+      print("jumping")
+  end
 
---   if (falling and not swimming) then
---       print("falling")
---   end
+  if (falling and not swimming) then
+      print("falling")
+  end
 
---   if (crouching) then
---       print("crouching")
---   elseif (walking and not crouching and not sprinting) then
---       print("walking")
---   elseif (sprinting) then
---       print("sprinting")
---   elseif (not walking and not crouching) then
---       print("idle")
---   end
+  if (crouching) then
+      print("crouching")
+  elseif (walking and not crouching and not sprinting) then
+      print("walking")
+  elseif (sprinting) then
+      print("sprinting")
+  elseif (not walking and not crouching) then
+      print("idle")
+  end
 
 
   AnimIdle:setPlaying(not walking and not crouching)
