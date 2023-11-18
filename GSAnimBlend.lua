@@ -2282,3 +2282,4 @@ local AnimationAPI
 ---@param ignore_blending? boolean
 ---@return Animation[]
 function AnimationAPI:getPlaying(ignore_blending) end
+
