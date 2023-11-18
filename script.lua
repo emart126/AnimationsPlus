@@ -139,6 +139,12 @@ end
 
 useKey.press = pings.onRightClickDo
 
+-- Key Bind (macros) detection --------------------------------------------------------------------------
+
+local zKey = keybinds:of("Z","key.keyboard.z")
+local xKey = keybinds:of("X","key.keyboard.x")
+local cKey = keybinds:of("C","key.keyboard.c")
+local vKey = keybinds:of("V","key.keyboard.v")
 
 -- tick event, called 20 times per second ---------------------------------------------------------------
 function events.tick()
