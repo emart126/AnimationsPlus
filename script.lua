@@ -79,22 +79,22 @@ function pings.onHitDo()
     local currItemStack = currItem:toStackString()
 
     -- Spears --
-    if (string.find(currItemStack, "Warrior/Knight")) then
+    if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
     end
 
     -- Wands --
-    if (string.find(currItemStack, "Mage/Dark Wizard")) then
+    if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
     end
 
     -- Daggers --
-    if (string.find(currItemStack, "Assassin/Ninja")) then
+    if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
     end
     
     -- Reliks --
-    if (string.find(currItemStack, "Shaman/Skyseer")) then
+    if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
     end
 
@@ -111,22 +111,22 @@ function pings.onRightClickDo()
     local currItemStack = currItem:toStackString()
 
     -- Spears --
-    if (string.find(currItemStack, "Warrior/Knight")) then
+    if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
         CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
     end
     
     -- Wands --
-    if (string.find(currItemStack, "Mage/Dark Wizard")) then
+    if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
         CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
     end
 
     -- Daggers --
-    if (string.find(currItemStack, "Assassin/Ninja")) then
+    if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
         CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
     end
     
     -- Reliks --
-    if (string.find(currItemStack, "Shaman/Skyseer")) then
+    if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
         CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
     end
 
