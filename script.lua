@@ -71,6 +71,14 @@ function CheckAnimToPlayRightClick(r1, r2, l2, firstSpell, movement)
     end
 end
 
+-- Given what animationto play, play it without interference of other animations and with small delay
+function PlaySpellWithDelay(spell)
+    animations:stopAll()
+    spell:setStartDelay(0.3)
+    spell:play()
+    spell:setStartDelay(0)
+end
+
 -- left-clicking detection ------------------------------------------------------------------------------
 local hitKey = keybinds:of("Punch",keybinds:getVanillaKey("key.attack"))
 
@@ -142,31 +150,63 @@ useKey.press = pings.onRightClickDo
 -- Key Bind (macros) detection --------------------------------------------------------------------------
 
 function pings.onZPressDo()
-    animations:stopAll()
-    AnimFirstSpell:setStartDelay(0.3)
-    AnimFirstSpell:play()
-    AnimFirstSpell:setStartDelay(0)
+    local currItem = player:getHeldItem()
+    local currItemStack = currItem:toStackString()
+
+    if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+        PlaySpellWithDelay(AnimFirstSpell)
+    elseif (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+        PlaySpellWithDelay(AnimFirstSpell)
+    elseif (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+        PlaySpellWithDelay(AnimFirstSpell)
+    elseif (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+        PlaySpellWithDelay(AnimFirstSpell)
+    end
 end
 
 function pings.onXPressDo()
-    animations:stopAll()
-    AnimMovement:setStartDelay(0.3)
-    AnimMovement:play()
-    AnimMovement:setStartDelay(0)
+    local currItem = player:getHeldItem()
+    local currItemStack = currItem:toStackString()
+
+    if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+        PlaySpellWithDelay(AnimMovement)
+    elseif (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+        PlaySpellWithDelay(AnimMovement)
+    elseif (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+        PlaySpellWithDelay(AnimMovement)
+    elseif (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+        PlaySpellWithDelay(AnimMovement)
+    end
 end
 
 function pings.onCPressDo()
-    animations:stopAll()
-    AnimSecondSpell:setStartDelay(0.3)
-    AnimSecondSpell:play()
-    AnimSecondSpell:setStartDelay(0)
+    local currItem = player:getHeldItem()
+    local currItemStack = currItem:toStackString()
+
+    if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+        PlaySpellWithDelay(AnimSecondSpell)
+    elseif (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+        PlaySpellWithDelay(AnimSecondSpell)
+    elseif (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+        PlaySpellWithDelay(AnimSecondSpell)
+    elseif (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+        PlaySpellWithDelay(AnimSecondSpell)
+    end
 end
 
 function pings.onVPressDo()
-    animations:stopAll()
-    AnimThirdSpell:setStartDelay(0.3)
-    AnimThirdSpell:play()
-    AnimThirdSpell:setStartDelay(0)
+    local currItem = player:getHeldItem()
+    local currItemStack = currItem:toStackString()
+
+    if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+        PlaySpellWithDelay(AnimThirdSpell)
+    elseif (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+        PlaySpellWithDelay(AnimThirdSpell)
+    elseif (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+        PlaySpellWithDelay(AnimThirdSpell)
+    elseif (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+        PlaySpellWithDelay(AnimThirdSpell)
+    end
 end
 
 local zKey = keybinds:of("Z","key.keyboard.z")
@@ -244,7 +284,7 @@ function events.tick()
 
 
   AnimIdle:setPlaying(not walking and not crouching)
-  AnimWalk:setPlaying(walking and not crouching and not sprinting)
+--   AnimWalk:setPlaying(walking and not crouching and not sprinting)
   -- animations.example.sprint:setPlaying(sprinting and not crouching)
   -- animations.example.crouch:setPlaying(crouching)
 end
