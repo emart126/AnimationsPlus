@@ -103,7 +103,7 @@ function pings.onHitDo()
 
     -- empty hands --
     if (currItem.id == "minecraft:air") then
-        print("punch")
+        -- print("punch")
     end
 
 end
@@ -215,7 +215,9 @@ vKey.press = pings.onVPressDo
 
 -- SquAPI Animation Handling ----------------------------------------------------------------------------
 
-squapi.walk(AnimWalk)
+-- squapi.walk(AnimWalk)
+-- squapi.smoothHead(models.model.root.mainBody.mainHead)
+-- squapi.torso(models.model.root.mainBody)
 
 -- tick event, called 20 times per second ---------------------------------------------------------------
 function events.tick()
