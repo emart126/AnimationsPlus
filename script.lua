@@ -1,4 +1,4 @@
-require("GSAnimBlend")
+local squapi = require("SquAPI")
 
 -- hide vanilla model
 vanilla_model.PLAYER:setVisible(false)
@@ -8,7 +8,7 @@ models.model.root:setPrimaryTexture("SKIN")
 
 -- global vars
 
--- Basic Actions
+-- Basic Action Animations
 AnimSwing1 = animations.model["animation.model.swing1"]
 AnimSwing2 = animations.model["animation.model.swing2"]
 AnimSwingCombo = animations.model["animation.model.swingCombo"]
@@ -29,11 +29,6 @@ AnimFirstSpell = animations.model["animation.model.FirstSpell"]
 AnimR1 = animations.model["animation.model.R1"]
 AnimR2 = animations.model["animation.model.R2"]
 AnimL2 = animations.model["animation.model.L2"]
-
--- Blend Animations (GSAnimBlen)
--- AnimSwing1:setBlendTime(1)
--- AnimSwing2:setBlendTime(2)
--- AnimSwingCombo:setBlendTime(2)
 
 -- Helper Functions -------------------------------------------------------------------------------------
 
@@ -147,7 +142,7 @@ end
 
 useKey.press = pings.onRightClickDo
 
--- Key Bind (macros) detection --------------------------------------------------------------------------
+-- Key Bind detection (wynntils macros) -----------------------------------------------------------------
 
 function pings.onZPressDo()
     local currItem = player:getHeldItem()
@@ -217,6 +212,10 @@ zKey.press = pings.onZPressDo
 xKey.press = pings.onXPressDo
 cKey.press = pings.onCPressDo
 vKey.press = pings.onVPressDo
+
+-- SquAPI Animation Handling ----------------------------------------------------------------------------
+
+squapi.walk(AnimWalk)
 
 -- tick event, called 20 times per second ---------------------------------------------------------------
 function events.tick()
