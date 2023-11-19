@@ -188,6 +188,7 @@ function events.tick()
   local jumping = player:getVelocity().y > .01
   local falling = player:getVelocity().y < -0.4
   local climbing = player:isClimbing()
+  local riding 
 
   -- Attack animation priorities
   AnimSwing1:setPriority(1)
@@ -207,11 +208,17 @@ function events.tick()
   -- AnimSwimming:setPriority(3)
   -- AnimFloating:setPriority(3)
   -- AnimClimbing:setPriority(4)
+  -- AnimRidingHorse:setPriority(4)
 
   -- Play animation under certain conditions
-  if (climbing) then
-      print("climbing")
-  end
+
+--   if player:getVehicle() and player:getVehicle():getType() == "minecraft:horse" then
+--     print("ridingHorse")
+--   end
+
+--   if (climbing) then
+--       print("climbing")
+--   end
 
 --   if (floating and not swimming) then
 --       print("floating")
