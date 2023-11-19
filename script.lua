@@ -95,10 +95,15 @@ function pings.onHitDo()
     if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
     end
-    
+
     -- Reliks --
     if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
+    end
+
+    -- Bows --
+    if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
+        CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
     end
 
     -- empty hands --
@@ -122,7 +127,7 @@ function pings.onRightClickDo()
     if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
         CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
     end
-    
+
     -- Wands --
     if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
         CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
@@ -132,10 +137,15 @@ function pings.onRightClickDo()
     if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
         CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
     end
-    
+
     -- Reliks --
     if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
         CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+    end
+
+    -- Bows --
+    if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
+        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
     end
 
 end
