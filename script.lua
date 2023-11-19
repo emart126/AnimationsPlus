@@ -103,6 +103,7 @@ function pings.onHitDo()
 
     -- Bows --
     if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
+        -- use opposite click for archer
         CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
     end
 
@@ -145,6 +146,7 @@ function pings.onRightClickDo()
 
     -- Bows --
     if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
+        -- use opposite click for archer
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
     end
 
@@ -226,7 +228,7 @@ vKey.press = pings.onVPressDo
 -- SquAPI Animation Handling ----------------------------------------------------------------------------
 
 -- squapi.walk(AnimWalk)
--- squapi.smoothHead(models.model.root.mainBody.mainHead)
+squapi.smoothHead(models.model.root.mainHead)
 -- squapi.torso(models.model.root.mainBody)
 
 -- tick event, called 20 times per second ---------------------------------------------------------------
