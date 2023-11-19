@@ -142,19 +142,31 @@ useKey.press = pings.onRightClickDo
 -- Key Bind (macros) detection --------------------------------------------------------------------------
 
 function pings.onZPressDo()
-    print("Z")
+    animations:stopAll()
+    AnimFirstSpell:setStartDelay(0.3)
+    AnimFirstSpell:play()
+    AnimFirstSpell:setStartDelay(0)
 end
 
 function pings.onXPressDo()
-    print("X")
+    animations:stopAll()
+    AnimMovement:setStartDelay(0.3)
+    AnimMovement:play()
+    AnimMovement:setStartDelay(0)
 end
 
 function pings.onCPressDo()
-    print("C")
+    animations:stopAll()
+    AnimSecondSpell:setStartDelay(0.3)
+    AnimSecondSpell:play()
+    AnimSecondSpell:setStartDelay(0)
 end
 
 function pings.onVPressDo()
-    print("V")
+    animations:stopAll()
+    AnimThirdSpell:setStartDelay(0.3)
+    AnimThirdSpell:play()
+    AnimThirdSpell:setStartDelay(0)
 end
 
 local zKey = keybinds:of("Z","key.keyboard.z")
