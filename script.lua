@@ -230,7 +230,7 @@ vKey.press = pings.onVPressDo
 -- SquAPI Animation Handling ----------------------------------------------------------------------------
 
 -- squapi.walk(AnimWalk)
-squapi.smoothHead(models.model.root.mainBody.mainHead, 0.4)
+squapi.smoothHead(models.model.root.mainBody.head, 0.4, 1, false)
 squapi.smoothTorso(models.model.root.mainBody, 0.5)
 squapi.crouch(AnimCrouch, AnimUnCrouch)
 
@@ -268,6 +268,12 @@ function events.tick()
 
   -- Play animation under certain conditions
 
+  if player:getPose()=="CROUCHING" then
+    models.model:setPos(0,2,0)
+  else
+    models.model:setPos(0,0,0)
+  end
+
   if player:getVehicle() and player:getVehicle():getType() == "minecraft:horse" then
     print("ridingHorse")
   end
@@ -288,7 +294,9 @@ function events.tick()
       print("falling")
   end
 
-  if (crouching) then
+  if (crouching and walking) then
+      print("crouch walking")
+  elseif (crouching and not walking) then
       print("crouching")
   elseif (walking and not crouching and not sprinting) then
       print("walking")
@@ -300,7 +308,7 @@ function events.tick()
 
 
   AnimIdle:setPlaying(not walking and not crouching)
---   AnimWalk:setPlaying(walking and not crouching and not sprinting)
+  AnimWalk:setPlaying(walking and not crouching and not sprinting)
   -- animations.example.sprint:setPlaying(sprinting and not crouching)
   -- animations.example.crouch:setPlaying(crouching)
 end
@@ -311,5 +319,5 @@ end
 -- "delta" is the percentage between the last and the next tick (as a decimal value, 0.0 to 1.0)
 -- "context" is a string that tells from where this render event was called (the paperdoll, gui, player render, first person)
 function events.render(delta, context) ------------------------------------------------------------------
-      
+    vanilla_model.RIGHT_ARM:setVisible(context == "FIRST_PERSON")
 end
