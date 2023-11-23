@@ -14,6 +14,8 @@ AnimSwing2 = animations.model["animation.model.swing2"]
 AnimSwingCombo = animations.model["animation.model.swingCombo"]
 AnimIdle = animations.model["animation.model.idle"]
 AnimWalk = animations.model["animation.model.walk"]
+AnimCrouch = animations.model["animation.model.crouch"]
+AnimUnCrouch = animations.model["animation.model.unCrouch"]
 
 -- Wynncraft Spells
 -- R1, L2, R3 = s1
@@ -228,8 +230,9 @@ vKey.press = pings.onVPressDo
 -- SquAPI Animation Handling ----------------------------------------------------------------------------
 
 -- squapi.walk(AnimWalk)
-squapi.smoothHead(models.model.root.mainHead)
--- squapi.torso(models.model.root.mainBody)
+squapi.smoothHead(models.model.root.mainBody.mainHead, 0.4)
+squapi.smoothTorso(models.model.root.mainBody, 0.5)
+squapi.crouch(AnimCrouch, AnimUnCrouch)
 
 -- tick event, called 20 times per second ---------------------------------------------------------------
 function events.tick()
@@ -265,35 +268,35 @@ function events.tick()
 
   -- Play animation under certain conditions
 
---   if player:getVehicle() and player:getVehicle():getType() == "minecraft:horse" then
---     print("ridingHorse")
---   end
+  if player:getVehicle() and player:getVehicle():getType() == "minecraft:horse" then
+    print("ridingHorse")
+  end
 
---   if (climbing) then
---       print("climbing")
---   end
+  if (climbing) then
+      print("climbing")
+  end
 
---   if (floating and not swimming) then
---       print("floating")
---   elseif (swimming) then
---       print("swimming")
---   end
+  if (floating and not swimming) then
+      print("floating")
+  elseif (swimming) then
+      print("swimming")
+  end
 
---   if (jumping and not swimming) then
---       print("jumping")
---   elseif (falling and not swimming) then
---       print("falling")
---   end
+  if (jumping and not swimming) then
+      print("jumping")
+  elseif (falling and not swimming) then
+      print("falling")
+  end
 
---   if (crouching) then
---       print("crouching")
---   elseif (walking and not crouching and not sprinting) then
---       print("walking")
---   elseif (sprinting) then
---       print("sprinting")
---   elseif (not walking and not crouching) then
---       print("idle")
---   end
+  if (crouching) then
+      print("crouching")
+  elseif (walking and not crouching and not sprinting) then
+      print("walking")
+  elseif (sprinting) then
+      print("sprinting")
+  elseif (not walking and not crouching) then
+      print("idle")
+  end
 
 
   AnimIdle:setPlaying(not walking and not crouching)
