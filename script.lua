@@ -322,14 +322,12 @@ function events.tick()
 
 
     AnimIdle:setPlaying(not walking and not crouching)
-    --   AnimWalk:setPlaying(walking and not crouching and not sprinting)
+    -- AnimWalk:setPlaying(walking and not crouching and not sprinting)
     -- animations.example.sprint:setPlaying(sprinting and not crouching)
     -- animations.example.crouch:setPlaying(crouching)
 end
 
 
--- render event, called every time your avatar is rendered
--- it have two arguments, "delta" and "context"
 -- "delta" is the percentage between the last and the next tick (as a decimal value, 0.0 to 1.0)
 -- "context" is a string that tells from where this render event was called (the paperdoll, gui, player render, first person)
 function events.render(delta, context) ------------------------------------------------------------------
@@ -357,15 +355,6 @@ function events.Render(delta, context)
     local vel = squapi.getForwardVel()
 	local yvel = squapi.yvel()
 	local worldtime = world.getTime() + delta
-
-	-- --physics when crouching/uncrouching
-	-- local pose = player:getPose()
-	-- if pose == "CROUCHING" and oldpose == "STANDING" then
-	-- 	rArm.vel = rArm.vel + bendability
-	-- elseif pose == "STANDING" and oldpose == "CROUCHING" then
-	-- 	rArm.vel = rArm.vel - bendability
-	-- end
-	-- oldpose = pose
 
 	--physics when moving
     print(rArm.pos)
