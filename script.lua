@@ -255,8 +255,6 @@ function events.tick()
     local floating = player:isInWater()
     local sprinting = player:isSprinting()
     local walking = player:getVelocity().xz:length() > .001
-    local jumping = player:getVelocity().y > .01
-    local falling = player:getVelocity().y < -0.4
     local climbing = player:isClimbing()
     local riding 
 
@@ -302,12 +300,6 @@ function events.tick()
         print("swimming")
     end
 
-    if (jumping and not swimming) then
-        print("jumping")
-    elseif (falling and not swimming) then
-        print("falling")
-    end
-
     if (crouching and walking) then
         print("crouch walking")
     elseif (crouching and not walking) then
@@ -317,6 +309,7 @@ function events.tick()
     elseif (sprinting) then
         print("sprinting")
     elseif (not walking and not crouching) then
+
         print("idle")
     end
 
@@ -327,7 +320,7 @@ function events.tick()
     -- animations.example.crouch:setPlaying(crouching)
 end
 
--- Physics variables
+-- Physics variables ------------------------------------------------------------------------------------
 local stiff = 0.025
 local bounce = 0.06
 local bendability = 10
@@ -337,15 +330,26 @@ local head = squapi.bounceObject:new()
 -- "delta" is the percentage between the last and the next tick (as a decimal value, 0.0 to 1.0)
 -- "context" is a string that tells from where this render event was called (the paperdoll, gui, player render, first person)
 function events.render(delta, context) ------------------------------------------------------------------
+    local crouching = player:getPose() == "CROUCHING"
+    local swimming = player:isVisuallySwimming()
+    local floating = player:isInWater()
+    local sprinting = player:isSprinting()
+    local walking = player:getVelocity().xz:length() > .001
+    local jumping = player:getVelocity().y > .01
+    local falling = player:getVelocity().y < -0.4
+    local climbing = player:isClimbing()
+    local riding 
+
     -- Deal with first person hand model
     vanilla_model.RIGHT_ARM:setVisible(context == "FIRST_PERSON")
 
     -- Physics handling
     local vel = squapi.getForwardVel()
 	local yvel = squapi.yvel()
+    local headRot = (models.model.root.mainBody.head:getOffsetRot()+180)%360-180
 
     -- Arm physics
-    print(vel)
+    -- print(vel)
 	if rArm.pos < 60 and rArm.pos >= 0 then
         if (rArm.vel < 0) then
             rArm.vel = 0
@@ -354,8 +358,14 @@ function events.render(delta, context) -----------------------------------------
 		rArm.vel = rArm.vel - vel/3 * bendability
 	end
 
+    -- Idle Arms affected by gravity
+    if (not walking and not crouching and (headRot[1] > -20)) then
+        models.model.root.mainBody.rightArm:setRot(-headRot[1],0,0)
+        models.model.root.mainBody.leftArm:setRot(-headRot[1],0,0)
+    end
+
     -- Head physics
-    print(yvel)
+    -- print(yvel)
     if head.pos < 20 and head.pos > -30 then
 		head.vel = head.vel - yvel/2 * 3
 		head.vel = head.vel - vel/3 * 3
