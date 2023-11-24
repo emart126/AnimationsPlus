@@ -229,7 +229,7 @@ vKey.press = pings.onVPressDo
 
 -- SquAPI Animation Handling ----------------------------------------------------------------------------
 
--- squapi.walk(AnimWalk)
+squapi.walk(AnimWalk)
 squapi.smoothHead(models.model.root.mainBody.head, 0.4, 1, false)
 squapi.smoothTorso(models.model.root.mainBody, 0.5)
 squapi.crouch(AnimCrouch, AnimUnCrouch)
@@ -308,7 +308,7 @@ function events.tick()
 
 
   AnimIdle:setPlaying(not walking and not crouching)
-  AnimWalk:setPlaying(walking and not crouching and not sprinting)
+--   AnimWalk:setPlaying(walking and not crouching and not sprinting)
   -- animations.example.sprint:setPlaying(sprinting and not crouching)
   -- animations.example.crouch:setPlaying(crouching)
 end
@@ -319,5 +319,47 @@ end
 -- "delta" is the percentage between the last and the next tick (as a decimal value, 0.0 to 1.0)
 -- "context" is a string that tells from where this render event was called (the paperdoll, gui, player render, first person)
 function events.render(delta, context) ------------------------------------------------------------------
+    -- Deal with first person hand model
     vanilla_model.RIGHT_ARM:setVisible(context == "FIRST_PERSON")
+
+    -- -- arm jump physics
+    -- local yVel = squapi.yvel()
+    -- local rArmRot = 0
+
+    
+    -- models.model.root.mainBody.rightArm:setOffsetRot(0, 0, rArmRot)
+    
+end
+
+-- Arm Physics (Modified version of SquAPI bouncing object function)
+local stiff = 0.01
+local bounce = 0.06
+local bendability = 10
+local rArm = squapi.bounceObject:new()
+local target = 0
+
+local oldpose = "STANDING"
+function events.Render(delta, context)
+    local vel = squapi.getForwardVel()
+	local yvel = squapi.yvel()
+	local worldtime = world.getTime() + delta
+
+	-- --physics when crouching/uncrouching
+	-- local pose = player:getPose()
+	-- if pose == "CROUCHING" and oldpose == "STANDING" then
+	-- 	rArm.vel = rArm.vel + bendability
+	-- elseif pose == "STANDING" and oldpose == "CROUCHING" then
+	-- 	rArm.vel = rArm.vel - bendability
+	-- end
+	-- oldpose = pose
+
+	--physics when moving
+    print(rArm.pos)
+	if rArm.pos < 60 and rArm.pos >= 0 then
+		rArm.vel = rArm.vel - yvel/2 * bendability
+		rArm.vel = rArm.vel - vel/3 * bendability
+	end
+
+	models.model.root.mainBody.rightArm:setOffsetRot(0,0,rArm:doBounce(target, stiff, bounce))
+    models.model.root.mainBody.leftArm:setOffsetRot(0,0,-rArm:doBounce(target, stiff, bounce))
 end
