@@ -327,6 +327,12 @@ function events.tick()
     -- animations.example.crouch:setPlaying(crouching)
 end
 
+-- Physics variables
+local stiff = 0.025
+local bounce = 0.06
+local bendability = 10
+local rArm = squapi.bounceObject:new()
+local head = squapi.bounceObject:new()
 
 -- "delta" is the percentage between the last and the next tick (as a decimal value, 0.0 to 1.0)
 -- "context" is a string that tells from where this render event was called (the paperdoll, gui, player render, first person)
@@ -334,35 +340,27 @@ function events.render(delta, context) -----------------------------------------
     -- Deal with first person hand model
     vanilla_model.RIGHT_ARM:setVisible(context == "FIRST_PERSON")
 
-    -- -- arm jump physics
-    -- local yVel = squapi.yvel()
-    -- local rArmRot = 0
-
-    
-    -- models.model.root.mainBody.rightArm:setOffsetRot(0, 0, rArmRot)
-    
-end
-
--- Arm Physics (Modified version of SquAPI bouncing object function)
-local stiff = 0.025
-local bounce = 0.06
-local bendability = 10
-local rArm = squapi.bounceObject:new()
-local target = 0
-
-local oldpose = "STANDING"
-function events.Render(delta, context)
+    -- Physics handling
     local vel = squapi.getForwardVel()
 	local yvel = squapi.yvel()
-	local worldtime = world.getTime() + delta
 
-	--physics when moving
+    -- Arm physics
     print(rArm.pos)
 	if rArm.pos < 60 and rArm.pos >= 0 then
 		rArm.vel = rArm.vel - yvel/2 * bendability
 		rArm.vel = rArm.vel - vel/3 * bendability
 	end
+    
+    -- Head physics
+    if head.pos < 60 and head.pos >= 0 then
+		head.vel = head.vel - yvel/2 * bendability
+		head.vel = head.vel - vel/3 * bendability
+	end
 
-	models.model.root.mainBody.rightArm:setOffsetRot(0,0,rArm:doBounce(target, stiff, bounce))
-    models.model.root.mainBody.leftArm:setOffsetRot(0,0,-rArm:doBounce(target, stiff, bounce))
+	models.model.root.mainBody.rightArm:setOffsetRot(rArm.vel*1.1,0,rArm:doBounce(0, stiff, bounce))
+    models.model.root.mainBody.leftArm:setOffsetRot(-rArm.vel*1.1,0,-rArm:doBounce(0, stiff, bounce))
+    models.model.root.mainBody.head:setOffsetRot(head:doBounce(0, stiff, bounce),0,0)
+    if (head.vel ~= 0) then
+       models.model.root.mainBody.head:setOffsetRot(head:doBounce(3, stiff, bounce),0,0)
+    end
 end
