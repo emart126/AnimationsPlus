@@ -347,20 +347,21 @@ function events.render(delta, context) -----------------------------------------
     -- Arm physics
     print(rArm.pos)
 	if rArm.pos < 60 and rArm.pos >= 0 then
+        if (rArm.vel < 0) then
+            rArm.vel = 0
+        end
 		rArm.vel = rArm.vel - yvel/2 * bendability
 		rArm.vel = rArm.vel - vel/3 * bendability
 	end
-    
+
     -- Head physics
-    if head.pos < 60 and head.pos >= 0 then
-		head.vel = head.vel - yvel/2 * bendability
-		head.vel = head.vel - vel/3 * bendability
+    if head.pos < 20 and head.pos > -30 then
+		head.vel = head.vel - yvel/2 * 5
+		head.vel = head.vel - vel/3 * 5
 	end
 
+    print(models.model.root.mainBody.head:getOffsetRot())
 	models.model.root.mainBody.rightArm:setOffsetRot(rArm.vel*1.1,0,rArm:doBounce(0, stiff, bounce))
     models.model.root.mainBody.leftArm:setOffsetRot(-rArm.vel*1.1,0,-rArm:doBounce(0, stiff, bounce))
-    models.model.root.mainBody.head:setOffsetRot(head:doBounce(0, stiff, bounce),0,0)
-    if (head.vel ~= 0) then
-       models.model.root.mainBody.head:setOffsetRot(head:doBounce(3, stiff, bounce),0,0)
-    end
+    models.model.root.mainBody.head:setRot(head:doBounce(0, stiff, bounce),0,0)
 end
