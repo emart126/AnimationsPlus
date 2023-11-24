@@ -345,7 +345,7 @@ function events.render(delta, context) -----------------------------------------
 	local yvel = squapi.yvel()
 
     -- Arm physics
-    print(rArm.pos)
+    print(vel)
 	if rArm.pos < 60 and rArm.pos >= 0 then
         if (rArm.vel < 0) then
             rArm.vel = 0
@@ -355,13 +355,13 @@ function events.render(delta, context) -----------------------------------------
 	end
 
     -- Head physics
+    print(yvel)
     if head.pos < 20 and head.pos > -30 then
-		head.vel = head.vel - yvel/2 * 5
-		head.vel = head.vel - vel/3 * 5
+		head.vel = head.vel - yvel/2 * 3
+		head.vel = head.vel - vel/3 * 3
 	end
 
-    print(models.model.root.mainBody.head:getOffsetRot())
-	models.model.root.mainBody.rightArm:setOffsetRot(rArm.vel*1.1,0,rArm:doBounce(0, stiff, bounce))
-    models.model.root.mainBody.leftArm:setOffsetRot(-rArm.vel*1.1,0,-rArm:doBounce(0, stiff, bounce))
-    models.model.root.mainBody.head:setRot(head:doBounce(0, stiff, bounce),0,0)
+	models.model.root.mainBody.rightArm:setOffsetRot(rArm.vel*2,0,rArm:doBounce(0, stiff, bounce))
+    models.model.root.mainBody.leftArm:setOffsetRot(-rArm.vel*2,0,-rArm:doBounce(0, stiff, bounce))
+    models.model.root.mainBody.head:setRot(head:doBounce(0, 0.025, 0.12),0,0)
 end
