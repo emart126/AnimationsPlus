@@ -16,6 +16,7 @@ AnimIdle = animations.model["animation.model.idle"]
 AnimWalk = animations.model["animation.model.walk"]
 AnimCrouch = animations.model["animation.model.crouch"]
 AnimUnCrouch = animations.model["animation.model.unCrouch"]
+AnimHitGround = animations.model["animation.model.hitGround"]
 
 -- Wynncraft Spells
 -- R1, L2, R3 = s1
@@ -286,32 +287,32 @@ function events.tick()
         models.model:setPos(0,0,0)
     end
 
-    if player:getVehicle() and player:getVehicle():getType() == "minecraft:horse" then
-        print("ridingHorse")
-    end
+    -- if player:getVehicle() and player:getVehicle():getType() == "minecraft:horse" then
+    --     print("ridingHorse")
+    -- end
 
-    if (climbing) then
-        print("climbing")
-    end
+    -- if (climbing) then
+    --     print("climbing")
+    -- end
 
-    if (floating and not swimming) then
-        print("floating")
-    elseif (swimming) then
-        print("swimming")
-    end
+    -- if (floating and not swimming) then
+    --     print("floating")
+    -- elseif (swimming) then
+    --     print("swimming")
+    -- end
 
-    if (crouching and walking) then
-        print("crouch walking")
-    elseif (crouching and not walking) then
-        print("crouching")
-    elseif (walking and not crouching and not sprinting) then
-        print("walking")
-    elseif (sprinting) then
-        print("sprinting")
-    elseif (not walking and not crouching) then
+    -- if (crouching and walking) then
+    --     print("crouch walking")
+    -- elseif (crouching and not walking) then
+    --     print("crouching")
+    -- elseif (walking and not crouching and not sprinting) then
+    --     print("walking")
+    -- elseif (sprinting) then
+    --     print("sprinting")
+    -- elseif (not walking and not crouching) then
 
-        print("idle")
-    end
+    --     print("idle")
+    -- end
 
 
     AnimIdle:setPlaying(not walking and not crouching)
@@ -327,6 +328,16 @@ local bendability = 10
 local rArm = squapi.bounceObject:new()
 local head = squapi.bounceObject:new()
 
+local currVel
+local oldVel
+local acceleration
+
+function events.entity_init()
+    currVel = player:getVelocity()
+    oldVel = player:getVelocity()
+    acceleration = player:getVelocity()
+end
+
 -- "delta" is the percentage between the last and the next tick (as a decimal value, 0.0 to 1.0)
 -- "context" is a string that tells from where this render event was called (the paperdoll, gui, player render, first person)
 function events.render(delta, context) ------------------------------------------------------------------
@@ -335,8 +346,6 @@ function events.render(delta, context) -----------------------------------------
     local floating = player:isInWater()
     local sprinting = player:isSprinting()
     local walking = player:getVelocity().xz:length() > .001
-    local jumping = player:getVelocity().y > .01
-    local falling = player:getVelocity().y < -0.4
     local climbing = player:isClimbing()
     local riding 
 
@@ -370,6 +379,21 @@ function events.render(delta, context) -----------------------------------------
 		head.vel = head.vel - yvel/2 * 3
 		head.vel = head.vel - vel/3 * 3
 	end
+
+    -- Hitting ground detection
+    if (currVel ~= oldVel) then
+        acceleration = currVel - oldVel
+    end
+    currVel = player:getVelocity()
+    print(acceleration[2], currVel[2])
+    if (currVel[2] == 0 and acceleration[2] ~= currVel[2]) then
+        print("hit ground ================================================")
+        print("hit ground ================================================")
+        print("hit ground ================================================")
+        print("hit ground ================================================")
+        acceleration[2] = 0
+        AnimHitGround:play()
+    end
 
 	models.model.root.mainBody.rightArm:setOffsetRot(rArm.vel*2,0,rArm:doBounce(0, stiff, bounce))
     models.model.root.mainBody.leftArm:setOffsetRot(-rArm.vel*2,0,-rArm:doBounce(0, stiff, bounce))
