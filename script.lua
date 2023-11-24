@@ -34,13 +34,27 @@ AnimL2 = animations.model["animation.model.L2"]
 
 -- Helper Functions -------------------------------------------------------------------------------------
 
+-- Stop playing all animations pertaining to combat
+function StopAllSpell()
+    AnimSwing1:stop()
+    AnimSwing2:stop()
+    AnimSwingCombo:stop()
+    AnimR1:stop()
+    AnimR2:stop()
+    AnimL2:stop()
+    AnimFirstSpell:stop()
+    AnimSecondSpell:stop()
+    AnimThirdSpell:stop()
+    AnimMovement:stop()
+end
+
 -- Given what animations that need to play, check which one to play under certain conditions on a left click
 function CheckAnimToPlayLeftClick(r1, r2, l2, swing1, swing2, swingCombo, secondSpell, thirdSpell)
     if (l2:isPlaying() and not secondSpell:isPlaying()) then        -- R1, L2, s2
-        animations:stopAll()
+        StopAllSpell()
         secondSpell:play()
     elseif (r2:isPlaying() and not thirdSpell:isPlaying()) then    -- R1, R2, s3
-        animations:stopAll()
+        StopAllSpell()
         thirdSpell:play()
     elseif (r1:isPlaying() and not l2:isPlaying()) then             -- R1, L2
         l2:play()
@@ -56,10 +70,10 @@ end
 -- Given what animations that need to play, check which one to play under certain conditions on a right click
 function CheckAnimToPlayRightClick(r1, r2, l2, firstSpell, movement)
     if (l2:isPlaying() and not r2:isPlaying()) then                                         -- R1, L2, s1
-        animations:stopAll()
+        StopAllSpell()
         firstSpell:play()
     elseif (r2:isPlaying() and not movement:isPlaying()) then                                -- R1, R2, Movement
-        animations:stopAll()
+        StopAllSpell()
         movement:play()
     elseif (r1:isPlaying() and not r2:isPlaying()) then                                     -- R1, R2
         r2:play()
@@ -70,7 +84,7 @@ end
 
 -- Given what animationto play, play it without interference of other animations and with small delay
 function PlaySpellWithDelay(spell)
-    animations:stopAll()
+    StopAllSpell()
     spell:setStartDelay(0.3)
     spell:play()
     spell:setStartDelay(0)
@@ -236,81 +250,81 @@ squapi.crouch(AnimCrouch, AnimUnCrouch)
 
 -- tick event, called 20 times per second ---------------------------------------------------------------
 function events.tick()
-  local crouching = player:getPose() == "CROUCHING"
-  local swimming = player:isVisuallySwimming()
-  local floating = player:isInWater()
-  local sprinting = player:isSprinting()
-  local walking = player:getVelocity().xz:length() > .001
-  local jumping = player:getVelocity().y > .01
-  local falling = player:getVelocity().y < -0.4
-  local climbing = player:isClimbing()
-  local riding 
+    local crouching = player:getPose() == "CROUCHING"
+    local swimming = player:isVisuallySwimming()
+    local floating = player:isInWater()
+    local sprinting = player:isSprinting()
+    local walking = player:getVelocity().xz:length() > .001
+    local jumping = player:getVelocity().y > .01
+    local falling = player:getVelocity().y < -0.4
+    local climbing = player:isClimbing()
+    local riding 
 
-  -- Attack animation priorities
-  AnimSwing1:setPriority(1)
-  AnimSwing2:setPriority(2)
-  AnimSwingCombo:setPriority(3)
-  AnimMovement:setPriority(4)
-  AnimFirstSpell:setPriority(4)
-  AnimSecondSpell:setPriority(4)
-  AnimThirdSpell:setPriority(4)
+    -- Attack animation priorities
+    AnimSwing1:setPriority(1)
+    AnimSwing2:setPriority(2)
+    AnimSwingCombo:setPriority(3)
+    AnimMovement:setPriority(4)
+    AnimFirstSpell:setPriority(4)
+    AnimSecondSpell:setPriority(4)
+    AnimThirdSpell:setPriority(4)
 
-  -- Basic action animation prioirites
-  -- AnimWalk:setPriority(1)
-  -- AnimSprinting:setPriority(1)
-  -- AnimSprinting:setPriority(1)
-  -- AnimFalling:setPriority(2)
-  -- AnimJumping:setPriority(2)
-  -- AnimSwimming:setPriority(3)
-  -- AnimFloating:setPriority(3)
-  -- AnimClimbing:setPriority(4)
-  -- AnimRidingHorse:setPriority(4)
+    -- Basic action animation prioirites
+    -- AnimWalk:setPriority(1)
+    -- AnimSprinting:setPriority(1)
+    -- AnimSprinting:setPriority(1)
+    -- AnimFalling:setPriority(2)
+    -- AnimJumping:setPriority(2)
+    -- AnimSwimming:setPriority(3)
+    -- AnimFloating:setPriority(3)
+    -- AnimClimbing:setPriority(4)
+    -- AnimRidingHorse:setPriority(4)
 
-  -- Play animation under certain conditions
+    -- Play animation under certain conditions
 
-  if player:getPose()=="CROUCHING" then
-    models.model:setPos(0,2,0)
-  else
-    models.model:setPos(0,0,0)
-  end
+    if player:getPose()=="CROUCHING" then
+        models.model:setPos(0,2,0)
+    else
+        models.model:setPos(0,0,0)
+    end
 
-  if player:getVehicle() and player:getVehicle():getType() == "minecraft:horse" then
-    print("ridingHorse")
-  end
+    if player:getVehicle() and player:getVehicle():getType() == "minecraft:horse" then
+        print("ridingHorse")
+    end
 
-  if (climbing) then
-      print("climbing")
-  end
+    if (climbing) then
+        print("climbing")
+    end
 
-  if (floating and not swimming) then
-      print("floating")
-  elseif (swimming) then
-      print("swimming")
-  end
+    if (floating and not swimming) then
+        print("floating")
+    elseif (swimming) then
+        print("swimming")
+    end
 
-  if (jumping and not swimming) then
-      print("jumping")
-  elseif (falling and not swimming) then
-      print("falling")
-  end
+    if (jumping and not swimming) then
+        print("jumping")
+    elseif (falling and not swimming) then
+        print("falling")
+    end
 
-  if (crouching and walking) then
-      print("crouch walking")
-  elseif (crouching and not walking) then
-      print("crouching")
-  elseif (walking and not crouching and not sprinting) then
-      print("walking")
-  elseif (sprinting) then
-      print("sprinting")
-  elseif (not walking and not crouching) then
-      print("idle")
-  end
+    if (crouching and walking) then
+        print("crouch walking")
+    elseif (crouching and not walking) then
+        print("crouching")
+    elseif (walking and not crouching and not sprinting) then
+        print("walking")
+    elseif (sprinting) then
+        print("sprinting")
+    elseif (not walking and not crouching) then
+        print("idle")
+    end
 
 
-  AnimIdle:setPlaying(not walking and not crouching)
---   AnimWalk:setPlaying(walking and not crouching and not sprinting)
-  -- animations.example.sprint:setPlaying(sprinting and not crouching)
-  -- animations.example.crouch:setPlaying(crouching)
+    AnimIdle:setPlaying(not walking and not crouching)
+    --   AnimWalk:setPlaying(walking and not crouching and not sprinting)
+    -- animations.example.sprint:setPlaying(sprinting and not crouching)
+    -- animations.example.crouch:setPlaying(crouching)
 end
 
 
@@ -332,7 +346,7 @@ function events.render(delta, context) -----------------------------------------
 end
 
 -- Arm Physics (Modified version of SquAPI bouncing object function)
-local stiff = 0.01
+local stiff = 0.025
 local bounce = 0.06
 local bendability = 10
 local rArm = squapi.bounceObject:new()
