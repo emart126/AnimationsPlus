@@ -244,7 +244,7 @@ vKey.press = pings.onVPressDo
 
 -- SquAPI Animation Handling ----------------------------------------------------------------------------
 
-squapi.walk(AnimWalk)
+-- squapi.walk(AnimWalk)
 squapi.smoothHead(models.model.root.mainBody.head, 0.4, 1, false)
 squapi.smoothTorso(models.model.root.mainBody, 0.5)
 squapi.crouch(AnimCrouch, AnimUnCrouch)
@@ -357,11 +357,17 @@ function events.render(delta, context) -----------------------------------------
 	local yvel = squapi.yvel()
     local headRot = (models.model.root.mainBody.head:getOffsetRot()+180)%360-180
 
+    -- acceleration
+    if (currVel ~= oldVel) then
+        acceleration = currVel - oldVel
+    end
+    currVel = player:getVelocity()
+
     -- Arm physics
     -- print(vel)
 	if rArm.pos < 60 and rArm.pos >= 0 then
         if (rArm.vel < 0) then
-            rArm.vel = 0
+            rArm.vel = rArm.vel*(0.5)
         end
 		rArm.vel = rArm.vel - yvel/2 * bendability
 		rArm.vel = rArm.vel - vel/3 * bendability
@@ -381,20 +387,12 @@ function events.render(delta, context) -----------------------------------------
 	end
 
     -- Hitting ground detection
-    if (currVel ~= oldVel) then
-        acceleration = currVel - oldVel
-    end
-    currVel = player:getVelocity()
-    print(acceleration[2], currVel[2])
-    if (currVel[2] == 0 and acceleration[2] ~= currVel[2]) then
-        print("hit ground ================================================")
-        print("hit ground ================================================")
-        print("hit ground ================================================")
-        print("hit ground ================================================")
+    if (world.getBlockState(player:getPos():add(0,-0.1,0)):isSolidBlock() and (currVel[2] == 0 and acceleration[2] ~= currVel[2])) then
         acceleration[2] = 0
         AnimHitGround:play()
     end
 
+    -- Render given physics onto body parts
 	models.model.root.mainBody.rightArm:setOffsetRot(rArm.vel*2,0,rArm:doBounce(0, stiff, bounce))
     models.model.root.mainBody.leftArm:setOffsetRot(-rArm.vel*2,0,-rArm:doBounce(0, stiff, bounce))
     models.model.root.mainBody.head:setRot(head:doBounce(0, 0.025, 0.12),0,0)
