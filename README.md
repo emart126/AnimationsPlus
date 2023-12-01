@@ -1,4 +1,4 @@
-# AnimationsPlus
+# AnimationsPlus (Work In Progress)
 Figura Animation Avatar made particularly for Wynncraft
 
 ## scrpit.lua
