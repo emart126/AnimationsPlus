@@ -6,7 +6,7 @@ vanilla_model.PLAYER:setVisible(false)
 -- set players skin to their own skin
 models.model.root:setPrimaryTexture("SKIN")
 
--- global vars
+-- global vars ==========================================================================================
 
 -- Basic Action Animations
 AnimSwing1 = animations.model["animation.model.swing1"]
@@ -33,7 +33,7 @@ AnimR1 = animations.model["animation.model.R1"]
 AnimR2 = animations.model["animation.model.R2"]
 AnimL2 = animations.model["animation.model.L2"]
 
--- Helper Functions -------------------------------------------------------------------------------------
+-- Helper Functions =====================================================================================
 
 -- Stop playing all animations pertaining to combat
 function StopAllSpell()
@@ -83,7 +83,7 @@ function CheckAnimToPlayRightClick(r1, r2, l2, firstSpell, movement)
     end
 end
 
--- Given what animationto play, play it without interference of other animations and with small delay
+-- Given what animation to play, play it without interference of other animations and with small delay
 function PlaySpellWithDelay(spell)
     StopAllSpell()
     spell:setStartDelay(0.3)
@@ -91,7 +91,7 @@ function PlaySpellWithDelay(spell)
     spell:setStartDelay(0)
 end
 
--- left-clicking detection ------------------------------------------------------------------------------
+-- left-clicking detection ==============================================================================
 local hitKey = keybinds:of("Punch",keybinds:getVanillaKey("key.attack"))
 
 function pings.onHitDo()
@@ -134,7 +134,7 @@ end
 hitKey.press = pings.onHitDo
 
 
--- right-clicking detection -----------------------------------------------------------------------------
+-- right-clicking detection =============================================================================
 local useKey = keybinds:of("Use",keybinds:getVanillaKey("key.use"))
 
 function pings.onRightClickDo()
@@ -171,7 +171,7 @@ end
 
 useKey.press = pings.onRightClickDo
 
--- Key Bind detection (wynntils macros) -----------------------------------------------------------------
+-- Key Bind detection (wynntils macros) =================================================================
 
 function pings.onZPressDo()
     local currItem = player:getHeldItem()
@@ -242,14 +242,14 @@ xKey.press = pings.onXPressDo
 cKey.press = pings.onCPressDo
 vKey.press = pings.onVPressDo
 
--- SquAPI Animation Handling ----------------------------------------------------------------------------
+-- SquAPI Animation Handling ============================================================================
 
 -- squapi.walk(AnimWalk)
 squapi.smoothHead(models.model.root.mainBody.head, 0.4, 1, false)
 squapi.smoothTorso(models.model.root.mainBody, 0.5)
 squapi.crouch(AnimCrouch, AnimUnCrouch)
 
--- tick event, called 20 times per second ---------------------------------------------------------------
+-- tick event, called 20 times per second ===============================================================
 function events.tick()
     local crouching = player:getPose() == "CROUCHING"
     local swimming = player:isVisuallySwimming()
@@ -321,7 +321,7 @@ function events.tick()
     -- animations.example.crouch:setPlaying(crouching)
 end
 
--- Physics variables ------------------------------------------------------------------------------------
+-- Physics variables ====================================================================================
 local stiff = 0.025
 local bounce = 0.06
 local bendability = 10
