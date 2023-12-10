@@ -365,12 +365,6 @@ function events.render(delta, context) -----------------------------------------
         acceleration = currVel - oldVel
     end
     currVel = player:getVelocity()
-    
-    -- Idle Arms affected by gravity --------------------------------------------
-    if (not walking and not crouching and (headRot[1] > -20)) then
-        models.model.root.mainBody.rightArm:setOffsetRot(-headRot[1],0,0)
-        models.model.root.mainBody.leftArm:setOffsetRot(-headRot[1],0,0)
-    end
 
     -- Arm physics --------------------------------------------------------------
     models.model.root.mainBody.rightArm:setRot(0, 0, rArm.pos*2)
@@ -384,12 +378,13 @@ function events.render(delta, context) -----------------------------------------
 	rArm:doBounce(armTarget, 0.01, .2)
     lArm:doBounce(armTarget, 0.01, .2)
 
+    -- Idle Arms affected by gravity --------------------------------------------
+    if (not walking and not crouching and (headRot[1] > -20) and world.getBlockState(player:getPos():add(0,-0.1,0)):isSolidBlock()) then
+        models.model.root.mainBody.rightArm:setOffsetRot(-headRot[1],0,0)
+        models.model.root.mainBody.leftArm:setOffsetRot(-headRot[1],0,0)
+    end
 
     -- Head physics -------------------------------------------------------------
-    -- if head.pos < 20 and head.pos > -30 then
-	-- 	head.vel = head.vel - yvel/2 * 3
-	-- 	head.vel = head.vel - vel/3 * 3
-	-- end
     models.model.root.mainBody.head:setRot(head.pos*1.5, 0, 0)
 	headTarget = -yvel * 20
     if (headTarget > 20) then
