@@ -372,30 +372,17 @@ function events.render(delta, context) -----------------------------------------
     -- print(currVel[2], acceleration[2])
 
     -- Arm physics --------------------------------------------------------------
-    -- print(rArm.pos)
-	-- if rArm.pos < 90 and rArm.pos >= 0 then
-    --     if (rArm.pos < 0.1) then
-    --         rArm.pos = rArm.pos*(0.5)
-    --     end
-	-- 	rArm.vel = rArm.vel - yvel/2 * 10
-	-- 	rArm.vel = rArm.vel - vel/3 * 10
-	-- end
-    -- /////////////////
-    local yvel = squapi.yvel()
-    if (yvel ~= 0) then
-        models.model.root.mainBody.rightArm:setRot(0, 0, rArm.pos*2)
-        models.model.root.mainBody.leftArm:setRot(0, 0, -lArm.pos*2)
-    end
-	local target = -yvel * 110
-    print(target)
-	if (target > 40) then
+   
+    models.model.root.mainBody.rightArm:setRot(0, 0, rArm.pos*2)
+    models.model.root.mainBody.leftArm:setRot(0, 0, -lArm.pos*2)
+	local target = -yvel * 80
+    if (target > 40) then
         target = 40
-    elseif (target < 0) then
-        target = 0
+    elseif (target < -2) then
+        target = -2
     end
 	rArm:doBounce(target, 0.01, .2)
     lArm:doBounce(target, 0.01, .2)
-    -- /////////////////
 
 
     -- Head physics -------------------------------------------------------------
