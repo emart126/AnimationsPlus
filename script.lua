@@ -324,8 +324,9 @@ end
 -- Physics variables ====================================================================================
 local stiff = 0.025
 local bounce = 0.06
-local bendability = 10
+local bendability = 2
 local rArm = squapi.bounceObject:new()
+local lArm = squapi.bounceObject:new()
 local head = squapi.bounceObject:new()
 
 local currVel
@@ -349,51 +350,73 @@ function events.render(delta, context) -----------------------------------------
     local climbing = player:isClimbing()
     local riding 
 
-    -- Deal with first person hand model
+    -- Deal with first person hand model ----------------------------------------
     vanilla_model.RIGHT_ARM:setVisible(context == "FIRST_PERSON")
 
-    -- Physics handling
+    -- Physics handling ---------------------------------------------------------
     local vel = squapi.getForwardVel()
 	local yvel = squapi.yvel()
     local headRot = (models.model.root.mainBody.head:getOffsetRot()+180)%360-180
 
-    -- acceleration
+    -- Idle Arms affected by gravity --------------------------------------------
+    if (not walking and not crouching and (headRot[1] > -20)) then
+        models.model.root.mainBody.rightArm:setOffsetRot(-headRot[1],0,0)
+        models.model.root.mainBody.leftArm:setOffsetRot(-headRot[1],0,0)
+    end
+
+    -- acceleration -------------------------------------------------------------
     if (currVel ~= oldVel) then
         acceleration = currVel - oldVel
     end
     currVel = player:getVelocity()
+    -- print(currVel[2], acceleration[2])
 
-    -- Arm physics
-    -- print(vel)
-	if rArm.pos < 60 and rArm.pos >= 0 then
-        if (rArm.vel < 0) then
-            rArm.vel = rArm.vel*(0.5)
-        end
-		rArm.vel = rArm.vel - yvel/2 * bendability
-		rArm.vel = rArm.vel - vel/3 * bendability
-	end
-
-    -- Idle Arms affected by gravity
-    if (not walking and not crouching and (headRot[1] > -20)) then
-        models.model.root.mainBody.rightArm:setRot(-headRot[1],0,0)
-        models.model.root.mainBody.leftArm:setRot(-headRot[1],0,0)
+    -- Arm physics --------------------------------------------------------------
+    -- print(rArm.pos)
+	-- if rArm.pos < 90 and rArm.pos >= 0 then
+    --     if (rArm.pos < 0.1) then
+    --         rArm.pos = rArm.pos*(0.5)
+    --     end
+	-- 	rArm.vel = rArm.vel - yvel/2 * 10
+	-- 	rArm.vel = rArm.vel - vel/3 * 10
+	-- end
+    -- /////////////////
+    local yvel = squapi.yvel()
+    if (yvel ~= 0) then
+        models.model.root.mainBody.rightArm:setRot(0, 0, rArm.pos*2)
+        models.model.root.mainBody.leftArm:setRot(0, 0, -lArm.pos*2)
     end
+	local target = -yvel * 110
+    print(target)
+	if (target > 40) then
+        target = 40
+    elseif (target < 0) then
+        target = 0
+    end
+	rArm:doBounce(target, 0.01, .2)
+    lArm:doBounce(target, 0.01, .2)
+    -- /////////////////
 
-    -- Head physics
+
+    -- Head physics -------------------------------------------------------------
     -- print(yvel)
     if head.pos < 20 and head.pos > -30 then
 		head.vel = head.vel - yvel/2 * 3
 		head.vel = head.vel - vel/3 * 3
 	end
 
-    -- Hitting ground detection
+    -- Hitting ground detection -------------------------------------------------
     if (world.getBlockState(player:getPos():add(0,-0.1,0)):isSolidBlock() and (currVel[2] == 0 and acceleration[2] ~= currVel[2])) then
+        -- print(acceleration[2])
+        if (acceleration[2] < -0.24) then
+            AnimHitGround:play()
+        end
         acceleration[2] = 0
-        AnimHitGround:play()
+        
     end
 
-    -- Render given physics onto body parts
-	models.model.root.mainBody.rightArm:setOffsetRot(rArm.vel*2,0,rArm:doBounce(0, stiff, bounce))
-    models.model.root.mainBody.leftArm:setOffsetRot(-rArm.vel*2,0,-rArm:doBounce(0, stiff, bounce))
+    -- Render given physics onto body parts -------------------------------------
+	-- models.model.root.mainBody.rightArm:setOffsetRot(rArm.vel*2,0,rArm:doBounce(0, stiff, bounce))
+    -- models.model.root.mainBody.leftArm:setOffsetRot(-rArm.vel*2,0,-rArm:doBounce(0, stiff, bounce))
     models.model.root.mainBody.head:setRot(head:doBounce(0, 0.025, 0.12),0,0)
 end
