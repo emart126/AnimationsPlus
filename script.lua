@@ -257,9 +257,13 @@ function events.tick()
     local sprinting = player:isSprinting()
     local walking = player:getVelocity().xz:length() > .001
     local climbing = player:isClimbing()
-    local riding 
+    local isGrounded = world.getBlockState(player:getPos():add(0,-0.1,0)):isSolidBlock()
+    local ridingMount = player:getVehicle() and (player:getVehicle():getType() == "minecraft:horse"
+                                            or player:getVehicle():getType() == "minecraft:pig")
+    local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
+                                            or player:getVehicle():getType() == "minecraft:boat")
 
-    -- Attack animation priorities
+    -- Attack animation priorities ----------------------------------------------
     AnimSwing1:setPriority(1)
     AnimSwing2:setPriority(2)
     AnimSwingCombo:setPriority(3)
@@ -268,7 +272,7 @@ function events.tick()
     AnimSecondSpell:setPriority(4)
     AnimThirdSpell:setPriority(4)
 
-    -- Basic action animation prioirites
+    -- Basic action animation prioirites ----------------------------------------
     -- AnimWalk:setPriority(1)
     -- AnimSprinting:setPriority(1)
     -- AnimSprinting:setPriority(1)
@@ -279,43 +283,58 @@ function events.tick()
     -- AnimClimbing:setPriority(4)
     -- AnimRidingHorse:setPriority(4)
 
-    -- Play animation under certain conditions
+    -- Play animation under certain conditions ----------------------------------
 
-    if player:getPose()=="CROUCHING" then
+    if (crouching) then
         models.model:setPos(0,2,0)
     else
         models.model:setPos(0,0,0)
     end
 
-    -- if player:getVehicle() and player:getVehicle():getType() == "minecraft:horse" then
-    --     print("ridingHorse")
-    -- end
+    -- Sitting/Riding
+    if (ridingMount and walking) then
+        print("ridingMount")
+    elseif (ridingSeat and walking) then
+        print("ridingCartOrBoat")
+    elseif (not walking and (ridingMount or ridingSeat)) then
+        print("sitting")
+    end
 
-    -- if (climbing) then
-    --     print("climbing")
-    -- end
+    if (floating or swimming) then
+        -- Interacting with water
+        if (floating and not swimming and isGrounded) then
+            print("floatIdle")
+        elseif (floating and not swimming) then
+            print("floatingAir")
+        elseif (swimming) then
+            print("swimming")
+        end
+    else
+        -- Outside of water
+        if (isGrounded) then
+            -- On the ground
+            if (crouching and not walking) then
+                print("crouching")
+            elseif (crouching and walking) then
+                print("crouch walking")
+            elseif (walking and not crouching and not sprinting and not climbing) then
+                print("walking")
+            elseif (sprinting) then
+                print("sprinting")
+            elseif (not walking and not crouching) then
+                AnimIdle:play()
+                print("idle")
+            end
+        else
+            -- Not on the ground
+            if (climbing) then
+                print("climbing")
+            end
+        end
+    end
+    print("---")
 
-    -- if (floating and not swimming) then
-    --     print("floating")
-    -- elseif (swimming) then
-    --     print("swimming")
-    -- end
-
-    -- if (crouching and walking) then
-    --     print("crouch walking")
-    -- elseif (crouching and not walking) then
-    --     print("crouching")
-    -- elseif (walking and not crouching and not sprinting) then
-    --     print("walking")
-    -- elseif (sprinting) then
-    --     print("sprinting")
-    -- elseif (not walking and not crouching) then
-
-    --     print("idle")
-    -- end
-
-
-    AnimIdle:setPlaying(not walking and not crouching)
+    -- AnimIdle:setPlaying(not walking and not crouching)
     -- AnimWalk:setPlaying(walking and not crouching and not sprinting)
     -- animations.example.sprint:setPlaying(sprinting and not crouching)
     -- animations.example.crouch:setPlaying(crouching)
@@ -333,7 +352,7 @@ local currVel
 local oldVel
 local acceleration
 
-function events.entity_init()
+function events.entity_init() ---------------------------------------------------------------------------
     currVel = player:getVelocity()
     oldVel = player:getVelocity()
     acceleration = player:getVelocity()
@@ -372,8 +391,8 @@ function events.render(delta, context) -----------------------------------------
 	armTarget = -yvel * 80
     if (armTarget > 40) then
         armTarget = 40
-    elseif (armTarget < -2) then
-        armTarget = -2
+    elseif (armTarget < -5) then
+        armTarget = -5
     end
 	rArm:doBounce(armTarget, 0.01, .2)
     lArm:doBounce(armTarget, 0.01, .2)
@@ -382,7 +401,7 @@ function events.render(delta, context) -----------------------------------------
     if (not walking and not crouching and (headRot[1] > -20) and world.getBlockState(player:getPos():add(0,-0.1,0)):isSolidBlock()) then
         models.model.root.mainBody.rightArm:setOffsetRot(-headRot[1],0,0)
         models.model.root.mainBody.leftArm:setOffsetRot(-headRot[1],0,0)
-    end
+    end -- Known Bug: doesn't revert back to normal arms when not idle 
 
     -- Head physics -------------------------------------------------------------
     models.model.root.mainBody.head:setRot(head.pos*1.5, 0, 0)
