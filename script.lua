@@ -258,6 +258,7 @@ function events.tick()
     local walking = player:getVelocity().xz:length() > .001
     local climbing = player:isClimbing()
     local isGrounded = world.getBlockState(player:getPos():add(0,-0.1,0)):isSolidBlock()
+    local sitting = player:getVehicle()
     local ridingMount = player:getVehicle() and (player:getVehicle():getType() == "minecraft:horse"
                                             or player:getVehicle():getType() == "minecraft:pig")
     local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
@@ -291,27 +292,18 @@ function events.tick()
         models.model:setPos(0,0,0)
     end
 
-    -- Sitting/Riding
-    if (ridingMount and walking) then
-        print("ridingMount")
-    elseif (ridingSeat and walking) then
-        print("ridingCartOrBoat")
-    elseif (not walking and (ridingMount or ridingSeat)) then
-        print("sitting")
-    end
-
+    -- Interacting with water
     if (floating or swimming) then
-        -- Interacting with water
         if (floating and not swimming and isGrounded) then
             print("floatIdle")
-        elseif (floating and not swimming) then
+        elseif (floating and not swimming and not isGrounded) then
             print("floatingAir")
         elseif (swimming) then
             print("swimming")
         end
     else
         -- Outside of water
-        if (isGrounded) then
+        if (isGrounded) then -- Known Bug: isGrounded only checks if block is 'solid' by MC standard
             -- On the ground
             if (crouching and not walking) then
                 print("crouching")
@@ -328,7 +320,24 @@ function events.tick()
         else
             -- Not on the ground
             if (climbing) then
-                print("climbing")
+                -- Interacting with ladder
+                if (player:getVelocity()[2] ~= 0) then
+                    print("climbing")
+                else
+                    print("holdingLadder")
+                end
+                
+            elseif (sitting ~= nil) then
+                -- Sitting/Riding
+                if (ridingMount and walking) then
+                    print("ridingMount")
+                elseif (ridingSeat and walking) then
+                    print("ridingCartOrBoat")
+                elseif (not walking and (ridingMount or ridingSeat)) then
+                    print("sitting")
+                end
+            else
+                print("inAir")
             end
         end
     end
