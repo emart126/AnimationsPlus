@@ -8,6 +8,10 @@ models.model.root:setPrimaryTexture("SKIN")
 
 -- global vars ==========================================================================================
 
+-- Animation states
+local state
+local oldState
+
 -- Basic Action Animations
 AnimSwing1 = animations.model["animation.model.swing1"]
 AnimSwing2 = animations.model["animation.model.swing2"]
@@ -17,6 +21,7 @@ AnimWalk = animations.model["animation.model.walk"]
 AnimCrouch = animations.model["animation.model.crouch"]
 AnimUnCrouch = animations.model["animation.model.unCrouch"]
 AnimHitGround = animations.model["animation.model.hitGround"]
+AnimJumpMove = animations.model["jumpMoving"]
 
 -- Wynncraft Spells
 -- R1, L2, R3 = s1
@@ -295,53 +300,64 @@ function events.tick()
     -- Interacting with water
     if (floating or swimming) then
         if (floating and not swimming and isGrounded) then
-            print("floatIdle")
+            state = "floatIdle"
         elseif (floating and not swimming and not isGrounded) then
-            print("floatingAir")
+            state = "floatingAir"
         elseif (swimming) then
-            print("swimming")
+            state = "swimming"
         end
     else
         -- Outside of water
         if (isGrounded) then -- Known Bug: isGrounded only checks if block is 'solid' by MC standard
             -- On the ground
             if (crouching and not walking) then
-                print("crouching")
+                state = "crouching"
             elseif (crouching and walking) then
-                print("crouch walking")
+                state = "crouch walking"
             elseif (walking and not crouching and not sprinting and not climbing) then
-                print("walking")
+                state = "walking"
             elseif (sprinting) then
-                print("sprinting")
+                state = "sprinting"
             elseif (not walking and not crouching) then
+                state = "idle"
                 AnimIdle:play()
-                print("idle")
             end
         else
             -- Not on the ground
             if (climbing) then
                 -- Interacting with ladder
                 if (player:getVelocity()[2] ~= 0) then
-                    print("climbing")
+                    state = "climbing"
                 else
-                    print("holdingLadder")
+                    state = "holdingLadder"
                 end
                 
             elseif (sitting ~= nil) then
                 -- Sitting/Riding
                 if (ridingMount and walking) then
-                    print("ridingMount")
+                    state = "ridingMount"
                 elseif (ridingSeat and walking) then
-                    print("ridingCartOrBoat")
+                    state = "ridingCartOrBoat"
                 elseif (not walking and (ridingMount or ridingSeat)) then
-                    print("sitting")
+                    state = "sitting"
                 end
             else
-                print("inAir")
+                state = "inAir"
             end
         end
     end
     print("---")
+    
+    print(state)
+    if (state ~= oldState) then
+        if (oldState == "sprinting" and state == "inAir") then
+            AnimJumpMove:play()
+        else
+            AnimJumpMove:stop()
+        end
+        
+    end
+    oldState = state
 
     -- AnimIdle:setPlaying(not walking and not crouching)
     -- AnimWalk:setPlaying(walking and not crouching and not sprinting)
