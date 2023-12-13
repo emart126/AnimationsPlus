@@ -97,6 +97,37 @@ function PlaySpellWithDelay(spell)
     spell:setStartDelay(0)
 end
 
+-- Better isGrounded function (@Discord User: 4P5)
+local CLEARANCE = 0.1 -- How many blocks you can hover above the ground and still be considered touching it
+local function isOnGround(entity)
+    local pos = entity:getPos()
+    local hitbox = entity:getBoundingBox().x_z / 2
+    local min = pos - hitbox - vec(0, CLEARANCE, 0)
+    local max = pos + hitbox
+    local search_min = min:copy():floor()
+    local search_max = max:copy():floor()
+    for x = search_min.x, search_max.x do
+        for y = search_min.y, search_max.y do
+            for z = search_min.z, search_max.z do
+                local block_pos = vec(x,y,z)
+                local block = world.getBlockState(block_pos)
+                local boxes = block:getCollisionShape()
+                for i = 1, #boxes do
+                    local box = boxes[i]
+                    local box1_min = box[1] + block_pos
+                    local box1_max = box[2] + block_pos
+                    if not (box1_max.x <= min.x or max.x <= box1_min.x or
+                            box1_max.y <= min.y or max.y <= box1_min.y or
+                            box1_max.z <= min.z or max.z <= box1_min.z) then
+                        return true
+                    end
+                end
+            end
+        end
+    end
+    return false
+end
+
 -- left-clicking detection ==============================================================================
 local hitKey = keybinds:of("Punch",keybinds:getVanillaKey("key.attack"))
 
@@ -268,7 +299,7 @@ function events.tick()
     local sprinting = player:isSprinting()
     local walking = player:getVelocity().xz:length() > .001
     local climbing = player:isClimbing()
-    local isGrounded = world.getBlockState(player:getPos():add(0,-0.1,0)):isSolidBlock()
+    local isGrounded = isOnGround(player)
     local sitting = player:getVehicle()
     local ridingMount = player:getVehicle() and (player:getVehicle():getType() == "minecraft:horse"
                                             or player:getVehicle():getType() == "minecraft:pig")
@@ -337,7 +368,6 @@ function events.tick()
                 else
                     state = "holdingLadder"
                 end
-                
             elseif (sitting ~= nil) then
                 -- Sitting/Riding
                 if (ridingMount and walking) then
