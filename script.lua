@@ -354,15 +354,49 @@ function events.tick()
     end
     print("---")
     print(state)
-    
+
     -- Jumping conditions
     if (state ~= oldState) then
-        -- Sprinting
-        if (oldState == "sprinting" and state == "inAir") then
-            AnimJumpMove:play()
-        elseif (AnimJumpMove:isPlaying()) then
-            AnimJumpMove:stop()
-            AnimJumpMoveStop:play()
+        if (oldState == "sprinting") then
+            -- Jump sprinting
+            if (oldState == "sprinting" and state == "inAir") then
+                AnimJumpMove:play()
+            elseif (AnimJumpMove:isPlaying()) then
+                AnimJumpMove:stop()
+                AnimJumpMoveStop:play()
+            end
+        elseif (oldState == "walking") then
+            -- Jump walking
+            if (oldState == "walking" and state == "inAir") then
+                AnimJumpMove:play()
+            elseif (AnimJumpMove:isPlaying()) then
+                AnimJumpMove:stop()
+                AnimJumpMoveStop:play()
+            end
+        elseif (oldState == "crouching") then
+            -- Jump crouching
+            if (oldState == "crouching" and state == "inAir") then
+                AnimJumpMove:play()
+            elseif (AnimJumpMove:isPlaying()) then
+                AnimJumpMove:stop()
+                AnimJumpMoveStop:play()
+            end
+        elseif (oldState == "crouch walking") then
+            -- Jump coruch walking
+            if (oldState == "crouch walking" and state == "inAir") then
+                AnimJumpMove:play()
+            elseif (AnimJumpMove:isPlaying()) then
+                AnimJumpMove:stop()
+                AnimJumpMoveStop:play()
+            end
+        else
+            -- Jump idle
+            if (oldState == "idle" and state == "inAir") then
+                AnimJumpMove:play()
+            elseif (AnimJumpMove:isPlaying()) then
+                AnimJumpMove:stop()
+                AnimJumpMoveStop:play()
+            end
         end
     end
     oldState = state
