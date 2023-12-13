@@ -22,6 +22,7 @@ AnimCrouch = animations.model["animation.model.crouch"]
 AnimUnCrouch = animations.model["animation.model.unCrouch"]
 AnimHitGround = animations.model["animation.model.hitGround"]
 AnimJumpMove = animations.model["jumpMoving"]
+AnimJumpMoveStop = animations.model["jumpMovingStoping"]
 
 -- Wynncraft Spells
 -- R1, L2, R3 = s1
@@ -106,30 +107,35 @@ function pings.onHitDo()
     -- Spears --
     if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
+        return
     end
 
     -- Wands --
     if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
+        return
     end
 
     -- Daggers --
     if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
+        return
     end
 
     -- Reliks --
     if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
+        return
     end
 
     -- Bows --
     if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
         -- use opposite click for archer
         CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+        return
     end
 
-    -- empty hands --
+    -- Holding none weapon --
     if (currItem.id == "minecraft:air") then
         -- print("punch")
     end
@@ -347,15 +353,17 @@ function events.tick()
         end
     end
     print("---")
-    
     print(state)
+    
+    -- Jumping conditions
     if (state ~= oldState) then
+        -- Sprinting
         if (oldState == "sprinting" and state == "inAir") then
             AnimJumpMove:play()
-        else
+        elseif (AnimJumpMove:isPlaying()) then
             AnimJumpMove:stop()
+            AnimJumpMoveStop:play()
         end
-        
     end
     oldState = state
 
