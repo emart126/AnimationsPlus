@@ -11,6 +11,7 @@ models.model.root:setPrimaryTexture("SKIN")
 -- Animation states
 local state
 local oldState
+local jump = 1
 
 -- Basic Action Animations
 AnimSwing1 = animations.model["animation.model.swing1"]
@@ -21,8 +22,10 @@ AnimWalk = animations.model["animation.model.walk"]
 AnimCrouch = animations.model["animation.model.crouch"]
 AnimUnCrouch = animations.model["animation.model.unCrouch"]
 AnimHitGround = animations.model["animation.model.hitGround"]
-AnimJumpMove = animations.model["jumpMoving"]
-AnimJumpMoveStop = animations.model["jumpMovingStoping"]
+AnimJumpMove1 = animations.model["jumpMoving1"]
+AnimJumpMoveStop1 = animations.model["jumpMovingStoping1"]
+AnimJumpMove2 = animations.model["jumpMoving2"]
+AnimJumpMoveStop2 = animations.model["jumpMovingStoping2"]
 
 -- Wynncraft Spells
 -- R1, L2, R3 = s1
@@ -126,6 +129,16 @@ local function isOnGround(entity)
         end
     end
     return false
+end
+
+-- Given which jump to play, play that particular jump. returns next jump value
+function WhichJump(j, j1Anim, j2Anim)
+    if (j == 1) then
+        j1Anim:play()
+        return 2
+    end
+    j2Anim:play()
+    return 1
 end
 
 -- left-clicking detection ==============================================================================
@@ -387,48 +400,30 @@ function events.tick()
 
     -- Jumping conditions
     if (state ~= oldState) then
-        if (oldState == "sprinting") then
+        if (oldState == "sprinting" and state == "inAir") then
             -- Jump sprinting
-            if (oldState == "sprinting" and state == "inAir") then
-                AnimJumpMove:play()
-            elseif (AnimJumpMove:isPlaying()) then
-                AnimJumpMove:stop()
-                AnimJumpMoveStop:play()
-            end
-        elseif (oldState == "walking") then
+            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+        elseif (oldState == "walking" and state == "inAir") then
             -- Jump walking
-            if (oldState == "walking" and state == "inAir") then
-                AnimJumpMove:play()
-            elseif (AnimJumpMove:isPlaying()) then
-                AnimJumpMove:stop()
-                AnimJumpMoveStop:play()
-            end
-        elseif (oldState == "crouching") then
+            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+        elseif (oldState == "crouching" and state == "inAir") then
             -- Jump crouching
-            if (oldState == "crouching" and state == "inAir") then
-                AnimJumpMove:play()
-            elseif (AnimJumpMove:isPlaying()) then
-                AnimJumpMove:stop()
-                AnimJumpMoveStop:play()
-            end
-        elseif (oldState == "crouch walking") then
-            -- Jump coruch walking
-            if (oldState == "crouch walking" and state == "inAir") then
-                AnimJumpMove:play()
-            elseif (AnimJumpMove:isPlaying()) then
-                AnimJumpMove:stop()
-                AnimJumpMoveStop:play()
-            end
-        else
+            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+        elseif (oldState == "crouch walking" and state == "inAir") then
+            -- Jump crouch walking
+            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+        elseif (oldState == "idle" and state == "inAir") then
             -- Jump idle
-            if (oldState == "idle" and state == "inAir") then
-                AnimJumpMove:play()
-            elseif (AnimJumpMove:isPlaying()) then
-                AnimJumpMove:stop()
-                AnimJumpMoveStop:play()
-            end
+            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+        elseif (AnimJumpMove1:isPlaying()) then
+            AnimJumpMove1:stop()
+            AnimJumpMoveStop1:play()
+        elseif (AnimJumpMove2:isPlaying()) then
+            AnimJumpMove2:stop()
+            AnimJumpMoveStop2:play()
         end
     end
+
     oldState = state
 
     -- AnimIdle:setPlaying(not walking and not crouching)
@@ -495,10 +490,13 @@ function events.render(delta, context) -----------------------------------------
     lArm:doBounce(armTarget, 0.01, .2)
 
     -- Idle Arms affected by gravity --------------------------------------------
-    if (not walking and not crouching and (headRot[1] > -20) and world.getBlockState(player:getPos():add(0,-0.1,0)):isSolidBlock()) then
+    if (not walking and not crouching and (headRot[1] > -20) and isOnGround(player)) then
         models.model.root.mainBody.rightArm:setOffsetRot(-headRot[1],0,0)
         models.model.root.mainBody.leftArm:setOffsetRot(-headRot[1],0,0)
-    end -- Known Bug: doesn't revert back to normal arms when not idle 
+    else
+        models.model.root.mainBody.rightArm:setOffsetRot(0,0,0)
+        models.model.root.mainBody.leftArm:setOffsetRot(0,0,0)
+    end -- Known Bug: reverting back to normal arms not smooth 
 
     -- Head physics -------------------------------------------------------------
     models.model.root.mainBody.head:setRot(head.pos*1.5, 0, 0)
