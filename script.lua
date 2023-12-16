@@ -11,6 +11,7 @@ models.model.root:setPrimaryTexture("SKIN")
 -- Animation states
 local state
 local oldState
+local fallTick
 local jump = 1
 
 -- Basic Action Animations
@@ -395,26 +396,24 @@ function events.tick()
             end
         end
     end
-    print("---")
-    print(state)
 
     -- Jumping conditions
     if (state ~= oldState) then
         if (oldState == "sprinting" and state == "inAir") then
             -- Jump sprinting
             jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-        elseif (oldState == "walking" and state == "inAir") then
-            -- Jump walking
-            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-        elseif (oldState == "crouching" and state == "inAir") then
-            -- Jump crouching
-            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-        elseif (oldState == "crouch walking" and state == "inAir") then
-            -- Jump crouch walking
-            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-        elseif (oldState == "idle" and state == "inAir") then
-            -- Jump idle
-            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+        -- elseif (oldState == "walking" and state == "inAir") then
+        --     -- Jump walking
+        --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+        -- elseif (oldState == "crouching" and state == "inAir") then
+        --     -- Jump crouching
+        --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+        -- elseif (oldState == "crouch walking" and state == "inAir") then
+        --     -- Jump crouch walking
+        --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+        -- elseif (oldState == "idle" and state == "inAir") then
+        --     -- Jump idle
+        --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
         elseif (AnimJumpMove1:isPlaying()) then
             AnimJumpMove1:stop()
             AnimJumpMoveStop1:play()
@@ -423,6 +422,22 @@ function events.tick()
             AnimJumpMoveStop2:play()
         end
     end
+
+    -- Falling conditions
+    if (state == "inAir" or state == "falling") then
+        fallTick = fallTick + 1
+        if (fallTick > 15) then
+            state = "falling"
+            fallTick = 15
+        end
+    else
+        fallTick = 0
+    end
+
+    print("---")
+    print(state)
+
+    
 
     oldState = state
 
