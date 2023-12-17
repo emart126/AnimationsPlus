@@ -11,8 +11,15 @@ models.model.root:setPrimaryTexture("SKIN")
 -- Animation states
 local state
 local oldState
-local fallTick
+local fallTick = 0
+local idleTick = 0
 local jump = 1
+
+-- BlockBench model parts
+local modelHead = models.model.root.mainBody.head
+local modelMainBody = models.model.root.mainBody
+local modelRightArm = models.model.root.mainBody.rightArm
+local modelLeftArm = models.model.root.mainBody.leftArm
 
 -- Basic Action Animations
 AnimSwing1 = animations.model["animation.model.swing1"]
@@ -221,7 +228,7 @@ function pings.onRightClickDo()
     if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
         -- use opposite click for archer
         CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
-    end
+    end -- hold down button to attack?
 
 end
 
@@ -300,9 +307,8 @@ vKey.press = pings.onVPressDo
 
 -- SquAPI Animation Handling ============================================================================
 
--- squapi.walk(AnimWalk)
-squapi.smoothHead(models.model.root.mainBody.head, 0.4, 1, false)
-squapi.smoothTorso(models.model.root.mainBody, 0.5)
+squapi.smoothHead(modelHead, 0.4, 1, false)
+squapi.smoothTorso(modelMainBody, 0.5)
 squapi.crouch(AnimCrouch, AnimUnCrouch)
 
 -- tick event, called 20 times per second ===============================================================
@@ -342,6 +348,7 @@ function events.tick()
 
     -- Play animation under certain conditions ----------------------------------
 
+    -- Handle crouch model position
     if (crouching) then
         models.model:setPos(0,2,0)
     else
@@ -359,7 +366,7 @@ function events.tick()
         end
     else
         -- Outside of water
-        if (isGrounded) then -- Known Bug: isGrounded only checks if block is 'solid' by MC standard
+        if (isGrounded) then
             -- On the ground
             if (crouching and not walking) then
                 state = "crouching"
@@ -426,18 +433,28 @@ function events.tick()
     -- Falling conditions
     if (state == "inAir" or state == "falling") then
         fallTick = fallTick + 1
-        if (fallTick > 15) then
+        if (fallTick > 16) then
             state = "falling"
-            fallTick = 15
+            fallTick = 16
         end
     else
         fallTick = 0
     end
 
+    -- Idling
+    if (state == "idle") then
+        idleTick = idleTick + 1
+        if (idleTick == 100) then
+            print("play")
+            idleTick = 0
+        end
+    else
+        idleTick = 0
+    end
+
     print("---")
     print(state)
-
-    
+    print(idleTick)
 
     oldState = state
 
@@ -482,7 +499,7 @@ function events.render(delta, context) -----------------------------------------
     -- Physics handling ---------------------------------------------------------
     local vel = squapi.getForwardVel()
 	local yvel = squapi.yvel()
-    local headRot = (models.model.root.mainBody.head:getOffsetRot()+180)%360-180
+    local headRot = (modelHead:getOffsetRot()+180)%360-180
     local armTarget
     local headTarget
 
@@ -493,8 +510,8 @@ function events.render(delta, context) -----------------------------------------
     currVel = player:getVelocity()
 
     -- Arm physics --------------------------------------------------------------
-    models.model.root.mainBody.rightArm:setRot(0, 0, rArm.pos*2)
-    models.model.root.mainBody.leftArm:setRot(0, 0, -lArm.pos*2)
+    modelRightArm:setRot(0, 0, rArm.pos*2)
+    modelLeftArm:setRot(0, 0, -lArm.pos*2)
 	armTarget = -yvel * 80
     if (armTarget > 40) then
         armTarget = 40
@@ -506,15 +523,15 @@ function events.render(delta, context) -----------------------------------------
 
     -- Idle Arms affected by gravity --------------------------------------------
     if (not walking and not crouching and (headRot[1] > -20) and isOnGround(player)) then
-        models.model.root.mainBody.rightArm:setOffsetRot(-headRot[1],0,0)
-        models.model.root.mainBody.leftArm:setOffsetRot(-headRot[1],0,0)
+        modelRightArm:setOffsetRot(-headRot[1],0,0)
+        modelLeftArm:setOffsetRot(-headRot[1],0,0)
     else
-        models.model.root.mainBody.rightArm:setOffsetRot(0,0,0)
-        models.model.root.mainBody.leftArm:setOffsetRot(0,0,0)
+        modelRightArm:setOffsetRot(0,0,0)
+        modelLeftArm:setOffsetRot(0,0,0)
     end -- Known Bug: reverting back to normal arms not smooth 
 
     -- Head physics -------------------------------------------------------------
-    models.model.root.mainBody.head:setRot(head.pos*1.5, 0, 0)
+    modelHead:setRot(head.pos*1.5, 0, 0)
 	headTarget = -yvel * 20
     if (headTarget > 20) then
         headTarget = 20
@@ -534,7 +551,7 @@ function events.render(delta, context) -----------------------------------------
     end
 
     -- Render given physics onto body parts -------------------------------------
-	-- models.model.root.mainBody.rightArm:setOffsetRot(rArm.vel*2,0,rArm:doBounce(0, stiff, bounce))
-    -- models.model.root.mainBody.leftArm:setOffsetRot(-rArm.vel*2,0,-rArm:doBounce(0, stiff, bounce))
-    -- models.model.root.mainBody.head:setRot(head:doBounce(0, 0.025, 0.12),0,0)
+	-- modelRightArm:setOffsetRot(rArm.vel*2,0,rArm:doBounce(0, stiff, bounce))
+    -- modelLeftArm:setOffsetRot(-rArm.vel*2,0,-rArm:doBounce(0, stiff, bounce))
+    -- modelHead:setRot(head:doBounce(0, 0.025, 0.12),0,0)
 end
