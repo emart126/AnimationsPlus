@@ -1,10 +1,10 @@
-local squapi = require("SquAPI")
-
 -- hide vanilla model
 vanilla_model.PLAYER:setVisible(false)
 
 -- set players skin to their own skin
 models.model.root:setPrimaryTexture("SKIN")
+
+-- model slim or defaut getModelType <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 -- global vars ==========================================================================================
 
@@ -307,6 +307,7 @@ vKey.press = pings.onVPressDo
 
 -- SquAPI Animation Handling ============================================================================
 
+local squapi = require("SquAPI")
 squapi.smoothHead(modelHead, 0.4, 1, false)
 squapi.smoothTorso(modelMainBody, 0.5)
 squapi.crouch(AnimCrouch, AnimUnCrouch)
@@ -336,6 +337,9 @@ function events.tick()
     AnimThirdSpell:setPriority(4)
 
     -- Basic action animation prioirites ----------------------------------------
+    -- AnimIdling1:setPriority(1)
+    -- AnimIdling2:setPriority(1)
+
     -- AnimWalk:setPriority(1)
     -- AnimSprinting:setPriority(1)
     -- AnimSprinting:setPriority(1)
@@ -442,19 +446,26 @@ function events.tick()
     end
 
     -- Idling
+    local rand
     if (state == "idle") then
         idleTick = idleTick + 1
         if (idleTick == 100) then
-            print("play")
+            rand = math.floor(math.random() + 0.5)
+            print(rand)
+            if (rand == 0) then
+                print("play1")
+            else
+                print("play2")
+            end
             idleTick = 0
         end
     else
         idleTick = 0
     end
 
-    print("---")
-    print(state)
-    print(idleTick)
+    -- print("---")
+    -- print(state)
+    -- print(idleTick)
 
     oldState = state
 
@@ -486,12 +497,7 @@ end
 -- "context" is a string that tells from where this render event was called (the paperdoll, gui, player render, first person)
 function events.render(delta, context) ------------------------------------------------------------------
     local crouching = player:getPose() == "CROUCHING"
-    local swimming = player:isVisuallySwimming()
-    local floating = player:isInWater()
-    local sprinting = player:isSprinting()
     local walking = player:getVelocity().xz:length() > .001
-    local climbing = player:isClimbing()
-    local riding 
 
     -- Deal with first person hand model ----------------------------------------
     vanilla_model.RIGHT_ARM:setVisible(context == "FIRST_PERSON")
@@ -542,7 +548,7 @@ function events.render(delta, context) -----------------------------------------
 
 
     -- Hitting ground detection -------------------------------------------------
-    if (world.getBlockState(player:getPos():add(0,-0.1,0)):isSolidBlock() and (currVel[2] == 0 and acceleration[2] ~= currVel[2])) then
+    if (isOnGround(player) and (currVel[2] == 0 and acceleration[2] ~= currVel[2])) then
         if (acceleration[2] < -0.24) then
             AnimHitGround:play()
         end
