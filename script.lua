@@ -1,3 +1,5 @@
+local squapi = require("SquAPI")
+
 -- Hide vanilla model
 vanilla_model.PLAYER:setVisible(false)
 
@@ -22,9 +24,11 @@ end
 
 -- global vars ==========================================================================================
 
--- Animation states
+-- Animation states/ticks
 local state
 local oldState
+local randAnim
+local randTick = math.floor(math.random(400, 600)) --must be divisible by 80
 local fallTick = 0
 local idleTick = 0
 local jump = 1
@@ -165,6 +169,18 @@ function WhichJump(j, j1Anim, j2Anim)
     end
     j2Anim:play()
     return 1
+end
+
+-- Play walk animation with a smooth transition
+function WalkSmooth(walk)
+    local smoothW = squapi.bounceObject:new()
+    walk:play()
+    function events.render(delta, context)
+		local vel = squapi.getForwardVel()
+		if vel > 0.3 then vel = 0.3 end
+		walk:setBlend(smoothW:doBounce(vel*4.633, .001, .2))
+		walk:setSpeed(smoothW.pos)
+    end
 end
 
 -- left-clicking detection ==============================================================================
@@ -325,7 +341,8 @@ vKey.press = pings.onVPressDo
 
 -- SquAPI Animation Handling ============================================================================
 
-local squapi = require("SquAPI")
+-- squapi.walk(AnimWalk)
+-- WalkSmooth(AnimWalk)
 squapi.smoothHead(modelHead, 0.4, 1, false)
 squapi.smoothTorso(modelMainBody, 0.5)
 squapi.crouch(AnimCrouch, AnimUnCrouch)
@@ -464,17 +481,19 @@ function events.tick() --=======================================================
     end
 
     -- Idling
-    local rand
     if (state == "idle") then
         idleTick = idleTick + 1
-        if (idleTick == 100) then
-            rand = math.floor(math.random() + 0.5)
-            if (rand == 0) then
+        if (idleTick == randTick) then
+            randAnim = math.random(0, 1)
+            print(randAnim)
+            if (randAnim == 0) then
                 print("play1")
             else
                 print("play2")
             end
             idleTick = 0
+            randTick = math.floor(math.random(400, 600))
+            print(randTick)
         end
     else
         idleTick = 0
@@ -539,8 +558,8 @@ function events.render(delta, context) --=======================================
 	armTarget = -yvel * 80
     if (armTarget > 40) then
         armTarget = 40
-    elseif (armTarget < -5) then
-        armTarget = -5
+    elseif (armTarget < -3) then
+        armTarget = -3
     end
 	rArm:doBounce(armTarget, 0.01, .2)
     lArm:doBounce(armTarget, 0.01, .2)
