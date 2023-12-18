@@ -3,24 +3,21 @@ local squapi = require("SquAPI")
 -- Hide vanilla model
 vanilla_model.PLAYER:setVisible(false)
 
--- Set players skin to their own skin
-models.model.root:setPrimaryTexture("SKIN")
-
 -- Get model type
-local pModel
 function events.entity_init() --=====================================================================================================================
     if (player:getModelType() == "DEFAULT") then
         print("default type")
-        -- models.model.rootDefault:setVisible(true)
-        -- models.model.rootSlim:setVisible(false)
-        -- pModel = models.model.rootDefault
+        models.model.Player:setVisible(true)
+        --models.model.rootSlim:setVisible(false)
     else
         print("slim type")
         -- models.model.rootDefault:setVisible(false)
         -- models.model.rootSlim:setVisible(true)
-        -- pModel = models.model.rootSlim
     end
 end
+
+-- Set players skin to their own skin
+--models.model.Player:setPrimaryTexture("SKIN")
 
 -- global vars ==========================================================================================
 
@@ -34,29 +31,37 @@ local idleTick = 0
 local jump = 1
 
 -- BlockBench model parts
-local modelHead = models.model.root.mainBody.head
-local modelMainBody = models.model.root.mainBody
-local modelRightArm = models.model.root.mainBody.rightArm
-local modelLeftArm = models.model.root.mainBody.leftArm
+local pModel
+if (models.model.Player:getVisible()) then
+    pModel = models.model.Player
+else
+    --pModel = models.model.PlayerSlim
+end
+
+
+local modelHead = pModel.Upper.Head
+local modelMainBody = pModel.Upper
+local modelRightArm = pModel.Upper.Body.Arms.Arm_R
+local modelLeftArm = pModel.Upper.Body.Arms.Arm_L
 
 -- Basic Action Animations
-AnimIdle = animations.model["animation.model.idle"]
--- AnimIdling1 = animations.model[""]
--- AnimIdling2 = animations.model[""]
-AnimWalk = animations.model["animation.model.walk"]
-AnimSprint = animations.model["animation.model.sprint"]
-AnimCrouch = animations.model["animation.model.crouch"]
-AnimUnCrouch = animations.model["animation.model.unCrouch"]
-AnimHitGround = animations.model["animation.model.hitGround"]
-AnimJumpMove1 = animations.model["jumpMoving1"]
-AnimJumpMoveStop1 = animations.model["jumpMovingStoping1"]
-AnimJumpMove2 = animations.model["jumpMoving2"]
-AnimJumpMoveStop2 = animations.model["jumpMovingStoping2"]
+AnimIdle = animations.model["Idle_0"]
+AnimIdling1 = animations.model["Idle_1"]
+AnimIdling2 = animations.model["Idle_2"]
+-- AnimWalk = animations.model["animation.model.walk"]
+-- AnimSprint = animations.model["animation.model.sprint"]
+-- AnimCrouch = animations.model["animation.model.crouch"]
+-- AnimUnCrouch = animations.model["animation.model.unCrouch"]
+-- AnimHitGround = animations.model["animation.model.hitGround"]
+-- AnimJumpMove1 = animations.model["jumpMoving1"]
+-- AnimJumpMoveStop1 = animations.model["jumpMovingStoping1"]
+-- AnimJumpMove2 = animations.model["jumpMoving2"]
+-- AnimJumpMoveStop2 = animations.model["jumpMovingStoping2"]
 
 -- Attacks
-AnimSwing1 = animations.model["animation.model.swing1"]
-AnimSwing2 = animations.model["animation.model.swing2"]
-AnimSwingCombo = animations.model["animation.model.swingCombo"]
+-- AnimSwing1 = animations.model["animation.model.swing1"]
+-- AnimSwing2 = animations.model["animation.model.swing2"]
+-- AnimSwingCombo = animations.model["animation.model.swingCombo"]
 
 -- Wynncraft Spells
 -- R1, L2, R3 = s1
@@ -64,14 +69,14 @@ AnimSwingCombo = animations.model["animation.model.swingCombo"]
 -- R1, R2, L3 = s3
 -- R1, R2, R3 = Move
 
-AnimMovement = animations.model["animation.model.movement"]
-AnimThirdSpell = animations.model["animation.model.ThirdSpell"]
-AnimSecondSpell = animations.model["animation.model.SecondSpell"]
-AnimFirstSpell = animations.model["animation.model.FirstSpell"]
+-- AnimMovement = animations.model["animation.model.movement"]
+-- AnimThirdSpell = animations.model["animation.model.ThirdSpell"]
+-- AnimSecondSpell = animations.model["animation.model.SecondSpell"]
+-- AnimFirstSpell = animations.model["animation.model.FirstSpell"]
 
-AnimR1 = animations.model["animation.model.R1"]
-AnimR2 = animations.model["animation.model.R2"]
-AnimL2 = animations.model["animation.model.L2"]
+-- AnimR1 = animations.model["animation.model.R1"]
+-- AnimR2 = animations.model["animation.model.R2"]
+-- AnimL2 = animations.model["animation.model.L2"]
 
 -- Helper Functions =====================================================================================
 
@@ -355,7 +360,7 @@ vKey.press = pings.onVPressDo
 -- WalkSmooth(AnimWalk)
 squapi.smoothHead(modelHead, 0.4, 1, false)
 squapi.smoothTorso(modelMainBody, 0.5)
-squapi.crouch(AnimCrouch, AnimUnCrouch)
+-- squapi.crouch(AnimCrouch, AnimUnCrouch)
 
 -- tick event, called 20 times per second
 function events.tick() --============================================================================================================================
@@ -373,13 +378,13 @@ function events.tick() --=======================================================
                                             or player:getVehicle():getType() == "minecraft:boat")
 
     -- Attack animation priorities ----------------------------------------------
-    AnimSwing1:setPriority(1)
-    AnimSwing2:setPriority(2)
-    AnimSwingCombo:setPriority(3)
-    AnimMovement:setPriority(4)
-    AnimFirstSpell:setPriority(4)
-    AnimSecondSpell:setPriority(4)
-    AnimThirdSpell:setPriority(4)
+    -- AnimSwing1:setPriority(1)
+    -- AnimSwing2:setPriority(2)
+    -- AnimSwingCombo:setPriority(3)
+    -- AnimMovement:setPriority(4)
+    -- AnimFirstSpell:setPriority(4)
+    -- AnimSecondSpell:setPriority(4)
+    -- AnimThirdSpell:setPriority(4)
 
     -- Basic action animation prioirites ----------------------------------------
     -- AnimIdling1:setPriority(1)
@@ -454,30 +459,30 @@ function events.tick() --=======================================================
     end
 
     -- Jumping conditions
-    if (state ~= oldState) then
-        if (oldState == "sprinting" and state == "inAir") then
-            -- Jump sprinting
-            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-        -- elseif (oldState == "walking" and state == "inAir") then
-        --     -- Jump walking
-        --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-        -- elseif (oldState == "crouching" and state == "inAir") then
-        --     -- Jump crouching
-        --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-        -- elseif (oldState == "crouch walking" and state == "inAir") then
-        --     -- Jump crouch walking
-        --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-        -- elseif (oldState == "idle" and state == "inAir") then
-        --     -- Jump idle
-        --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-        elseif (AnimJumpMove1:isPlaying()) then
-            AnimJumpMove1:stop()
-            AnimJumpMoveStop1:play()
-        elseif (AnimJumpMove2:isPlaying()) then
-            AnimJumpMove2:stop()
-            AnimJumpMoveStop2:play()
-        end
-    end
+    -- if (state ~= oldState) then
+    --     if (oldState == "sprinting" and state == "inAir") then
+    --         -- Jump sprinting
+    --         jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+    --     -- elseif (oldState == "walking" and state == "inAir") then
+    --     --     -- Jump walking
+    --     --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+    --     -- elseif (oldState == "crouching" and state == "inAir") then
+    --     --     -- Jump crouching
+    --     --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+    --     -- elseif (oldState == "crouch walking" and state == "inAir") then
+    --     --     -- Jump crouch walking
+    --     --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+    --     -- elseif (oldState == "idle" and state == "inAir") then
+    --     --     -- Jump idle
+    --     --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+    --     elseif (AnimJumpMove1:isPlaying()) then
+    --         AnimJumpMove1:stop()
+    --         AnimJumpMoveStop1:play()
+    --     elseif (AnimJumpMove2:isPlaying()) then
+    --         AnimJumpMove2:stop()
+    --         AnimJumpMoveStop2:play()
+    --     end
+    -- end
 
     -- Falling conditions
     if (state == "inAir" or state == "falling") then
@@ -497,9 +502,9 @@ function events.tick() --=======================================================
             randAnim = math.random(0, 1)
             print(randAnim)
             if (randAnim == 0) then
-                print("play1")
+                AnimIdling1:play()
             else
-                print("play2")
+                AnimIdling2:play()
             end
             idleTick = 0
             randTick = GetRandIdleTick()
@@ -563,35 +568,35 @@ function events.render(delta, context) --=======================================
     currVel = player:getVelocity()
 
     -- Arm physics --------------------------------------------------------------
-    modelRightArm:setRot(0, 0, rArm.pos*2)
-    modelLeftArm:setRot(0, 0, -lArm.pos*2)
-	armTarget = -yvel * 80
-    if (armTarget > 40) then
-        armTarget = 40
-    elseif (armTarget < -3) then
-        armTarget = -3
-    end
-	rArm:doBounce(armTarget, 0.01, .2)
-    lArm:doBounce(armTarget, 0.01, .2)
+    -- modelRightArm:setRot(0, 0, rArm.pos*2)
+    -- modelLeftArm:setRot(0, 0, -lArm.pos*2)
+	-- armTarget = -yvel * 80
+    -- if (armTarget > 40) then
+    --     armTarget = 40
+    -- elseif (armTarget < -3) then
+    --     armTarget = -3
+    -- end
+	-- rArm:doBounce(armTarget, 0.01, .2)
+    -- lArm:doBounce(armTarget, 0.01, .2)
 
     -- Idle Arms affected by gravity --------------------------------------------
-    if (not walking and not crouching and (headRot[1] > -20) and isOnGround(player)) then
-        modelRightArm:setOffsetRot(-headRot[1],0,0)
-        modelLeftArm:setOffsetRot(-headRot[1],0,0)
-    else
-        modelRightArm:setOffsetRot(0,0,0)
-        modelLeftArm:setOffsetRot(0,0,0)
-    end -- Known Bug: reverting back to normal arms not smooth 
+    -- if (not walking and not crouching and (headRot[1] > -20) and isOnGround(player)) then
+    --     modelRightArm:setOffsetRot(-headRot[1],0,0)
+    --     modelLeftArm:setOffsetRot(-headRot[1],0,0)
+    -- else
+    --     modelRightArm:setOffsetRot(0,0,0)
+    --     modelLeftArm:setOffsetRot(0,0,0)
+    -- end -- Known Bug: reverting back to normal arms not smooth 
 
     -- Head physics -------------------------------------------------------------
-    modelHead:setRot(head.pos*1.5, 0, 0)
-	headTarget = -yvel * 20
-    if (headTarget > 20) then
-        headTarget = 20
-    elseif (headTarget < -10) then
-        headTarget = -10
-    end
-	head:doBounce(headTarget, 0.01, .2)
+    -- modelHead:setRot(head.pos*1.5, 0, 0)
+	-- headTarget = -yvel * 20
+    -- if (headTarget > 20) then
+    --     headTarget = 20
+    -- elseif (headTarget < -10) then
+    --     headTarget = -10
+    -- end
+	-- head:doBounce(headTarget, 0.01, .2)
 
 
     -- Hitting ground detection -------------------------------------------------
