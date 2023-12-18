@@ -28,7 +28,7 @@ end
 local state
 local oldState
 local randAnim
-local randTick = math.floor(math.random(400, 600)) --must be divisible by 80
+local randTick = 400
 local fallTick = 0
 local idleTick = 0
 local jump = 1
@@ -169,6 +169,15 @@ function WhichJump(j, j1Anim, j2Anim)
     end
     j2Anim:play()
     return 1
+end
+
+-- Get random number between 400 and 600 that is also divisible by 80
+function GetRandIdleTick()
+    local num = math.random(400, 600)
+    while (num % 80 ~= 0) do
+        num = math.random(400, 600)
+    end
+    return(num)
 end
 
 -- Play walk animation with a smooth transition
@@ -492,7 +501,7 @@ function events.tick() --=======================================================
                 print("play2")
             end
             idleTick = 0
-            randTick = math.floor(math.random(400, 600))
+            randTick = GetRandIdleTick()
             print(randTick)
         end
     else
