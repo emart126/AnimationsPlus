@@ -38,20 +38,20 @@ else
     --pModel = models.model.PlayerSlim
 end
 
-
-local modelHead = pModel.Upper.Head
+local modelHead = pModel.Upper.head
 local modelMainBody = pModel.Upper
-local modelRightArm = pModel.Upper.Body.Arms.Arm_R
-local modelLeftArm = pModel.Upper.Body.Arms.Arm_L
+local modelRightArm = pModel.Upper.body.Arms.Arm_R
+local modelLeftArm = pModel.Upper.body.Arms.Arm_L
 
 -- Basic Action Animations
 AnimIdle = animations.model["Idle_0"]
 AnimIdling1 = animations.model["Idle_1"]
 AnimIdling2 = animations.model["Idle_2"]
--- AnimWalk = animations.model["animation.model.walk"]
+AnimWalk = animations.model["Walk"]
 -- AnimSprint = animations.model["animation.model.sprint"]
--- AnimCrouch = animations.model["animation.model.crouch"]
--- AnimUnCrouch = animations.model["animation.model.unCrouch"]
+AnimCrouch = animations.model["Crouch_A"]
+AnimUnCrouch = animations.model["Crouch_B"]
+AnimCrouchWalk = animations.model["Sneaking"]
 -- AnimHitGround = animations.model["animation.model.hitGround"]
 -- AnimJumpMove1 = animations.model["jumpMoving1"]
 -- AnimJumpMoveStop1 = animations.model["jumpMovingStoping1"]
@@ -191,10 +191,10 @@ function WalkSmooth(walk)
     local smoothW = squapi.bounceObject:new()
     walk:play()
     function events.render(delta, context)
-		local vel = squapi.getForwardVel()
-		if vel > 0.3 then vel = 0.3 end
-		walk:setBlend(smoothW:doBounce(vel*4.633, .001, .2))
-		walk:setSpeed(smoothW.pos)
+        local vel = squapi.getForwardVel()
+        if vel > 0.3 then vel = 0.3 end
+        walk:setBlend(smoothW:doBounce(vel*4.633, .001, .2))
+        walk:setSpeed(smoothW.pos)
     end
 end
 
@@ -387,8 +387,8 @@ function events.tick() --=======================================================
     -- AnimThirdSpell:setPriority(4)
 
     -- Basic action animation prioirites ----------------------------------------
-    -- AnimIdling1:setPriority(1)
-    -- AnimIdling2:setPriority(1)
+    AnimIdling1:setPriority(1)
+    AnimIdling2:setPriority(1)
 
     -- AnimWalk:setPriority(1)
     -- AnimSprinting:setPriority(1)
@@ -404,9 +404,9 @@ function events.tick() --=======================================================
 
     -- Handle crouch model position
     if (crouching) then
-        models.model:setPos(0,2,0)
+        pModel:setPos(0,2,0)
     else
-        models.model:setPos(0,0,0)
+        pModel:setPos(0,0,0)
     end
 
     -- Interacting with water
@@ -456,6 +456,25 @@ function events.tick() --=======================================================
                 state = "inAir"
             end
         end
+    end
+
+    if (state == "walking") then
+        AnimWalk:play()
+    else
+        AnimWalk:stop()
+    end
+
+    if (state == "crouching") then
+        AnimCrouch:play()
+    elseif (oldState == "crouching") then
+        AnimCrouch:stop()
+        AnimUnCrouch:play()
+    end
+
+    if (state == "crouch walking") then
+        AnimCrouchWalk:play()
+    else
+        AnimCrouchWalk:stop()
     end
 
     -- Jumping conditions
@@ -514,15 +533,10 @@ function events.tick() --=======================================================
         idleTick = 0
     end
 
-    -- print("---")
-    -- print(state)
+    print("---")
+    print(state)
 
     oldState = state
-
-    -- AnimIdle:setPlaying(not walking and not crouching)
-    -- AnimWalk:setPlaying(walking and not crouching and not sprinting)
-    -- animations.example.sprint:setPlaying(sprinting and not crouching)
-    -- animations.example.crouch:setPlaying(crouching)
 end
 
 -- Physics variables ====================================================================================
@@ -568,35 +582,35 @@ function events.render(delta, context) --=======================================
     currVel = player:getVelocity()
 
     -- Arm physics --------------------------------------------------------------
-    -- modelRightArm:setRot(0, 0, rArm.pos*2)
-    -- modelLeftArm:setRot(0, 0, -lArm.pos*2)
-	-- armTarget = -yvel * 80
-    -- if (armTarget > 40) then
-    --     armTarget = 40
-    -- elseif (armTarget < -3) then
-    --     armTarget = -3
-    -- end
-	-- rArm:doBounce(armTarget, 0.01, .2)
-    -- lArm:doBounce(armTarget, 0.01, .2)
+    modelRightArm:setRot(0, 0, rArm.pos*2)
+    modelLeftArm:setRot(0, 0, -lArm.pos*2)
+	armTarget = -yvel * 80
+    if (armTarget > 40) then
+        armTarget = 40
+    elseif (armTarget < -3) then
+        armTarget = -3
+    end
+	rArm:doBounce(armTarget, 0.01, .2)
+    lArm:doBounce(armTarget, 0.01, .2)
 
     -- Idle Arms affected by gravity --------------------------------------------
-    -- if (not walking and not crouching and (headRot[1] > -20) and isOnGround(player)) then
-    --     modelRightArm:setOffsetRot(-headRot[1],0,0)
-    --     modelLeftArm:setOffsetRot(-headRot[1],0,0)
-    -- else
-    --     modelRightArm:setOffsetRot(0,0,0)
-    --     modelLeftArm:setOffsetRot(0,0,0)
-    -- end -- Known Bug: reverting back to normal arms not smooth 
+    if (not walking and not crouching and (headRot[1] > -20) and isOnGround(player)) then
+        modelRightArm:setOffsetRot(-headRot[1],0,0)
+        modelLeftArm:setOffsetRot(-headRot[1],0,0)
+    else
+        modelRightArm:setOffsetRot(0,0,0)
+        modelLeftArm:setOffsetRot(0,0,0)
+    end -- Known Bug: reverting back to normal arms not smooth 
 
     -- Head physics -------------------------------------------------------------
-    -- modelHead:setRot(head.pos*1.5, 0, 0)
-	-- headTarget = -yvel * 20
-    -- if (headTarget > 20) then
-    --     headTarget = 20
-    -- elseif (headTarget < -10) then
-    --     headTarget = -10
-    -- end
-	-- head:doBounce(headTarget, 0.01, .2)
+    modelHead:setRot(head.pos*1.5, 0, 0)
+	headTarget = -yvel * 20
+    if (headTarget > 20) then
+        headTarget = 20
+    elseif (headTarget < -10) then
+        headTarget = -10
+    end
+	head:doBounce(headTarget, 0.01, .2)
 
 
     -- Hitting ground detection -------------------------------------------------
@@ -605,7 +619,6 @@ function events.render(delta, context) --=======================================
             AnimHitGround:play()
         end
         acceleration[2] = 0
-        
     end
 
     -- Render given physics onto body parts -------------------------------------
