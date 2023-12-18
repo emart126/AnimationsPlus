@@ -44,6 +44,7 @@ AnimIdle = animations.model["animation.model.idle"]
 -- AnimIdling1 = animations.model[""]
 -- AnimIdling2 = animations.model[""]
 AnimWalk = animations.model["animation.model.walk"]
+AnimSprint = animations.model["animation.model.sprint"]
 AnimCrouch = animations.model["animation.model.crouch"]
 AnimUnCrouch = animations.model["animation.model.unCrouch"]
 AnimHitGround = animations.model["animation.model.hitGround"]
@@ -350,7 +351,7 @@ vKey.press = pings.onVPressDo
 
 -- SquAPI Animation Handling ============================================================================
 
--- squapi.walk(AnimWalk)
+-- squapi.walk(AnimWalk, AnimSprint)
 -- WalkSmooth(AnimWalk)
 squapi.smoothHead(modelHead, 0.4, 1, false)
 squapi.smoothTorso(modelMainBody, 0.5)
