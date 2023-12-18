@@ -1,10 +1,24 @@
--- hide vanilla model
+-- Hide vanilla model
 vanilla_model.PLAYER:setVisible(false)
 
--- set players skin to their own skin
+-- Set players skin to their own skin
 models.model.root:setPrimaryTexture("SKIN")
 
--- model slim or defaut getModelType <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+-- Get model type
+local pModel
+function events.entity_init() --=====================================================================================================================
+    if (player:getModelType() == "DEFAULT") then
+        print("default type")
+        -- models.model.rootDefault:setVisible(true)
+        -- models.model.rootSlim:setVisible(false)
+        -- pModel = models.model.rootDefault
+    else
+        print("slim type")
+        -- models.model.rootDefault:setVisible(false)
+        -- models.model.rootSlim:setVisible(true)
+        -- pModel = models.model.rootSlim
+    end
+end
 
 -- global vars ==========================================================================================
 
@@ -22,10 +36,9 @@ local modelRightArm = models.model.root.mainBody.rightArm
 local modelLeftArm = models.model.root.mainBody.leftArm
 
 -- Basic Action Animations
-AnimSwing1 = animations.model["animation.model.swing1"]
-AnimSwing2 = animations.model["animation.model.swing2"]
-AnimSwingCombo = animations.model["animation.model.swingCombo"]
 AnimIdle = animations.model["animation.model.idle"]
+-- AnimIdling1 = animations.model[""]
+-- AnimIdling2 = animations.model[""]
 AnimWalk = animations.model["animation.model.walk"]
 AnimCrouch = animations.model["animation.model.crouch"]
 AnimUnCrouch = animations.model["animation.model.unCrouch"]
@@ -34,6 +47,11 @@ AnimJumpMove1 = animations.model["jumpMoving1"]
 AnimJumpMoveStop1 = animations.model["jumpMovingStoping1"]
 AnimJumpMove2 = animations.model["jumpMoving2"]
 AnimJumpMoveStop2 = animations.model["jumpMovingStoping2"]
+
+-- Attacks
+AnimSwing1 = animations.model["animation.model.swing1"]
+AnimSwing2 = animations.model["animation.model.swing2"]
+AnimSwingCombo = animations.model["animation.model.swingCombo"]
 
 -- Wynncraft Spells
 -- R1, L2, R3 = s1
@@ -108,7 +126,7 @@ function PlaySpellWithDelay(spell)
     spell:setStartDelay(0)
 end
 
--- Better isGrounded function (@Discord User: 4P5)
+-- Better isGrounded function (curtosy of @Discord User: 4P5)
 local CLEARANCE = 0.1 -- How many blocks you can hover above the ground and still be considered touching it
 local function isOnGround(entity)
     local pos = entity:getPos()
@@ -312,8 +330,8 @@ squapi.smoothHead(modelHead, 0.4, 1, false)
 squapi.smoothTorso(modelMainBody, 0.5)
 squapi.crouch(AnimCrouch, AnimUnCrouch)
 
--- tick event, called 20 times per second ===============================================================
-function events.tick()
+-- tick event, called 20 times per second
+function events.tick() --============================================================================================================================
     local crouching = player:getPose() == "CROUCHING"
     local swimming = player:isVisuallySwimming()
     local floating = player:isInWater()
@@ -451,7 +469,6 @@ function events.tick()
         idleTick = idleTick + 1
         if (idleTick == 100) then
             rand = math.floor(math.random() + 0.5)
-            print(rand)
             if (rand == 0) then
                 print("play1")
             else
@@ -465,7 +482,6 @@ function events.tick()
 
     -- print("---")
     -- print(state)
-    -- print(idleTick)
 
     oldState = state
 
@@ -487,7 +503,9 @@ local currVel
 local oldVel
 local acceleration
 
-function events.entity_init() ---------------------------------------------------------------------------
+-- initial phys calculations
+function events.entity_init() --=====================================================================================================================
+    -- Get initial velocity
     currVel = player:getVelocity()
     oldVel = player:getVelocity()
     acceleration = player:getVelocity()
@@ -495,7 +513,7 @@ end
 
 -- "delta" is the percentage between the last and the next tick (as a decimal value, 0.0 to 1.0)
 -- "context" is a string that tells from where this render event was called (the paperdoll, gui, player render, first person)
-function events.render(delta, context) ------------------------------------------------------------------
+function events.render(delta, context) --============================================================================================================
     local crouching = player:getPose() == "CROUCHING"
     local walking = player:getVelocity().xz:length() > .001
 
