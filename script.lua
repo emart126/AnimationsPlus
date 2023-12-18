@@ -17,7 +17,7 @@ function events.entity_init() --================================================
 end
 
 -- Set players skin to their own skin
---models.model.Player:setPrimaryTexture("SKIN")
+-- models.model.Player:setPrimaryTexture("SKIN")
 
 -- global vars ==========================================================================================
 
@@ -198,6 +198,16 @@ function WalkSmooth(walk)
     end
 end
 
+-- Stop playing all 'basic action' animations except the given one
+function stopBasicAnims(exception)
+    local animationTable = {AnimIdle,AnimIdling1,AnimIdling2,AnimWalk,AnimCrouch,AnimUnCrouch,AnimCrouchWalk}
+    for i,anim in ipairs(animationTable) do
+        if (anim ~= exception) then
+            anim:stop()
+        end
+    end
+end
+
 -- left-clicking detection ==============================================================================
 local hitKey = keybinds:of("Punch",keybinds:getVanillaKey("key.attack"))
 
@@ -356,7 +366,7 @@ vKey.press = pings.onVPressDo
 
 -- SquAPI Animation Handling ============================================================================
 
--- squapi.walk(AnimWalk, AnimSprint)
+-- squapi.walk(AnimWalk)
 -- WalkSmooth(AnimWalk)
 squapi.smoothHead(modelHead, 0.4, 1, false)
 squapi.smoothTorso(modelMainBody, 0.5)
@@ -422,17 +432,37 @@ function events.tick() --=======================================================
         -- Outside of water
         if (isGrounded) then
             -- On the ground
-            if (crouching and not walking) then
-                state = "crouching"
-            elseif (crouching and walking) then
-                state = "crouch walking"
-            elseif (walking and not crouching and not sprinting and not climbing) then
-                state = "walking"
-            elseif (sprinting) then
-                state = "sprinting"
-            elseif (not walking and not crouching) then
-                state = "idle"
-                AnimIdle:play()
+            -- if (crouching and not walking) then
+            --     state = "crouching"
+            -- elseif (crouching and walking) then
+            --     state = "crouch walking"
+            -- elseif (walking and not crouching and not sprinting and not climbing) then
+            --     state = "walking"
+            -- elseif (sprinting) then
+            --     state = "sprinting"
+            -- elseif (not walking and not crouching) then
+            --     state = "idle"
+            -- end
+            if (crouching) then
+                if (walking) then
+                    state = "crouch walking"
+                    AnimCrouchWalk:play()
+                else
+                    state = "crouching"
+                    AnimCrouch:play()
+                end
+            elseif (not crouching) then
+                if (walking and not crouching and not sprinting and not climbing) then
+                    state = "walking"
+                    stopBasicAnims(AnimWalk)
+                    AnimWalk:play()
+                elseif (sprinting) then
+                    state = "sprinting"
+                else
+                    state = "idle"
+                    stopBasicAnims(AnimIdle)
+                    AnimIdle:play()
+                end
             end
         else
             -- Not on the ground
@@ -458,24 +488,17 @@ function events.tick() --=======================================================
         end
     end
 
-    if (state == "walking") then
-        AnimWalk:play()
-    else
-        AnimWalk:stop()
-    end
-
-    if (state == "crouching") then
-        AnimCrouch:play()
-    elseif (oldState == "crouching") then
-        AnimCrouch:stop()
-        AnimUnCrouch:play()
-    end
-
-    if (state == "crouch walking") then
-        AnimCrouchWalk:play()
-    else
-        AnimCrouchWalk:stop()
-    end
+    -- if (state == "crouching") then
+    --     AnimCrouch:play()
+    -- elseif (oldState == "crouching") then
+    --     AnimCrouch:stop()
+    --     AnimUnCrouch:play()
+    -- end
+    -- if (state == "crouch walking") then
+    --     AnimCrouchWalk:play()
+    -- else
+    --     AnimCrouchWalk:stop()
+    -- end
 
     -- Jumping conditions
     -- if (state ~= oldState) then
@@ -614,12 +637,12 @@ function events.render(delta, context) --=======================================
 
 
     -- Hitting ground detection -------------------------------------------------
-    if (isOnGround(player) and (currVel[2] == 0 and acceleration[2] ~= currVel[2])) then
-        if (acceleration[2] < -0.24) then
-            AnimHitGround:play()
-        end
-        acceleration[2] = 0
-    end
+    -- if (isOnGround(player) and (currVel[2] == 0 and acceleration[2] ~= currVel[2])) then
+    --     if (acceleration[2] < -0.24) then
+    --         AnimHitGround:play()
+    --     end
+    --     acceleration[2] = 0
+    -- end
 
     -- Render given physics onto body parts -------------------------------------
 	-- modelRightArm:setOffsetRot(rArm.vel*2,0,rArm:doBounce(0, stiff, bounce))
