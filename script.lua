@@ -400,14 +400,15 @@ function events.tick() --=======================================================
     -- AnimThirdSpell:setPriority(4)
 
     -- Basic action animation prioirites ----------------------------------------
+    AnimIdle:setPriority(1)
     AnimIdling1:setPriority(1)
     AnimIdling2:setPriority(1)
     AnimIdling3:setPriority(1)
 
     AnimCrouching:setPriority(1)
+    AnimCrouchWalk:setPriority(1)
     AnimCrouch:setPriority(2)
     AnimUnCrouch:setPriority(2)
-    AnimCrouchWalk:setPriority(3)
 
     AnimWalk:setPriority(2)
     -- AnimSprinting:setPriority(1)
@@ -449,9 +450,7 @@ function events.tick() --=======================================================
                 else
                     state = "crouching"
                     stopBasicAnims(AnimCrouching)
-                    if (not AnimCrouch:isPlaying()) then
-                        AnimCrouching:play()
-                    end
+                    AnimCrouching:play()
                 end
             elseif (not crouching) then
                 if (walking and not crouching and not sprinting and not climbing) then
@@ -463,7 +462,7 @@ function events.tick() --=======================================================
                     stopBasicAnims(AnimSprint)
                     AnimSprint:play()
                 else
-                    state = "idle"      -- <<<<<< known bug: idling anims still play after interuption
+                    state = "idle"
                     stopBasicAnims(AnimIdle)
                     AnimIdle:play()
                 end
@@ -493,15 +492,15 @@ function events.tick() --=======================================================
     end
 
     -- Crouching conditions
-    if (state == "crouching" and oldState ~= state) then
+    if ((state == "crouching" or state == "crouch walking") and oldState ~= state) then
         AnimCrouch:play()
-    elseif (oldState == "crouching" and oldState ~= state) then
+    elseif ((oldState == "crouching" or oldState == "crouch walking") and oldState ~= state) then
         AnimUnCrouch:play()
     end
 
     -- Jumping conditions
-    -- if (state ~= oldState) then
-    --     if (oldState == "sprinting" and state == "inAir") then
+    if (state ~= oldState) then
+        if (oldState == "sprinting" and state == "inAir") then
     --         -- Jump sprinting
     --         jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
     --     -- elseif (oldState == "walking" and state == "inAir") then
@@ -522,8 +521,8 @@ function events.tick() --=======================================================
     --     elseif (AnimJumpMove2:isPlaying()) then
     --         AnimJumpMove2:stop()
     --         AnimJumpMoveStop2:play()
-    --     end
-    -- end
+        end
+    end
 
     -- Falling conditions
     if (state == "inAir" or state == "falling") then
@@ -555,12 +554,13 @@ function events.tick() --=======================================================
         end
     else
         idleTick = 0
+        AnimIdling1:stop()
+        AnimIdling2:stop()
+        AnimIdling3:stop()
     end
 
     print("---")
-    if (oldState ~= state) then
-        print(oldState, state)
-    end
+    print(state)
 
     oldState = state
 end
