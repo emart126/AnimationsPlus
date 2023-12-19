@@ -404,9 +404,9 @@ function events.tick() --=======================================================
     AnimIdling2:setPriority(1)
     AnimIdling3:setPriority(1)
 
-    AnimCrouching:setPriority(2)
-    AnimCrouch:setPriority(1)
-    AnimUnCrouch:setPriority(1)
+    AnimCrouching:setPriority(1)
+    AnimCrouch:setPriority(2)
+    AnimUnCrouch:setPriority(2)
     AnimCrouchWalk:setPriority(3)
 
     AnimWalk:setPriority(2)
@@ -426,13 +426,6 @@ function events.tick() --=======================================================
         pModel:setPos(0,2,0)
     else
         pModel:setPos(0,0,0)
-    end
-
-    -- Crouching conditions
-    if (state == "crouching" and oldState ~= state) then
-        AnimCrouch:play()
-    elseif (oldState == "crouching" and oldState ~= "state") then
-        AnimUnCrouch:play()
     end
 
     -- Interacting with water
@@ -497,6 +490,13 @@ function events.tick() --=======================================================
                 state = "inAir"
             end
         end
+    end
+
+    -- Crouching conditions
+    if (state == "crouching" and oldState ~= state) then
+        AnimCrouch:play()
+    elseif (oldState == "crouching" and oldState ~= state) then
+        AnimUnCrouch:play()
     end
 
     -- Jumping conditions
