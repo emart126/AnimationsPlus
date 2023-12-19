@@ -54,7 +54,10 @@ AnimCrouching = animations.model["Crouch_0"]
 AnimCrouch = animations.model["Crouch_1"]
 AnimUnCrouch = animations.model["Crouch_2"]
 AnimCrouchWalk = animations.model["Sneaking"]
-AnimJump = animations.model["Jump"]
+
+AnimJumping = animations.model["Jump_0"]
+AnimJump = animations.model["Jump_1"]
+AnimJumpLand = animations.model["Jump_2"]
 -- AnimHitGround = animations.model["animation.model.hitGround"]
 -- AnimJumpMove1 = animations.model["jumpMoving1"]
 -- AnimJumpMoveStop1 = animations.model["jumpMovingStoping1"]
@@ -201,13 +204,21 @@ function WalkSmooth(walk)
     end
 end
 
--- Stop playing all 'basic action' animations except animation given
-function stopBasicAnims(exception)
+-- Stop playing all 'basic action' animations except animations given
+function stopBasicAnims(exception1, exception2)
+    exception2 = exception2 or nil
     local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJump}
     for i,tableElem in ipairs(animationTable) do
-        if (tableElem ~= exception) then
-            tableElem:stop()
+        if (exception2 ~= nil) then
+            if (tableElem ~= exception2 and tableElem ~= exception1) then
+                tableElem:stop()
+            end
+        else
+            if (tableElem ~= exception1) then
+                tableElem:stop()
+            end
         end
+        
     end
 end
 
@@ -411,6 +422,10 @@ function events.tick() --=======================================================
     AnimUnCrouch:setPriority(2)
 
     AnimWalk:setPriority(2)
+
+    AnimJumping:setPriority(1)
+    AnimJump:setPriority(2)
+    AnimJumpLand:setPriority(2)
     -- AnimSprinting:setPriority(1)
     -- AnimSprinting:setPriority(1)
     -- AnimFalling:setPriority(2)
@@ -449,7 +464,8 @@ function events.tick() --=======================================================
                     AnimCrouchWalk:play()
                 else
                     state = "crouching"
-                    stopBasicAnims(AnimCrouching)
+                    stopBasicAnims(AnimCrouching, AnimIdle)
+                    AnimIdle:play()
                     AnimCrouching:play()
                 end
             elseif (not crouching) then
@@ -492,10 +508,16 @@ function events.tick() --=======================================================
     end
 
     -- Crouching conditions
-    if ((state == "crouching" or state == "crouch walking") and oldState ~= state) then
-        AnimCrouch:play()
-    elseif ((oldState == "crouching" or oldState == "crouch walking") and oldState ~= state) then
-        AnimUnCrouch:play()
+    if (state ~= oldState) then
+        if (state == "crouching" and oldState == "idle") then
+            AnimCrouch:play()
+        elseif (oldState == "crouching" and state == "idle") then
+            AnimUnCrouch:play()
+        elseif (state == "crouch walking" and oldState == "walking") then
+            AnimCrouch:play()
+        elseif (oldState == "crouch walking" and state == "walking") then
+            AnimUnCrouch:play()
+        end
     end
 
     -- Jumping conditions
@@ -522,6 +544,15 @@ function events.tick() --=======================================================
     --         AnimJumpMove2:stop()
     --         AnimJumpMoveStop2:play()
         end
+        if (oldState == "idle" and state == "inAir") then
+            AnimJump:play()
+            AnimJumping:play()
+        elseif (AnimJumping:isPlaying()) then
+            AnimJumping:stop()
+            AnimJumpLand:play()
+        end
+
+
     end
 
     -- Falling conditions
@@ -559,8 +590,11 @@ function events.tick() --=======================================================
         AnimIdling3:stop()
     end
 
-    print("---")
-    print(state)
+    -- print("---")
+    -- print(state)
+    if (state ~= oldState) then
+        print(oldState, "->", state)
+    end
 
     oldState = state
 end
