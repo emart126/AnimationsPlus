@@ -47,11 +47,14 @@ local modelLeftArm = pModel.Upper.body.Arms.Arm_L
 AnimIdle = animations.model["Idle_0"]
 AnimIdling1 = animations.model["Idle_1"]
 AnimIdling2 = animations.model["Idle_2"]
+AnimIdling3 = animations.model["Idle_3"]
 AnimWalk = animations.model["Walk"]
--- AnimSprint = animations.model["animation.model.sprint"]
-AnimCrouch = animations.model["Crouch_A"]
-AnimUnCrouch = animations.model["Crouch_B"]
+AnimSprint = animations.model["Sprinting"]
+AnimCrouching = animations.model["Crouch_0"]
+AnimCrouch = animations.model["Crouch_1"]
+AnimUnCrouch = animations.model["Crouch_2"]
 AnimCrouchWalk = animations.model["Sneaking"]
+AnimJump = animations.model["Jump"]
 -- AnimHitGround = animations.model["animation.model.hitGround"]
 -- AnimJumpMove1 = animations.model["jumpMoving1"]
 -- AnimJumpMoveStop1 = animations.model["jumpMovingStoping1"]
@@ -198,12 +201,12 @@ function WalkSmooth(walk)
     end
 end
 
--- Stop playing all 'basic action' animations except the given one
+-- Stop playing all 'basic action' animations except animation given
 function stopBasicAnims(exception)
-    local animationTable = {AnimIdle,AnimIdling1,AnimIdling2,AnimWalk,AnimCrouch,AnimUnCrouch,AnimCrouchWalk}
-    for i,anim in ipairs(animationTable) do
-        if (anim ~= exception) then
-            anim:stop()
+    local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJump}
+    for i,tableElem in ipairs(animationTable) do
+        if (tableElem ~= exception) then
+            tableElem:stop()
         end
     end
 end
@@ -399,8 +402,14 @@ function events.tick() --=======================================================
     -- Basic action animation prioirites ----------------------------------------
     AnimIdling1:setPriority(1)
     AnimIdling2:setPriority(1)
+    AnimIdling3:setPriority(1)
 
-    -- AnimWalk:setPriority(1)
+    AnimCrouching:setPriority(2)
+    AnimCrouch:setPriority(1)
+    AnimUnCrouch:setPriority(1)
+    AnimCrouchWalk:setPriority(3)
+
+    AnimWalk:setPriority(2)
     -- AnimSprinting:setPriority(1)
     -- AnimSprinting:setPriority(1)
     -- AnimFalling:setPriority(2)
@@ -419,6 +428,13 @@ function events.tick() --=======================================================
         pModel:setPos(0,0,0)
     end
 
+    -- Crouching conditions
+    if (state == "crouching" and oldState ~= state) then
+        AnimCrouch:play()
+    elseif (oldState == "crouching" and oldState ~= "state") then
+        AnimUnCrouch:play()
+    end
+
     -- Interacting with water
     if (floating or swimming) then
         if (floating and not swimming and isGrounded) then
@@ -432,24 +448,17 @@ function events.tick() --=======================================================
         -- Outside of water
         if (isGrounded) then
             -- On the ground
-            -- if (crouching and not walking) then
-            --     state = "crouching"
-            -- elseif (crouching and walking) then
-            --     state = "crouch walking"
-            -- elseif (walking and not crouching and not sprinting and not climbing) then
-            --     state = "walking"
-            -- elseif (sprinting) then
-            --     state = "sprinting"
-            -- elseif (not walking and not crouching) then
-            --     state = "idle"
-            -- end
             if (crouching) then
                 if (walking) then
                     state = "crouch walking"
+                    stopBasicAnims(AnimCrouchWalk)
                     AnimCrouchWalk:play()
                 else
                     state = "crouching"
-                    AnimCrouch:play()
+                    stopBasicAnims(AnimCrouching)
+                    if (not AnimCrouch:isPlaying()) then
+                        AnimCrouching:play()
+                    end
                 end
             elseif (not crouching) then
                 if (walking and not crouching and not sprinting and not climbing) then
@@ -458,8 +467,10 @@ function events.tick() --=======================================================
                     AnimWalk:play()
                 elseif (sprinting) then
                     state = "sprinting"
+                    stopBasicAnims(AnimSprint)
+                    AnimSprint:play()
                 else
-                    state = "idle"
+                    state = "idle"      -- <<<<<< known bug: idling anims still play after interuption
                     stopBasicAnims(AnimIdle)
                     AnimIdle:play()
                 end
@@ -487,18 +498,6 @@ function events.tick() --=======================================================
             end
         end
     end
-
-    -- if (state == "crouching") then
-    --     AnimCrouch:play()
-    -- elseif (oldState == "crouching") then
-    --     AnimCrouch:stop()
-    --     AnimUnCrouch:play()
-    -- end
-    -- if (state == "crouch walking") then
-    --     AnimCrouchWalk:play()
-    -- else
-    --     AnimCrouchWalk:stop()
-    -- end
 
     -- Jumping conditions
     -- if (state ~= oldState) then
@@ -541,12 +540,14 @@ function events.tick() --=======================================================
     if (state == "idle") then
         idleTick = idleTick + 1
         if (idleTick == randTick) then
-            randAnim = math.random(0, 1)
+            randAnim = math.random(0, 2)
             print(randAnim)
             if (randAnim == 0) then
                 AnimIdling1:play()
-            else
+            elseif (randAnim == 1) then
                 AnimIdling2:play()
+            else
+                AnimIdling3:play()
             end
             idleTick = 0
             randTick = GetRandIdleTick()
@@ -557,7 +558,9 @@ function events.tick() --=======================================================
     end
 
     print("---")
-    print(state)
+    if (oldState ~= state) then
+        print(oldState, state)
+    end
 
     oldState = state
 end
