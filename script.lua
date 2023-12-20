@@ -49,7 +49,6 @@ AnimIdling1 = animations.model["Idle_1"]
 AnimIdling2 = animations.model["Idle_2"]
 AnimIdling3 = animations.model["Idle_3"]
 AnimWalk = animations.model["Walk"]
-AnimSprint = animations.model["Sprinting"]
 AnimCrouching = animations.model["Crouch_0"]
 AnimCrouch = animations.model["Crouch_1"]
 AnimUnCrouch = animations.model["Crouch_2"]
@@ -58,6 +57,12 @@ AnimCrouchWalk = animations.model["Sneaking"]
 AnimJumping = animations.model["Jump_0"]
 AnimJump = animations.model["Jump_1"]
 AnimJumpLand = animations.model["Jump_2"]
+
+AnimFalling = animations.model["Fall_0"]
+AnimFall = animations.model["Fall_1"]
+AnimFallLand = animations.model["Fall_2"]
+
+AnimSprint = animations.model["Sprinting_B"]
 -- AnimHitGround = animations.model["animation.model.hitGround"]
 -- AnimJumpMove1 = animations.model["jumpMoving1"]
 -- AnimJumpMoveStop1 = animations.model["jumpMovingStoping1"]
@@ -192,7 +197,7 @@ function GetRandIdleTick()
     return(num)
 end
 
--- Play walk animation with a smooth transition
+-- Play walk animation with a smooth transition // // // // // // // // // // // // // // // // // //
 function WalkSmooth(walk)
     local smoothW = squapi.bounceObject:new()
     walk:play()
@@ -206,19 +211,31 @@ end
 
 -- Stop playing all 'basic action' animations except animations given
 function stopBasicAnims(exception1, exception2)
+    exception1 = exception1 or nil
     exception2 = exception2 or nil
-    local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJump}
+    local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJumping}
     for i,tableElem in ipairs(animationTable) do
-        if (exception2 ~= nil) then
-            if (tableElem ~= exception2 and tableElem ~= exception1) then
+        if (exception2 == nil) then
+            if (exception1 == nil) then
+                -- If both exceptions are nil, stop this elem
+                tableElem:stop()
+            else
+                -- If only exception2 is nil, only stop this elem if its not exception1
+                if (tableElem ~= exception1) then
+                    tableElem:stop()
+                end
+            end
+        elseif (exception1 == nil) then
+            -- If only exception1 is nil, only stop this elem if its not exception2
+            if (tableElem ~= exception2) then
                 tableElem:stop()
             end
         else
-            if (tableElem ~= exception1) then
+            -- If both exceptions aren't nil, make sure elem isn't an exception
+            if (tableElem ~= exception1 and tableElem ~= exception2) then
                 tableElem:stop()
             end
         end
-        
     end
 end
 
@@ -426,6 +443,10 @@ function events.tick() --=======================================================
     AnimJumping:setPriority(1)
     AnimJump:setPriority(2)
     AnimJumpLand:setPriority(2)
+
+    AnimFalling:setPriority(1)
+    AnimFall:setPriority(2)
+    AnimFallLand:setPriority(2)
     -- AnimSprinting:setPriority(1)
     -- AnimSprinting:setPriority(1)
     -- AnimFalling:setPriority(2)
@@ -471,7 +492,7 @@ function events.tick() --=======================================================
             elseif (not crouching) then
                 if (walking and not crouching and not sprinting and not climbing) then
                     state = "walking"
-                    stopBasicAnims(AnimWalk)
+                    stopBasicAnims(AnimWalk, AnimJumping)
                     AnimWalk:play()
                 elseif (sprinting) then
                     state = "sprinting"
@@ -479,7 +500,7 @@ function events.tick() --=======================================================
                     AnimSprint:play()
                 else
                     state = "idle"
-                    stopBasicAnims(AnimIdle)
+                    stopBasicAnims(AnimIdle, AnimJumping)
                     AnimIdle:play()
                 end
             end
@@ -503,6 +524,7 @@ function events.tick() --=======================================================
                 end
             else
                 state = "inAir"
+                stopBasicAnims(AnimJumping)
             end
         end
     end
@@ -520,7 +542,7 @@ function events.tick() --=======================================================
         end
     end
 
-    -- Jumping conditions
+    -- Jumping/InAir conditions
     if (state ~= oldState) then
         if (oldState == "sprinting" and state == "inAir") then
     --         -- Jump sprinting
@@ -544,15 +566,24 @@ function events.tick() --=======================================================
     --         AnimJumpMove2:stop()
     --         AnimJumpMoveStop2:play()
         end
-        if (oldState == "idle" and state == "inAir") then
+        if ((oldState == "idle" or oldState == "walking") and state == "inAir" and player:getVelocity()[2] > 0) then
+            -- Going into Jumping
             AnimJump:play()
             AnimJumping:play()
         elseif (AnimJumping:isPlaying()) then
+            -- Stop Jumping
             AnimJumping:stop()
             AnimJumpLand:play()
+        elseif ((oldState == "idle" or oldState == "walking") and state == "inAir") then
+            -- Going into Falling
+            AnimFall:play()
+            AnimFalling:play()
+        elseif (AnimFalling:isPlaying()) then
+            -- Stop Falling
+            AnimFalling:stop()
+            AnimFallLand:play()
         end
-
-
+        
     end
 
     -- Falling conditions
