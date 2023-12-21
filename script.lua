@@ -209,6 +209,20 @@ function WalkSmooth(walk)
     end
 end
 
+-- smoothley play an animation
+function smoothPlay(anim, pVel)
+    local modelElem = squapi.bounceObject:new()
+    anim:setBlend(modelElem:doBounce(pVel*4.633, .001, .2))
+	anim:setSpeed(modelElem.pos)
+end
+
+-- Slow down animation and stop playing it
+function smoothStop(anim)
+    local modelElem = squapi.bounceObject:new()
+    anim:setBlend(modelElem:doBounce(0, .001, .2))
+	anim:setSpeed(modelElem.pos)
+end
+
 -- Stop playing all 'basic action' animations except animations given
 function stopBasicAnims(exception1, exception2)
     exception1 = exception1 or nil
@@ -397,11 +411,12 @@ vKey.press = pings.onVPressDo
 
 -- SquAPI Animation Handling ============================================================================
 
--- squapi.walk(AnimWalk)
+-- squapi.walk(AnimWalk, AnimSprint)
 -- WalkSmooth(AnimWalk)
 squapi.smoothHead(modelHead, 0.4, 1, false)
 squapi.smoothTorso(modelMainBody, 0.5)
 -- squapi.crouch(AnimCrouch, AnimUnCrouch)
+
 
 -- tick event, called 20 times per second
 function events.tick() --============================================================================================================================
@@ -418,6 +433,17 @@ function events.tick() --=======================================================
     local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
                                             or player:getVehicle():getType() == "minecraft:boat")
 
+    -- Testing animation transitions
+    -- local vel = squapi.getForwardVel()
+	-- if vel > 0.3 then vel = 0.3 end
+    -- if (walking and not crouching and not sprinting and not climbing) then
+    --     AnimWalk:play()
+    --     smoothPlay(AnimWalk, vel)
+    -- else
+    --     --smoothStop(AnimWalk)
+    --     AnimWalk:stop()
+    -- end
+    
     -- Attack animation priorities ----------------------------------------------
     -- AnimSwing1:setPriority(1)
     -- AnimSwing2:setPriority(2)
@@ -500,6 +526,7 @@ function events.tick() --=======================================================
                     AnimSprint:play()
                 else
                     state = "idle"
+                    -- smoothStop(AnimWalk)
                     stopBasicAnims(AnimIdle, AnimJumping)
                     AnimIdle:play()
                 end
