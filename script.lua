@@ -197,28 +197,14 @@ function GetRandIdleTick()
     return(num)
 end
 
--- Play walk animation with a smooth transition // // // // // // // // // // // // // // // // // //
-function WalkSmooth(walk)
-    local smoothW = squapi.bounceObject:new()
-    walk:play()
-    function events.render(delta, context)
-        local vel = squapi.getForwardVel()
-        if vel > 0.3 then vel = 0.3 end
-        walk:setBlend(smoothW:doBounce(vel*4.633, .001, .2))
-        walk:setSpeed(smoothW.pos)
-    end
-end
-
--- smoothley play an animation
-function smoothPlay(anim, pVel)
-    local modelElem = squapi.bounceObject:new()
+-- smoothly play an animation
+function smoothPlay(anim, modelElem, pVel)
     anim:setBlend(modelElem:doBounce(pVel*4.633, .001, .2))
 	anim:setSpeed(modelElem.pos)
 end
 
 -- Slow down animation and stop playing it
-function smoothStop(anim)
-    local modelElem = squapi.bounceObject:new()
+function smoothStop(anim, modelElem)
     anim:setBlend(modelElem:doBounce(0, .001, .2))
 	anim:setSpeed(modelElem.pos)
 end
@@ -227,7 +213,7 @@ end
 function stopBasicAnims(exception1, exception2)
     exception1 = exception1 or nil
     exception2 = exception2 or nil
-    local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJumping}
+    local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJumping, AnimFalling}
     for i,tableElem in ipairs(animationTable) do
         if (exception2 == nil) then
             if (exception1 == nil) then
@@ -412,7 +398,6 @@ vKey.press = pings.onVPressDo
 -- SquAPI Animation Handling ============================================================================
 
 -- squapi.walk(AnimWalk, AnimSprint)
--- WalkSmooth(AnimWalk)
 squapi.smoothHead(modelHead, 0.4, 1, false)
 squapi.smoothTorso(modelMainBody, 0.5)
 -- squapi.crouch(AnimCrouch, AnimUnCrouch)
@@ -437,224 +422,234 @@ function events.tick() --=======================================================
     -- local vel = squapi.getForwardVel()
 	-- if vel > 0.3 then vel = 0.3 end
     -- if (walking and not crouching and not sprinting and not climbing) then
-    --     AnimWalk:play()
-    --     smoothPlay(AnimWalk, vel)
+    --     if (not AnimWalk:isPlaying()) then
+    --         smoothWalkObj = squapi.bounceObject:new()
+    --         AnimWalk:play()
+    --     end
+    --     smoothPlay(AnimWalk, smoothWalkObj, vel)
     -- else
-    --     --smoothStop(AnimWalk)
-    --     AnimWalk:stop()
+    --     if (AnimWalk:isPlaying()) then
+    --         smoothStop(AnimWalk, smoothWalkObj)
+    --     end
+    --     if (AnimWalk:getSpeed() <= 0) then
+    --         AnimWalk:stop()
+    --     end
     -- end
+
+    -- print(AnimWalk:isPlaying(), AnimWalk:getSpeed())
     
     -- Attack animation priorities ----------------------------------------------
-    -- AnimSwing1:setPriority(1)
-    -- AnimSwing2:setPriority(2)
-    -- AnimSwingCombo:setPriority(3)
-    -- AnimMovement:setPriority(4)
-    -- AnimFirstSpell:setPriority(4)
-    -- AnimSecondSpell:setPriority(4)
-    -- AnimThirdSpell:setPriority(4)
+    -- -- AnimSwing1:setPriority(1)
+    -- -- AnimSwing2:setPriority(2)
+    -- -- AnimSwingCombo:setPriority(3)
+    -- -- AnimMovement:setPriority(4)
+    -- -- AnimFirstSpell:setPriority(4)
+    -- -- AnimSecondSpell:setPriority(4)
+    -- -- AnimThirdSpell:setPriority(4)
 
-    -- Basic action animation prioirites ----------------------------------------
-    AnimIdle:setPriority(1)
-    AnimIdling1:setPriority(1)
-    AnimIdling2:setPriority(1)
-    AnimIdling3:setPriority(1)
+    -- -- Basic action animation prioirites ----------------------------------------
+    -- AnimIdle:setPriority(1)
+    -- AnimIdling1:setPriority(1)
+    -- AnimIdling2:setPriority(1)
+    -- AnimIdling3:setPriority(1)
 
-    AnimCrouching:setPriority(1)
-    AnimCrouchWalk:setPriority(1)
-    AnimCrouch:setPriority(2)
-    AnimUnCrouch:setPriority(2)
+    -- AnimCrouching:setPriority(1)
+    -- AnimCrouchWalk:setPriority(1)
+    -- AnimCrouch:setPriority(2)
+    -- AnimUnCrouch:setPriority(2)
 
-    AnimWalk:setPriority(2)
+    -- AnimWalk:setPriority(2)
 
-    AnimJumping:setPriority(1)
-    AnimJump:setPriority(2)
-    AnimJumpLand:setPriority(2)
+    -- AnimJumping:setPriority(1)
+    -- AnimJump:setPriority(2)
+    -- AnimJumpLand:setPriority(2)
 
-    AnimFalling:setPriority(1)
-    AnimFall:setPriority(2)
-    AnimFallLand:setPriority(2)
-    -- AnimSprinting:setPriority(1)
-    -- AnimSprinting:setPriority(1)
-    -- AnimFalling:setPriority(2)
-    -- AnimJumping:setPriority(2)
-    -- AnimSwimming:setPriority(3)
-    -- AnimFloating:setPriority(3)
-    -- AnimClimbing:setPriority(4)
-    -- AnimRidingHorse:setPriority(4)
+    -- AnimFalling:setPriority(1)
+    -- AnimFall:setPriority(2)
+    -- AnimFallLand:setPriority(2)
+    -- -- AnimSprinting:setPriority(1)
+    -- -- AnimSprinting:setPriority(1)
+    -- -- AnimFalling:setPriority(2)
+    -- -- AnimJumping:setPriority(2)
+    -- -- AnimSwimming:setPriority(3)
+    -- -- AnimFloating:setPriority(3)
+    -- -- AnimClimbing:setPriority(4)
+    -- -- AnimRidingHorse:setPriority(4)
 
-    -- Play animation under certain conditions ----------------------------------
+    -- -- Play animation under certain conditions ----------------------------------
 
-    -- Handle crouch model position
-    if (crouching) then
-        pModel:setPos(0,2,0)
-    else
-        pModel:setPos(0,0,0)
-    end
+    -- -- Handle crouch model position
+    -- if (crouching) then
+    --     pModel:setPos(0,2,0)
+    -- else
+    --     pModel:setPos(0,0,0)
+    -- end
 
-    -- Interacting with water
-    if (floating or swimming) then
-        if (floating and not swimming and isGrounded) then
-            state = "floatIdle"
-        elseif (floating and not swimming and not isGrounded) then
-            state = "floatingAir"
-        elseif (swimming) then
-            state = "swimming"
-        end
-    else
-        -- Outside of water
-        if (isGrounded) then
-            -- On the ground
-            if (crouching) then
-                if (walking) then
-                    state = "crouch walking"
-                    stopBasicAnims(AnimCrouchWalk)
-                    AnimCrouchWalk:play()
-                else
-                    state = "crouching"
-                    stopBasicAnims(AnimCrouching, AnimIdle)
-                    AnimIdle:play()
-                    AnimCrouching:play()
-                end
-            elseif (not crouching) then
-                if (walking and not crouching and not sprinting and not climbing) then
-                    state = "walking"
-                    stopBasicAnims(AnimWalk, AnimJumping)
-                    AnimWalk:play()
-                elseif (sprinting) then
-                    state = "sprinting"
-                    stopBasicAnims(AnimSprint)
-                    AnimSprint:play()
-                else
-                    state = "idle"
-                    -- smoothStop(AnimWalk)
-                    stopBasicAnims(AnimIdle, AnimJumping)
-                    AnimIdle:play()
-                end
-            end
-        else
-            -- Not on the ground
-            if (climbing) then
-                -- Interacting with ladder
-                if (player:getVelocity()[2] ~= 0) then
-                    state = "climbing"
-                else
-                    state = "holdingLadder"
-                end
-            elseif (sitting ~= nil) then
-                -- Sitting/Riding
-                if (ridingMount and walking) then
-                    state = "ridingMount"
-                elseif (ridingSeat and walking) then
-                    state = "ridingCartOrBoat"
-                elseif (not walking and (ridingMount or ridingSeat)) then
-                    state = "sitting"
-                end
-            else
-                state = "inAir"
-                stopBasicAnims(AnimJumping)
-            end
-        end
-    end
+    -- -- Interacting with water
+    -- if (floating or swimming) then
+    --     if (floating and not swimming and isGrounded) then
+    --         state = "idle"
+    --         stopBasicAnims(AnimIdle, AnimJumping)
+    --         AnimIdle:play()
+    --     elseif (floating and not swimming and not isGrounded) then
+    --         state = "floatingAir"
+    --     elseif (swimming) then
+    --         state = "swimming"
+    --     end
+    -- else
+    --     -- Outside of water
+    --     if (isGrounded) then
+    --         -- On the ground
+    --         if (crouching) then
+    --             if (walking) then
+    --                 state = "crouch walking"
+    --                 stopBasicAnims(AnimCrouchWalk)
+    --                 AnimCrouchWalk:play()
+    --             else
+    --                 state = "crouching"
+    --                 stopBasicAnims(AnimCrouching, AnimIdle)
+    --                 AnimIdle:play()
+    --                 AnimCrouching:play()
+    --             end
+    --         elseif (not crouching) then
+    --             if (walking and not crouching and not sprinting and not climbing) then
+    --                 state = "walking"
+    --                 stopBasicAnims(AnimWalk, AnimJumping)
+    --                 AnimWalk:play()
+    --             elseif (sprinting) then
+    --                 state = "sprinting"
+    --                 stopBasicAnims(AnimSprint)
+    --                 AnimSprint:play()
+    --             else
+    --                 state = "idle"
+    --                 stopBasicAnims(AnimIdle, AnimJumping)
+    --                 AnimIdle:play()
+    --             end
+    --         end
+    --     else
+    --         -- Not on the ground
+    --         if (climbing) then
+    --             -- Interacting with ladder
+    --             if (player:getVelocity()[2] ~= 0) then
+    --                 state = "climbing"
+    --             else
+    --                 state = "holdingLadder"
+    --             end
+    --         elseif (sitting ~= nil) then
+    --             -- Sitting/Riding
+    --             if (ridingMount and walking) then
+    --                 state = "ridingMount"
+    --             elseif (ridingSeat and walking) then
+    --                 state = "ridingCartOrBoat"
+    --             elseif (not walking and (ridingMount or ridingSeat)) then
+    --                 state = "sitting"
+    --             end
+    --         else
+    --             state = "inAir"
+    --             stopBasicAnims(AnimJumping, AnimFalling)
+    --         end
+    --     end
+    -- end
 
-    -- Crouching conditions
-    if (state ~= oldState) then
-        if (state == "crouching" and oldState == "idle") then
-            AnimCrouch:play()
-        elseif (oldState == "crouching" and state == "idle") then
-            AnimUnCrouch:play()
-        elseif (state == "crouch walking" and oldState == "walking") then
-            AnimCrouch:play()
-        elseif (oldState == "crouch walking" and state == "walking") then
-            AnimUnCrouch:play()
-        end
-    end
+    -- -- Crouching conditions
+    -- if (state ~= oldState) then
+    --     if (state == "crouching" and oldState == "idle") then
+    --         AnimCrouch:play()
+    --     elseif (oldState == "crouching" and state == "idle") then
+    --         AnimUnCrouch:play()
+    --     elseif (state == "crouch walking" and oldState == "walking") then
+    --         AnimCrouch:play()
+    --     elseif (oldState == "crouch walking" and state == "walking") then
+    --         AnimUnCrouch:play()
+    --     end
+    -- end
 
-    -- Jumping/InAir conditions
-    if (state ~= oldState) then
-        if (oldState == "sprinting" and state == "inAir") then
-    --         -- Jump sprinting
-    --         jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-    --     -- elseif (oldState == "walking" and state == "inAir") then
-    --     --     -- Jump walking
-    --     --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-    --     -- elseif (oldState == "crouching" and state == "inAir") then
-    --     --     -- Jump crouching
-    --     --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-    --     -- elseif (oldState == "crouch walking" and state == "inAir") then
-    --     --     -- Jump crouch walking
-    --     --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-    --     -- elseif (oldState == "idle" and state == "inAir") then
-    --     --     -- Jump idle
-    --     --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-    --     elseif (AnimJumpMove1:isPlaying()) then
-    --         AnimJumpMove1:stop()
-    --         AnimJumpMoveStop1:play()
-    --     elseif (AnimJumpMove2:isPlaying()) then
-    --         AnimJumpMove2:stop()
-    --         AnimJumpMoveStop2:play()
-        end
-        if ((oldState == "idle" or oldState == "walking") and state == "inAir" and player:getVelocity()[2] > 0) then
-            -- Going into Jumping
-            AnimJump:play()
-            AnimJumping:play()
-        elseif (AnimJumping:isPlaying()) then
-            -- Stop Jumping
-            AnimJumping:stop()
-            AnimJumpLand:play()
-        elseif ((oldState == "idle" or oldState == "walking") and state == "inAir") then
-            -- Going into Falling
-            AnimFall:play()
-            AnimFalling:play()
-        elseif (AnimFalling:isPlaying()) then
-            -- Stop Falling
-            AnimFalling:stop()
-            AnimFallLand:play()
-        end
+    -- -- Jumping/InAir conditions
+    -- if (state ~= oldState) then
+    --     if (oldState == "sprinting" and state == "inAir") then
+    -- --         -- Jump sprinting
+    -- --         jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+    -- --     -- elseif (oldState == "walking" and state == "inAir") then
+    -- --     --     -- Jump walking
+    -- --     --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+    -- --     -- elseif (oldState == "crouching" and state == "inAir") then
+    -- --     --     -- Jump crouching
+    -- --     --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+    -- --     -- elseif (oldState == "crouch walking" and state == "inAir") then
+    -- --     --     -- Jump crouch walking
+    -- --     --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+    -- --     -- elseif (oldState == "idle" and state == "inAir") then
+    -- --     --     -- Jump idle
+    -- --     --     jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+    -- --     elseif (AnimJumpMove1:isPlaying()) then
+    -- --         AnimJumpMove1:stop()
+    -- --         AnimJumpMoveStop1:play()
+    -- --     elseif (AnimJumpMove2:isPlaying()) then
+    -- --         AnimJumpMove2:stop()
+    -- --         AnimJumpMoveStop2:play()
+    --     end
+    --     if ((oldState == "idle" or oldState == "walking") and state == "inAir" and player:getVelocity()[2] > 0) then
+    --         -- Going into Jumping
+    --         AnimJump:play()
+    --         AnimJumping:play()
+    --     elseif (AnimJumping:isPlaying()) then
+    --         -- Stop Jumping
+    --         AnimJumping:stop()
+    --         AnimJumpLand:play()
+    --     elseif ((oldState == "idle" or oldState == "walking") and state == "inAir") then
+    --         -- Going into Falling
+    --         AnimFall:play()
+    --         AnimFalling:play()
+    --     elseif (AnimFalling:isPlaying()) then
+    --         -- Stop Falling
+    --         AnimFalling:stop()
+    --         AnimFallLand:play()
+    --     end
         
-    end
+    -- end
 
-    -- Falling conditions
-    if (state == "inAir" or state == "falling") then
-        fallTick = fallTick + 1
-        if (fallTick > 16) then
-            state = "falling"
-            fallTick = 16
-        end
-    else
-        fallTick = 0
-    end
+    -- -- Falling conditions
+    -- if (state == "inAir" or state == "falling") then
+    --     fallTick = fallTick + 1
+    --     if (fallTick > 16) then
+    --         state = "falling"
+    --         fallTick = 16
+    --     end
+    -- else
+    --     fallTick = 0
+    -- end
 
-    -- Idling
-    if (state == "idle") then
-        idleTick = idleTick + 1
-        if (idleTick == randTick) then
-            randAnim = math.random(0, 2)
-            print(randAnim)
-            if (randAnim == 0) then
-                AnimIdling1:play()
-            elseif (randAnim == 1) then
-                AnimIdling2:play()
-            else
-                AnimIdling3:play()
-            end
-            idleTick = 0
-            randTick = GetRandIdleTick()
-            print(randTick)
-        end
-    else
-        idleTick = 0
-        AnimIdling1:stop()
-        AnimIdling2:stop()
-        AnimIdling3:stop()
-    end
+    -- -- Idling
+    -- if (state == "idle") then
+    --     idleTick = idleTick + 1
+    --     if (idleTick == randTick) then
+    --         randAnim = math.random(0, 2)
+    --         print(randAnim)
+    --         if (randAnim == 0) then
+    --             AnimIdling1:play()
+    --         elseif (randAnim == 1) then
+    --             AnimIdling2:play()
+    --         else
+    --             AnimIdling3:play()
+    --         end
+    --         idleTick = 0
+    --         randTick = GetRandIdleTick()
+    --         print(randTick)
+    --     end
+    -- else
+    --     idleTick = 0
+    --     AnimIdling1:stop()
+    --     AnimIdling2:stop()
+    --     AnimIdling3:stop()
+    -- end
 
-    -- print("---")
-    -- print(state)
-    if (state ~= oldState) then
-        print(oldState, "->", state)
-    end
+    -- -- print("---")
+    -- -- print(state)
+    -- if (state ~= oldState) then
+    --     print(oldState, "->", state)
+    -- end
 
-    oldState = state
+    -- oldState = state
 end
 
 -- Physics variables ====================================================================================
@@ -668,6 +663,41 @@ local head = squapi.bounceObject:new()
 local currVel
 local oldVel
 local acceleration
+
+function events.render() --============================================================================================================================
+    local crouching = player:getPose() == "CROUCHING"
+    local swimming = player:isVisuallySwimming()
+    local floating = player:isInWater()
+    local sprinting = player:isSprinting()
+    local walking = player:getVelocity().xz:length() > .001
+    local climbing = player:isClimbing()
+    local isGrounded = isOnGround(player)
+    local sitting = player:getVehicle()
+    local ridingMount = player:getVehicle() and (player:getVehicle():getType() == "minecraft:horse"
+                                            or player:getVehicle():getType() == "minecraft:pig")
+    local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
+                                            or player:getVehicle():getType() == "minecraft:boat")
+
+    -- Testing animation transitions
+    local vel = squapi.getForwardVel()
+	if vel > 0.3 then vel = 0.3 end
+    if (walking and not crouching and not sprinting and not climbing) then
+        if (not AnimWalk:isPlaying()) then
+            smoothWalkObj = squapi.bounceObject:new()
+            AnimWalk:play()
+        end
+        smoothPlay(AnimWalk, smoothWalkObj, vel)
+    else
+        if (AnimWalk:isPlaying()) then
+            smoothStop(AnimWalk, smoothWalkObj)
+        end
+        if (AnimWalk:getSpeed() <= 0) then
+            AnimWalk:stop()
+        end
+    end
+
+    print(AnimWalk:isPlaying(), AnimWalk:getSpeed())
+end
 
 -- initial phys calculations
 function events.entity_init() --=====================================================================================================================
