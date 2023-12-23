@@ -54,6 +54,8 @@ AnimCrouch = animations.model["Crouch_1"]
 AnimUnCrouch = animations.model["Crouch_2"]
 AnimCrouchWalk = animations.model["Sneaking"]
 
+AnimFloat = animations.model["Float"]
+
 AnimJumping = animations.model["Jump_0"]
 AnimJump = animations.model["Jump_1"]
 AnimJumpLand = animations.model["Jump_2"]
@@ -215,7 +217,7 @@ end
 function stopBasicAnims(exception1, exception2)
     exception1 = exception1 or nil
     exception2 = exception2 or nil
-    local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJumping, AnimShortFalling}
+    local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJumping, AnimShortFalling, AnimFloat}
     for i,tableElem in ipairs(animationTable) do
         if (exception2 == nil) then
             if (exception1 == nil) then
@@ -480,6 +482,8 @@ function events.tick() --=======================================================
             AnimIdle:play()
         elseif (floating and not swimming and not isGrounded) then
             state = "floatingAir"
+            stopBasicAnims(AnimFloat)
+            AnimFloat:play()
         elseif (swimming) then
             state = "swimming"
         end
