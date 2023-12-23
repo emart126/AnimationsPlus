@@ -48,7 +48,7 @@ AnimIdle = animations.model["Idle_0"]
 AnimIdling1 = animations.model["Idle_1"]
 AnimIdling2 = animations.model["Idle_2"]
 AnimIdling3 = animations.model["Idle_3"]
-AnimWalk = animations.model["Walk"]
+AnimWalk = animations.model["Walking"]
 AnimCrouching = animations.model["Crouch_0"]
 AnimCrouch = animations.model["Crouch_1"]
 AnimUnCrouch = animations.model["Crouch_2"]
@@ -58,11 +58,13 @@ AnimJumping = animations.model["Jump_0"]
 AnimJump = animations.model["Jump_1"]
 AnimJumpLand = animations.model["Jump_2"]
 
-AnimFalling = animations.model["Fall_0"]
+AnimShortFalling = animations.model["Fall_0"]
 AnimFall = animations.model["Fall_1"]
-AnimFallLand = animations.model["Fall_2"]
+AnimShortLand = animations.model["Fall_2"]
+AnimFalling = animations.model["Falling"]
+AnimFallLand = animations.model["Land"]
 
-AnimSprint = animations.model["Sprinting_B"]
+AnimSprint = animations.model["Sprinting"]
 -- AnimHitGround = animations.model["animation.model.hitGround"]
 -- AnimJumpMove1 = animations.model["jumpMoving1"]
 -- AnimJumpMoveStop1 = animations.model["jumpMovingStoping1"]
@@ -213,7 +215,7 @@ end
 function stopBasicAnims(exception1, exception2)
     exception1 = exception1 or nil
     exception2 = exception2 or nil
-    local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJumping, AnimFalling}
+    local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJumping, AnimShortFalling}
     for i,tableElem in ipairs(animationTable) do
         if (exception2 == nil) then
             if (exception1 == nil) then
@@ -447,8 +449,10 @@ function events.tick() --=======================================================
     AnimJump:setPriority(2)
     AnimJumpLand:setPriority(2)
 
-    AnimFalling:setPriority(1)
+    AnimShortFalling:setPriority(1)
     AnimFall:setPriority(2)
+    AnimShortLand:setPriority(2)
+    AnimFalling:setPriority(2)
     AnimFallLand:setPriority(2)
     -- AnimSprinting:setPriority(1)
     -- AnimSprinting:setPriority(1)
@@ -529,7 +533,7 @@ function events.tick() --=======================================================
                 end
             else
                 state = "inAir"
-                stopBasicAnims(AnimJumping, AnimFalling)
+                stopBasicAnims(AnimJumping, AnimShortFalling)
             end
         end
     end
@@ -545,6 +549,17 @@ function events.tick() --=======================================================
         elseif (oldState == "crouch walking" and state == "walking") then
             AnimUnCrouch:play()
         end
+    end
+
+    -- Falling conditions
+    if (state == "inAir" or state == "falling") then
+        fallTick = fallTick + 1
+        if (fallTick > 16) then
+            state = "falling"
+            fallTick = 16
+        end
+    else
+        fallTick = 0
     end
 
     -- Jumping/InAir conditions
@@ -571,35 +586,33 @@ function events.tick() --=======================================================
     --         AnimJumpMove2:stop()
     --         AnimJumpMoveStop2:play()
         end
-        if ((oldState == "idle" or oldState == "walking") and state == "inAir" and player:getVelocity()[2] > 0) then
+        if (oldState == "inAir" and state == "falling") then
+            -- Going into Long falling
+            AnimJumping:stop()
+            AnimShortFalling:stop()
+            AnimFalling:play()
+        elseif (AnimFalling:isPlaying()) then
+            -- Stop Falling
+            AnimFalling:stop()
+            AnimFallLand:play()
+        elseif ((oldState == "idle" or oldState == "walking") and state == "inAir" and player:getVelocity()[2] > 0) then
             -- Going into Jumping
             AnimJump:play()
             AnimJumping:play()
-        elseif (AnimJumping:isPlaying()) then
+        elseif (AnimJumping:isPlaying() and isOnGround(player)) then
             -- Stop Jumping
             AnimJumping:stop()
             AnimJumpLand:play()
         elseif ((oldState == "idle" or oldState == "walking") and state == "inAir") then
             -- Going into Falling
             AnimFall:play()
-            AnimFalling:play()
-        elseif (AnimFalling:isPlaying()) then
-            -- Stop Falling
-            AnimFalling:stop()
-            AnimFallLand:play()
+            AnimShortFalling:play()
+        elseif (AnimShortFalling:isPlaying()) then
+            -- Stop short Falling
+            AnimShortFalling:stop()
+            AnimShortLand:play()
         end
         
-    end
-
-    -- Falling conditions
-    if (state == "inAir" or state == "falling") then
-        fallTick = fallTick + 1
-        if (fallTick > 16) then
-            state = "falling"
-            fallTick = 16
-        end
-    else
-        fallTick = 0
     end
 
     -- Climbing conditions
@@ -630,9 +643,9 @@ function events.tick() --=======================================================
 
     -- print("---")
     -- print(state)
-    -- if (state ~= oldState) then
-    --     print(oldState, "->", state)
-    -- end
+    if (state ~= oldState) then
+        print(oldState, "->", state)
+    end
 
     oldState = state
 end
@@ -716,8 +729,8 @@ function events.render(delta, context) --=======================================
     modelRightArm:setRot(0, 0, rArm.pos*2)
     modelLeftArm:setRot(0, 0, -lArm.pos*2)
 	armTarget = -yvel * 80
-    if (armTarget > 40) then
-        armTarget = 40
+    if (armTarget > 30) then
+        armTarget = 30
     elseif (armTarget < -3) then
         armTarget = -3
     end
