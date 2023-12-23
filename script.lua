@@ -56,6 +56,16 @@ AnimCrouchWalk = animations.model["Sneaking"]
 
 AnimFloat = animations.model["Float"]
 
+AnimClimbN = animations.model["Climbing_N"]
+AnimClimbHoldN = animations.model["Climb_Hold_N"]
+AnimClimbS = animations.model["Climbing_S"]
+AnimClimbHoldS = animations.model["Climb_Hold_S"]
+AnimClimbE = animations.model["Climbing_E"]
+AnimClimbHoldE = animations.model["Climb_Hold_E"]
+AnimClimbW = animations.model["Climbing_W"]
+AnimClimbHoldW = animations.model["Climb_Hold_W"]
+
+
 AnimJumping = animations.model["Jump_0"]
 AnimJump = animations.model["Jump_1"]
 AnimJumpLand = animations.model["Jump_2"]
@@ -107,6 +117,18 @@ function StopAllSpell()
     AnimSecondSpell:stop()
     AnimThirdSpell:stop()
     AnimMovement:stop()
+end
+
+-- Stop playing all animations pertaining to climbing
+function StopAllClimb()
+    AnimClimbN:stop()
+    AnimClimbHoldN:stop()
+    AnimClimbS:stop()
+    AnimClimbHoldS:stop()
+    AnimClimbE:stop()
+    AnimClimbHoldE:stop()
+    AnimClimbW:stop()
+    AnimClimbHoldW:stop()
 end
 
 -- Given what animations that need to play, check which one to play under certain conditions on a left click
@@ -217,7 +239,8 @@ end
 function stopBasicAnims(exception1, exception2)
     exception1 = exception1 or nil
     exception2 = exception2 or nil
-    local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJumping, AnimShortFalling, AnimFloat}
+    local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJumping, AnimShortFalling, AnimFloat,
+                            AnimClimbN, AnimClimbHoldN, AnimClimbS, AnimClimbHoldS, AnimClimbE, AnimClimbHoldE, AnimClimbW, AnimClimbHoldW}
     for i,tableElem in ipairs(animationTable) do
         if (exception2 == nil) then
             if (exception1 == nil) then
@@ -421,9 +444,6 @@ function events.tick() --=======================================================
                                             or player:getVehicle():getType() == "minecraft:pig")
     local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
                                             or player:getVehicle():getType() == "minecraft:boat")
-    
-    -- print(world.getBlockState(player:getPos()))
-    -- print(world.getBlockState(player:getPos():add(0,1,0)))
 
     -- Attack animation priorities ----------------------------------------------
     -- AnimSwing1:setPriority(1)
@@ -620,6 +640,50 @@ function events.tick() --=======================================================
     end
 
     -- Climbing conditions
+    local facing = world.getBlockState(player:getPos()):getProperties()["facing"]
+    -- print(world.getBlockState(player:getPos()))
+    -- print(world.getBlockState(player:getPos():add(0,1,0)))
+    if (oldState ~= state) then
+        print(facing)
+        if (state == "climbing") then
+            StopAllClimb()
+            stopBasicAnims(AnimClimbN)
+            AnimClimbN:play()
+            -- if (facing == "south") then
+            --     stopBasicAnims(AnimClimbN)
+            --     AnimClimbN:play()
+            -- elseif (facing == "north") then
+            --     stopBasicAnims(AnimClimbS)
+            --     AnimClimbS:play()
+            -- elseif (facing == "west") then
+            --     stopBasicAnims(AnimClimbE)
+            --     AnimClimbE:play()
+            -- elseif (facing == "east") then
+            --     stopBasicAnims(AnimClimbW)
+            --     AnimClimbW:play()
+            -- end
+        elseif (state == "holdingLadder") then
+            StopAllClimb()
+            stopBasicAnims(AnimClimbHoldN)
+            AnimClimbHoldN:play()
+            -- if (facing == "south") then
+            --     stopBasicAnims(AnimClimbHoldN)
+            --     AnimClimbHoldN:play()
+            -- elseif (facing == "north") then
+            --     stopBasicAnims(AnimClimbHoldS)
+            --     AnimClimbHoldS:play()
+            -- elseif (facing == "west") then
+            --     stopBasicAnims(AnimClimbHoldE)
+            --     AnimClimbHoldE:play()
+            -- elseif (facing == "east") then
+            --     stopBasicAnims(AnimClimbHoldW)
+            --     AnimClimbHoldW:play()
+            -- end
+        else
+            StopAllClimb()
+        end
+    end
+
 
     -- Idling
     if (state == "idle") then
