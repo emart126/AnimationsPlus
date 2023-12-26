@@ -634,22 +634,6 @@ function events.tick() --=======================================================
     if (oldState ~= state) then
         print(facing)
         if (state == "climbing" or state == "holdingLadder") then
-            -- ratate player towards ladder
-            local rot
-            if (facing == "south") then
-                rot = player:getBodyYaw(delta)-180
-                pModel:setOffsetRot(0,rot,0)
-                print((vectors.vec3(0,-player:getBodyYaw(delta)+180,0))%360)
-            elseif (facing == "north") then
-                print(player:getLookDir()[1])
-            elseif (facing == "west") then
-                print(zLook)
-            elseif (facing == "east") then
-                print(player:getLookDir()[3])
-            elseif (facing == nil) then
-                pModel:setOffsetRot(0,0,0)
-            end
-
             -- play respective animation
             if (state == "climbing") then
                 stopBasicAnims(AnimClimbN)
@@ -662,6 +646,22 @@ function events.tick() --=======================================================
                 AnimClimbHoldN:stop()
             end
         end
+    end
+    if (state == "climbing" or state == "holdingLadder") then
+        -- rotate player towards ladder
+        local rot
+        if (facing == "south") then
+            rot = player:getBodyYaw(delta)-180
+        elseif (facing == "north") then
+            rot = player:getBodyYaw(delta)
+        elseif (facing == "west") then
+            rot = player:getBodyYaw(delta)+90
+        elseif (facing == "east") then
+            rot = player:getBodyYaw(delta)-90
+        end
+        pModel:setOffsetRot(0,rot,0)
+    else
+        pModel:setOffsetRot(0,0,0)
     end
 
     -- Idling
