@@ -405,8 +405,37 @@ vKey.press = pings.onVPressDo
 
 -- Action Wheel =========================================================================================
 
-local myPage = action_wheel:newPage("Taunts")
-print(action_wheel:getPage("Taunts"))
+function pings.actionDance()
+    AnimIdling3:play()
+end
+
+function pings.action2()
+    AnimIdling2:play()
+end
+
+function pings.action3()
+    AnimIdling1:play()
+end
+
+local mainPage = action_wheel:newPage("Taunts")
+action_wheel:setPage(mainPage)
+local action1 = mainPage:newAction()
+    :title("Dance")
+    :item("minecraft:stick")
+    :hoverColor(1, 1, 1)
+    :onLeftClick(pings.actionDance)
+
+local action2 = mainPage:newAction()
+    :title("idle1")
+    :item("minecraft:stick")
+    :hoverColor(1, 1, 1)
+    :onLeftClick(pings.action2)
+
+local action3 = mainPage:newAction()
+    :title("idle2")
+    :item("minecraft:stick")
+    :hoverColor(1, 1, 1)
+    :onLeftClick(pings.action3)
 
 -- SquAPI Animation Handling ============================================================================
 
