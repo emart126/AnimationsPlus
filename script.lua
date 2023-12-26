@@ -631,7 +631,7 @@ function events.tick() --=======================================================
             AnimShortFalling:stop()
             AnimFalling:play()
         elseif (AnimFalling:isPlaying()) then
-            -- Stop Falling
+            -- Stop long Falling
             AnimFalling:stop()
             AnimFallLand:play()
         elseif ((oldState == "idle" or oldState == "walking") and state == "inAir" and player:getVelocity()[2] > 0) then
@@ -643,7 +643,7 @@ function events.tick() --=======================================================
             AnimJumping:stop()
             AnimJumpLand:play()
         elseif ((oldState == "idle" or oldState == "walking") and state == "inAir") then
-            -- Going into Falling
+            -- Going into short Falling
             AnimFall:play()
             AnimShortFalling:play()
         elseif (AnimShortFalling:isPlaying()) then
@@ -656,8 +656,6 @@ function events.tick() --=======================================================
 
     -- Climbing conditions
     local facing = world.getBlockState(player:getPos()):getProperties()["facing"]
-    -- print(world.getBlockState(player:getPos()))
-    -- print(world.getBlockState(player:getPos():add(0,1,0)))
     if (oldState ~= state) then
         -- play respective animation
         if (state == "climbing") then
@@ -685,6 +683,11 @@ function events.tick() --=======================================================
         end
         pModel:setOffsetRot(0,rot,0)
         pModel.Upper:setRot(-player:getLookDir()[2]*45,0,0)
+
+        -- rotate more when at top of ladder
+        if (world.getBlockState(player:getPos()).id == "minecraft:ladder" and world.getBlockState(player:getPos():add(0,1,0)).id == "minecraft:air") then
+            pModel.Upper:setRot(-player:getLookDir()[2]*45-35,0,0)
+        end
     else
         pModel:setOffsetRot(0,0,0)
         pModel.Upper:setRot(0,0,0)
