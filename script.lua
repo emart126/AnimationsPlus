@@ -119,18 +119,6 @@ function StopAllSpell()
     AnimMovement:stop()
 end
 
--- Stop playing all animations pertaining to climbing
-function StopAllClimb()
-    AnimClimbN:stop()
-    AnimClimbHoldN:stop()
-    AnimClimbS:stop()
-    AnimClimbHoldS:stop()
-    AnimClimbE:stop()
-    AnimClimbHoldE:stop()
-    AnimClimbW:stop()
-    AnimClimbHoldW:stop()
-end
-
 -- Given what animations that need to play, check which one to play under certain conditions on a left click
 function CheckAnimToPlayLeftClick(r1, r2, l2, swing1, swing2, swingCombo, secondSpell, thirdSpell)
     if (l2:isPlaying() and not secondSpell:isPlaying()) then        -- R1, L2, s2
@@ -523,7 +511,7 @@ function events.tick() --=======================================================
                     AnimCrouching:play()
                 end
             elseif (not crouching) then
-                if (walking and not crouching and not sprinting and not climbing) then
+                if (walking and not crouching and not sprinting) then
                     state = "walking"
                     stopBasicAnims(AnimWalk, AnimJumping)
                     AnimWalk:play()
@@ -645,45 +633,36 @@ function events.tick() --=======================================================
     -- print(world.getBlockState(player:getPos():add(0,1,0)))
     if (oldState ~= state) then
         print(facing)
-        if (state == "climbing") then
-            StopAllClimb()
-            stopBasicAnims(AnimClimbN)
-            AnimClimbN:play()
-            -- if (facing == "south") then
-            --     stopBasicAnims(AnimClimbN)
-            --     AnimClimbN:play()
-            -- elseif (facing == "north") then
-            --     stopBasicAnims(AnimClimbS)
-            --     AnimClimbS:play()
-            -- elseif (facing == "west") then
-            --     stopBasicAnims(AnimClimbE)
-            --     AnimClimbE:play()
-            -- elseif (facing == "east") then
-            --     stopBasicAnims(AnimClimbW)
-            --     AnimClimbW:play()
-            -- end
-        elseif (state == "holdingLadder") then
-            StopAllClimb()
-            stopBasicAnims(AnimClimbHoldN)
-            AnimClimbHoldN:play()
-            -- if (facing == "south") then
-            --     stopBasicAnims(AnimClimbHoldN)
-            --     AnimClimbHoldN:play()
-            -- elseif (facing == "north") then
-            --     stopBasicAnims(AnimClimbHoldS)
-            --     AnimClimbHoldS:play()
-            -- elseif (facing == "west") then
-            --     stopBasicAnims(AnimClimbHoldE)
-            --     AnimClimbHoldE:play()
-            -- elseif (facing == "east") then
-            --     stopBasicAnims(AnimClimbHoldW)
-            --     AnimClimbHoldW:play()
-            -- end
-        else
-            StopAllClimb()
+        if (state == "climbing" or state == "holdingLadder") then
+            -- ratate player towards ladder
+            local rot
+            if (facing == "south") then
+                rot = player:getBodyYaw(delta)-180
+                pModel:setOffsetRot(0,rot,0)
+                print((vectors.vec3(0,-player:getBodyYaw(delta)+180,0))%360)
+            elseif (facing == "north") then
+                print(player:getLookDir()[1])
+            elseif (facing == "west") then
+                print(zLook)
+            elseif (facing == "east") then
+                print(player:getLookDir()[3])
+            elseif (facing == nil) then
+                pModel:setOffsetRot(0,0,0)
+            end
+
+            -- play respective animation
+            if (state == "climbing") then
+                stopBasicAnims(AnimClimbN)
+                AnimClimbN:play()
+            elseif (state == "holdingLadder") then
+                stopBasicAnims(AnimClimbHoldN)
+                AnimClimbHoldN:play()
+            else
+                AnimClimbN:stop()
+                AnimClimbHoldN:stop()
+            end
         end
     end
-
 
     -- Idling
     if (state == "idle") then
@@ -735,7 +714,7 @@ end
 --     -- Testing animation transitions
 --     local vel = squapi.getForwardVel()
 -- 	if vel > 0.3 then vel = 0.3 end
---     if (walking and not crouching and not sprinting and not climbing) then
+--     if (walking and not crouching and not sprinting) then
 --         if (not AnimWalk:isPlaying()) then
 --             smoothWalkObj = squapi.bounceObject:new()
 --             AnimWalk:play()
