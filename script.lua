@@ -58,13 +58,6 @@ AnimFloat = animations.model["Float"]
 
 AnimClimbN = animations.model["Climbing_N"]
 AnimClimbHoldN = animations.model["Climb_Hold_N"]
-AnimClimbS = animations.model["Climbing_S"]
-AnimClimbHoldS = animations.model["Climb_Hold_S"]
-AnimClimbE = animations.model["Climbing_E"]
-AnimClimbHoldE = animations.model["Climb_Hold_E"]
-AnimClimbW = animations.model["Climbing_W"]
-AnimClimbHoldW = animations.model["Climb_Hold_W"]
-
 
 AnimJumping = animations.model["Jump_0"]
 AnimJump = animations.model["Jump_1"]
@@ -228,7 +221,7 @@ function stopBasicAnims(exception1, exception2)
     exception1 = exception1 or nil
     exception2 = exception2 or nil
     local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJumping, AnimShortFalling, AnimFloat,
-                            AnimClimbN, AnimClimbHoldN, AnimClimbS, AnimClimbHoldS, AnimClimbE, AnimClimbHoldE, AnimClimbW, AnimClimbHoldW}
+                            AnimClimbN, AnimClimbHoldN}
     for i,tableElem in ipairs(animationTable) do
         if (exception2 == nil) then
             if (exception1 == nil) then
@@ -409,6 +402,11 @@ zKey.press = pings.onZPressDo
 xKey.press = pings.onXPressDo
 cKey.press = pings.onCPressDo
 vKey.press = pings.onVPressDo
+
+-- Action Wheel =========================================================================================
+
+local myPage = action_wheel:newPage("Taunts")
+print(action_wheel:getPage("Taunts"))
 
 -- SquAPI Animation Handling ============================================================================
 
@@ -632,19 +630,16 @@ function events.tick() --=======================================================
     -- print(world.getBlockState(player:getPos()))
     -- print(world.getBlockState(player:getPos():add(0,1,0)))
     if (oldState ~= state) then
-        print(facing)
-        if (state == "climbing" or state == "holdingLadder") then
-            -- play respective animation
-            if (state == "climbing") then
-                stopBasicAnims(AnimClimbN)
-                AnimClimbN:play()
-            elseif (state == "holdingLadder") then
-                stopBasicAnims(AnimClimbHoldN)
-                AnimClimbHoldN:play()
-            else
-                AnimClimbN:stop()
-                AnimClimbHoldN:stop()
-            end
+        -- play respective animation
+        if (state == "climbing") then
+            stopBasicAnims(AnimClimbN)
+            AnimClimbN:play()
+        elseif (state == "holdingLadder") then
+            stopBasicAnims(AnimClimbHoldN)
+            AnimClimbHoldN:play()
+        else
+            AnimClimbN:stop()
+            AnimClimbHoldN:stop()
         end
     end
     if (state == "climbing" or state == "holdingLadder") then
@@ -660,8 +655,10 @@ function events.tick() --=======================================================
             rot = player:getBodyYaw(delta)-90
         end
         pModel:setOffsetRot(0,rot,0)
+        pModel.Upper:setRot(-player:getLookDir()[2]*45,0,0)
     else
         pModel:setOffsetRot(0,0,0)
+        pModel.Upper:setRot(0,0,0)
     end
 
     -- Idling
