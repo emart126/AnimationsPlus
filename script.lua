@@ -62,6 +62,7 @@ AnimClimbHoldN = animations.model["Climb_Hold_N"]
 AnimJumping = animations.model["Jump_0"]
 AnimJump = animations.model["Jump_1"]
 AnimJumpLand = animations.model["Jump_2"]
+AnimCrouchJumping = animations.model["cJump"]
 
 AnimShortFalling = animations.model["Fall_0"]
 AnimFall = animations.model["Fall_1"]
@@ -220,7 +221,7 @@ end
 function stopBasicAnims(exception1, exception2)
     exception1 = exception1 or nil
     exception2 = exception2 or nil
-    local animationTable = {AnimIdle,AnimWalk,AnimCrouching,AnimCrouchWalk,AnimSprint,AnimJumping, AnimShortFalling, AnimFloat,
+    local animationTable = {AnimIdle, AnimWalk, AnimCrouching, AnimCrouchWalk, AnimSprint, AnimJumping, AnimFloat,
                             AnimClimbN, AnimClimbHoldN}
     for i,tableElem in ipairs(animationTable) do
         if (exception2 == nil) then
@@ -485,6 +486,7 @@ function events.tick() --=======================================================
     AnimJumping:setPriority(1)
     AnimJump:setPriority(2)
     AnimJumpLand:setPriority(2)
+    AnimCrouchJumping:setPriority(2)
 
     AnimShortFalling:setPriority(1)
     AnimFall:setPriority(2)
@@ -638,6 +640,16 @@ function events.tick() --=======================================================
             -- Going into Jumping
             AnimJump:play()
             AnimJumping:play()
+        elseif ((oldState == "crouching" or oldState == "crouch walking") and state == "inAir" and player:getVelocity()[2] > 0) then
+            -- Going into Crouch Jump
+            AnimUnCrouch:play()
+            AnimCrouchJumping:play()
+        elseif (AnimCrouchJumping:isPlaying() and isOnGround(player)) then
+            -- Stop Crouch Jumping
+            AnimCrouchJumping:stop()
+            if (state == "crouching" or state == "crouch walking") then
+                AnimCrouch:play()
+            end            
         elseif (AnimJumping:isPlaying() and isOnGround(player)) then
             -- Stop Jumping
             AnimJumping:stop()
