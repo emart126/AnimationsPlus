@@ -227,37 +227,7 @@ function smoothStop(anim, modelElem)
 end
 
 -- Stop playing all 'basic action' animations except animations given
-function stopBasicAnims(exception1, exception2)
-    exception1 = exception1 or nil
-    exception2 = exception2 or nil
-    local animationTable = {AnimIdle, AnimWalk, AnimCrouching, AnimCrouchWalk, AnimSprint, AnimJumping,
-                            AnimClimbN, AnimClimbHoldN, AnimFloat, AnimSwim}
-    for i,tableElem in ipairs(animationTable) do
-        if (exception2 == nil) then
-            if (exception1 == nil) then
-                -- If both exceptions are nil, stop this elem
-                tableElem:stop()
-            else
-                -- If only exception2 is nil, only stop this elem if its not exception1
-                if (tableElem ~= exception1) then
-                    tableElem:stop()
-                end
-            end
-        elseif (exception1 == nil) then
-            -- If only exception1 is nil, only stop this elem if its not exception2
-            if (tableElem ~= exception2) then
-                tableElem:stop()
-            end
-        else
-            -- If both exceptions aren't nil, make sure elem isn't an exception
-            if (tableElem ~= exception1 and tableElem ~= exception2) then
-                tableElem:stop()
-            end
-        end
-    end
-end
-
-function stopBasicAnims2(exceptionTable)
+function stopBasicAnims(exceptionTable)
     local animationTable = {AnimIdle, AnimWalk, AnimCrouching, AnimCrouchWalk, AnimSprint, AnimJumping, AnimShortFalling,
                             AnimClimbN, AnimClimbHoldN, AnimFloat, AnimSwim}
     local isException
@@ -266,7 +236,6 @@ function stopBasicAnims2(exceptionTable)
         for j,exception in ipairs(exceptionTable) do
             if (anim == exception) then
                 isException = true
-                print(i)
             end
         end
 
@@ -573,32 +542,32 @@ function events.render(delta, context) --=======================================
             if (crouching) then
                 if (walking) then
                     state = "crouch walking"
-                    stopBasicAnims(AnimCrouchWalk)
+                    stopBasicAnims({AnimCrouchWalk})
                     AnimCrouchWalk:play()
                 else
                     state = "crouching"
-                    stopBasicAnims(AnimCrouching, AnimIdle)
+                    stopBasicAnims({AnimCrouching, AnimIdle})
                     AnimIdle:play()
                     AnimCrouching:play()
                 end
             elseif (not crouching) then
                 if (walking and not crouching and not sprinting) then
                     state = "walking"
-                    stopBasicAnims(AnimWalk, AnimJumping)
+                    stopBasicAnims({AnimWalk, AnimJumping})
                     AnimWalk:play()
                 else
                     state = "idle"
-                    stopBasicAnims(AnimIdle, AnimJumping)
+                    stopBasicAnims({AnimIdle, AnimJumping})
                     AnimIdle:play()
                 end
             end
         elseif (floating and not swimming and not isGrounded) then
             state = "floatingAir"
-            stopBasicAnims(AnimFloat)
+            stopBasicAnims({AnimFloat})
             AnimFloat:play()
         elseif (swimming) then
             state = "swimming"
-            stopBasicAnims(AnimSwim)
+            stopBasicAnims({AnimSwim})
             AnimSwim:play()
         end
     else
@@ -608,26 +577,26 @@ function events.render(delta, context) --=======================================
             if (crouching) then
                 if (walking) then
                     state = "crouch walking"
-                    stopBasicAnims(AnimCrouchWalk)
+                    stopBasicAnims({AnimCrouchWalk})
                     AnimCrouchWalk:play()
                 else
                     state = "crouching"
-                    stopBasicAnims(AnimCrouching, AnimIdle)
+                    stopBasicAnims({AnimCrouching, AnimIdle})
                     AnimIdle:play()
                     AnimCrouching:play()
                 end
             elseif (not crouching) then
                 if (walking and not crouching and not sprinting) then
                     state = "walking"
-                    stopBasicAnims(AnimWalk, AnimJumping)
+                    stopBasicAnims({AnimWalk, AnimJumping})
                     AnimWalk:play()
                 elseif (sprinting) then
                     state = "sprinting"
-                    stopBasicAnims(AnimSprint)
+                    stopBasicAnims({AnimSprint})
                     AnimSprint:play()
                 else
                     state = "idle"
-                    stopBasicAnims(AnimIdle, AnimJumping)
+                    stopBasicAnims({AnimIdle, AnimJumping})
                     AnimIdle:play()
                 end
             end
@@ -651,7 +620,7 @@ function events.render(delta, context) --=======================================
                 end
             else
                 state = "inAir"
-                stopBasicAnims2({AnimJumping, AnimShortFalling, AnimCrouching, AnimCrouchWalk})
+                stopBasicAnims({AnimJumping, AnimShortFalling, AnimCrouching, AnimCrouchWalk})
             end
         end
     end
@@ -748,10 +717,10 @@ function events.render(delta, context) --=======================================
     if (oldState ~= state) then
         -- play respective animation
         if (state == "climbing") then
-            stopBasicAnims(AnimClimbN)
+            stopBasicAnims({AnimClimbN})
             AnimClimbN:play()
         elseif (state == "holdingLadder") then
-            stopBasicAnims(AnimClimbHoldN)
+            stopBasicAnims({AnimClimbHoldN})
             AnimClimbHoldN:play()
         else
             AnimClimbN:stop()
