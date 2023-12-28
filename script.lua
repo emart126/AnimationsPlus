@@ -55,14 +55,15 @@ AnimUnCrouch = animations.model["Crouch_2"]
 AnimCrouchWalk = animations.model["Sneaking"]
 
 AnimFloat = animations.model["Float"]
+AnimSwim = animations.model["Swim_0"]
 
-AnimClimbN = animations.model["Climbing_N"]
-AnimClimbHoldN = animations.model["Climb_Hold_N"]
+AnimClimbN = animations.model["Climbing"]
+AnimClimbHoldN = animations.model["Climb_Hold"]
 
 AnimJumping = animations.model["Jump_0"]
 AnimJump = animations.model["Jump_1"]
 AnimJumpLand = animations.model["Jump_2"]
-AnimCrouchJumping = animations.model["cJump"]
+AnimCrouchJumping = animations.model["Crouch_3"]
 
 AnimShortFalling = animations.model["Fall_0"]
 AnimFall = animations.model["Fall_1"]
@@ -221,8 +222,8 @@ end
 function stopBasicAnims(exception1, exception2)
     exception1 = exception1 or nil
     exception2 = exception2 or nil
-    local animationTable = {AnimIdle, AnimWalk, AnimCrouching, AnimCrouchWalk, AnimSprint, AnimJumping, AnimFloat,
-                            AnimClimbN, AnimClimbHoldN}
+    local animationTable = {AnimIdle, AnimWalk, AnimCrouching, AnimCrouchWalk, AnimSprint, AnimJumping,
+                            AnimClimbN, AnimClimbHoldN, AnimFloat, AnimSwim}
     for i,tableElem in ipairs(animationTable) do
         if (exception2 == nil) then
             if (exception1 == nil) then
@@ -514,15 +515,37 @@ function events.tick() --=======================================================
     -- Interacting with water
     if (floating or swimming) then
         if (floating and not swimming and isGrounded) then
-            state = "idle"
-            stopBasicAnims(AnimIdle, AnimJumping)
-            AnimIdle:play()
+            -- On the ground, Underwater 
+            if (crouching) then
+                if (walking) then
+                    state = "crouch walking"
+                    stopBasicAnims(AnimCrouchWalk)
+                    AnimCrouchWalk:play()
+                else
+                    state = "crouching"
+                    stopBasicAnims(AnimCrouching, AnimIdle)
+                    AnimIdle:play()
+                    AnimCrouching:play()
+                end
+            elseif (not crouching) then
+                if (walking and not crouching and not sprinting) then
+                    state = "walking"
+                    stopBasicAnims(AnimWalk, AnimJumping)
+                    AnimWalk:play()
+                else
+                    state = "idle"
+                    stopBasicAnims(AnimIdle, AnimJumping)
+                    AnimIdle:play()
+                end
+            end
         elseif (floating and not swimming and not isGrounded) then
             state = "floatingAir"
             stopBasicAnims(AnimFloat)
             AnimFloat:play()
         elseif (swimming) then
             state = "swimming"
+            stopBasicAnims(AnimSwim)
+            AnimSwim:play()
         end
     else
         -- Outside of water
