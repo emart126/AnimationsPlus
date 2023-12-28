@@ -446,22 +446,8 @@ squapi.smoothHead(modelHead, 0.4, 1, false)
 squapi.smoothTorso(modelMainBody, 0.5)
 -- squapi.crouch(AnimCrouch, AnimUnCrouch)
 
-
--- tick event, called 20 times per second
+-- Render animation conditions by in game ticks
 function events.tick() --============================================================================================================================
-    local crouching = player:getPose() == "CROUCHING"
-    local swimming = player:isVisuallySwimming()
-    local floating = player:isInWater()
-    local sprinting = player:isSprinting()
-    local walking = player:getVelocity().xz:length() > .001
-    local climbing = player:isClimbing()
-    local isGrounded = isOnGround(player)
-    local sitting = player:getVehicle()
-    local ridingMount = player:getVehicle() and (player:getVehicle():getType() == "minecraft:horse"
-                                            or player:getVehicle():getType() == "minecraft:pig")
-    local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
-                                            or player:getVehicle():getType() == "minecraft:boat")
-
     -- Attack animation priorities ----------------------------------------------
     -- AnimSwing1:setPriority(1)
     -- AnimSwing2:setPriority(2)
@@ -503,14 +489,55 @@ function events.tick() --=======================================================
     -- AnimClimbing:setPriority(4)
     -- AnimRidingHorse:setPriority(4)
 
-    -- Play animation under certain conditions ----------------------------------
-
     -- Handle crouch model position
     if (crouching) then
         pModel:setPos(0,2,0)
     else
         pModel:setPos(0,0,0)
     end
+
+    -- Idling
+    if (state == "idle") then
+        idleTick = idleTick + 1
+        if (idleTick == randTick) then
+            randAnim = math.random(0, 2)
+            print(randAnim)
+            if (randAnim == 0) then
+                AnimIdling1:play()
+            elseif (randAnim == 1) then
+                AnimIdling2:play()
+            else
+                AnimIdling3:play()
+            end
+            idleTick = 0
+            randTick = GetRandIdleTick()
+            print(randTick)
+        end
+    else
+        idleTick = 0
+        AnimIdling1:stop()
+        AnimIdling2:stop()
+        AnimIdling3:stop()
+    end
+
+end
+
+-- Render animation condtions using render function
+function events.render(delta, context) --============================================================================================================================
+    local crouching = player:getPose() == "CROUCHING"
+    local swimming = player:isVisuallySwimming()
+    local floating = player:isInWater()
+    local sprinting = player:isSprinting()
+    local walking = player:getVelocity().xz:length() > .001
+    local climbing = player:isClimbing()
+    local isGrounded = isOnGround(player)
+    local sitting = player:getVehicle()
+    local ridingMount = player:getVehicle() and (player:getVehicle():getType() == "minecraft:horse"
+                                            or player:getVehicle():getType() == "minecraft:pig")
+    local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
+                                            or player:getVehicle():getType() == "minecraft:boat")
+
+    -- Play animation under certain conditions ----------------------------------
 
     -- Interacting with water
     if (floating or swimming) then
@@ -602,6 +629,17 @@ function events.tick() --=======================================================
         end
     end
 
+    -- Falling conditions
+    if (state == "inAir" or state == "falling") then
+        fallTick = fallTick + 1
+        if (fallTick > 64) then
+            state = "falling"
+            fallTick = 64
+        end
+    else
+        fallTick = 0
+    end
+
     -- Crouching conditions
     if (state ~= oldState) then
         if (state == "crouching" and oldState == "idle") then
@@ -613,17 +651,6 @@ function events.tick() --=======================================================
         elseif (oldState == "crouch walking" and state == "walking") then
             AnimUnCrouch:play()
         end
-    end
-
-    -- Falling conditions
-    if (state == "inAir" or state == "falling") then
-        fallTick = fallTick + 1
-        if (fallTick > 16) then
-            state = "falling"
-            fallTick = 16
-        end
-    else
-        fallTick = 0
     end
 
     -- Jumping/InAir conditions
@@ -726,30 +753,6 @@ function events.tick() --=======================================================
     else
         pModel:setOffsetRot(0,0,0)
         pModel.Upper:setRot(0,0,0)
-    end
-
-    -- Idling
-    if (state == "idle") then
-        idleTick = idleTick + 1
-        if (idleTick == randTick) then
-            randAnim = math.random(0, 2)
-            print(randAnim)
-            if (randAnim == 0) then
-                AnimIdling1:play()
-            elseif (randAnim == 1) then
-                AnimIdling2:play()
-            else
-                AnimIdling3:play()
-            end
-            idleTick = 0
-            randTick = GetRandIdleTick()
-            print(randTick)
-        end
-    else
-        idleTick = 0
-        AnimIdling1:stop()
-        AnimIdling2:stop()
-        AnimIdling3:stop()
     end
 
     -- print("---")
