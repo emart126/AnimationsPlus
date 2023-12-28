@@ -16,9 +16,6 @@ function events.entity_init() --================================================
     end
 end
 
--- Set players skin to their own skin
--- models.model.Player:setPrimaryTexture("SKIN")
-
 -- global vars ==========================================================================================
 
 -- Animation states/ticks
@@ -42,6 +39,9 @@ local modelHead = pModel.Upper.head
 local modelMainBody = pModel.Upper
 local modelRightArm = pModel.Upper.body.Arms.Arm_R
 local modelLeftArm = pModel.Upper.body.Arms.Arm_L
+
+-- Set players skin to their own skin
+--pModel:setPrimaryTexture("SKIN")
 
 -- Basic Action Animations
 AnimIdle = animations.model["Idle_0"]
@@ -156,7 +156,7 @@ function PlaySpellWithDelay(spell)
     spell:setStartDelay(0)
 end
 
--- Better isGrounded function (curtosy of @Discord User: 4P5)
+-- Better isGrounded function with small fence fix (curtosy of @Discord User: 4P5)
 local CLEARANCE = 0.1 -- How many blocks you can hover above the ground and still be considered touching it
 local function isOnGround(entity)
     local pos = entity:getPos()
@@ -184,6 +184,14 @@ local function isOnGround(entity)
             end
         end
     end
+
+    local blockBelow = world.getBlockState(player:getPos():add(0,-0.51,0)).id
+    local i, j
+    i, j = string.find(blockBelow, "fence")
+    if (i ~= nil and j ~= nil) then
+        return true
+    end
+
     return false
 end
 
@@ -245,6 +253,25 @@ function stopBasicAnims(exception1, exception2)
             if (tableElem ~= exception1 and tableElem ~= exception2) then
                 tableElem:stop()
             end
+        end
+    end
+end
+
+function stopBasicAnims2(exceptionTable)
+    local animationTable = {AnimIdle, AnimWalk, AnimCrouching, AnimCrouchWalk, AnimSprint, AnimJumping, AnimShortFalling,
+                            AnimClimbN, AnimClimbHoldN, AnimFloat, AnimSwim}
+    local isException
+    for i,anim in ipairs(animationTable) do
+        isException = false
+        for j,exception in ipairs(exceptionTable) do
+            if (anim == exception) then
+                isException = true
+                print(i)
+            end
+        end
+
+        if (not isException) then
+            anim:stop()
         end
     end
 end
@@ -624,7 +651,7 @@ function events.render(delta, context) --=======================================
                 end
             else
                 state = "inAir"
-                stopBasicAnims(AnimJumping, AnimShortFalling)
+                stopBasicAnims2({AnimJumping, AnimShortFalling, AnimCrouching, AnimCrouchWalk})
             end
         end
     end
@@ -699,7 +726,7 @@ function events.render(delta, context) --=======================================
             AnimCrouchJumping:stop()
             if (state == "crouching" or state == "crouch walking") then
                 AnimCrouch:play()
-            end            
+            end
         elseif (AnimJumping:isPlaying() and isOnGround(player)) then
             -- Stop Jumping
             AnimJumping:stop()
