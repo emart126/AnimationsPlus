@@ -41,7 +41,7 @@ local modelRightArm = pModel.Upper.body.Arms.Arm_R
 local modelLeftArm = pModel.Upper.body.Arms.Arm_L
 
 -- Set players skin to their own skin
-pModel:setPrimaryTexture("SKIN")
+-- pModel:setPrimaryTexture("SKIN")
 
 -- Basic Action Animations
 AnimIdle = animations.model["Idle_0"]
@@ -63,6 +63,10 @@ AnimClimbHoldN = animations.model["Climb_Hold"]
 AnimJumping = animations.model["Jump_0"]
 AnimJump = animations.model["Jump_1"]
 AnimJumpLand = animations.model["Jump_2"]
+AnimJumpMove1 = animations.model["Sprint_Jump_1"]
+AnimJumpMoveStop1 = animations.model["Sprint_Jump_2"]
+AnimJumpMove2 = animations.model["Sprint_Jump_3"]
+AnimJumpMoveStop2 = animations.model["Sprint_Jump_4"]
 AnimCrouchJumping = animations.model["Crouch_3"]
 
 AnimShortFalling = animations.model["Fall_0"]
@@ -73,10 +77,6 @@ AnimFallLand = animations.model["Land"]
 
 AnimSprint = animations.model["Sprinting"]
 -- AnimHitGround = animations.model["animation.model.hitGround"]
--- AnimJumpMove1 = animations.model["jumpMoving1"]
--- AnimJumpMoveStop1 = animations.model["jumpMovingStoping1"]
--- AnimJumpMove2 = animations.model["jumpMoving2"]
--- AnimJumpMoveStop2 = animations.model["jumpMovingStoping2"]
 
 -- Attacks
 -- AnimSwing1 = animations.model["animation.model.swing1"]
@@ -651,15 +651,18 @@ function events.render(delta, context) --=======================================
 
     -- Jumping/InAir conditions
     if (state ~= oldState) then
-        if (oldState == "sprinting" and state == "inAir") then
-            -- Jump sprinting
-            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
-        elseif (AnimJumpMove1:isPlaying()) then
+        -- Stop Jump Sprinting
+        if (AnimJumpMove1:isPlaying()) then
             AnimJumpMove1:stop()
             AnimJumpMoveStop1:play()
         elseif (AnimJumpMove2:isPlaying()) then
             AnimJumpMove2:stop()
             AnimJumpMoveStop2:play()
+        end
+
+        if (oldState == "sprinting" and state == "inAir") then
+            -- Jump sprinting
+            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
         elseif (oldState == "inAir" and state == "falling") then
             -- Going into Long falling
             AnimJumping:stop()
@@ -696,7 +699,6 @@ function events.render(delta, context) --=======================================
             AnimShortFalling:stop()
             AnimShortLand:play()
         end
-        
     end
 
     -- Climbing conditions
