@@ -57,8 +57,8 @@ AnimCrouchWalk = animations.model["Sneaking"]
 AnimFloat = animations.model["Float"]
 AnimSwim = animations.model["Swim_0"]
 
-AnimClimbN = animations.model["Climbing"]
-AnimClimbHoldN = animations.model["Climb_Hold"]
+AnimClimb = animations.model["Climbing"]
+AnimClimbHold = animations.model["Climb_Hold"]
 
 AnimJumping = animations.model["Jump_0"]
 AnimJump = animations.model["Jump_1"]
@@ -76,6 +76,10 @@ AnimFalling = animations.model["Falling"]
 AnimFallLand = animations.model["Land"]
 
 AnimSprint = animations.model["Sprinting"]
+
+AnimSit = animations.model["Sit"]
+AnimHorseSit = animations.model["Horse_Sitting"]
+AnimHorseRiding = animations.model["Horse_Riding"]
 
 -- Attacks
 AnimPunch = animations.model["Punch"]
@@ -229,7 +233,7 @@ end
 -- Stop playing all 'basic action' animations except animations given
 function stopBasicAnims(exceptionTable)
     local animationTable = {AnimIdle, AnimWalk, AnimCrouching, AnimCrouchWalk, AnimSprint, AnimJumping, AnimShortFalling,
-                            AnimClimbN, AnimClimbHoldN, AnimFloat, AnimSwim}
+                            AnimClimb, AnimClimbHold, AnimFloat, AnimSwim, AnimSit, AnimHorseSit, AnimHorseRiding}
     local isException
     for i,anim in ipairs(animationTable) do
         isException = false
@@ -478,8 +482,13 @@ function events.tick() --=======================================================
     
     AnimSwim:setPriority(1)
     AnimFloat:setPriority(1)
-    -- AnimClimbing:setPriority(4)
-    -- AnimRidingHorse:setPriority(4)
+
+    AnimClimb:setPriority(1)
+    AnimClimbHold:setPriority(1)
+
+    AnimSit:setPriority(1)
+    AnimHorseSit:setPriority(1)
+    AnimHorseRiding:setPriority(1)
 
     -- Handle crouch model position
     if (crouching) then
@@ -528,13 +537,11 @@ function events.render(delta, context) --=======================================
     local walking = player:getVelocity().xz:length() > .001
     local climbing = player:isClimbing()
     local isGrounded = isOnGround(player)
-    local sitting = player:getVehicle() and not player:getVehicle():getType() == "minecraft:horse"
-    local ridingMount = player:getVehicle() and (player:getVehicle():getType() == "minecraft:horse"
-                                            or player:getVehicle():getType() == "minecraft:pig")
+    local sitting = player:getVehicle()
+    local horseSitting = player:getVehicle() and (player:getVehicle():getType() == "minecraft:horse")
+    local ridingMount = player:getVehicle() and (horseSitting or player:getVehicle():getType() == "minecraft:pig")
     local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
                                             or player:getVehicle():getType() == "minecraft:boat")
-    local horseSitting = player:getVehicle():getType() == "minecraft:horse" and 
-    local horseRiding =
 
     -- Play animation under certain conditions ----------------------------------
 
@@ -575,7 +582,7 @@ function events.render(delta, context) --=======================================
         end
     else
         -- Outside of water
-        if (isGrounded) then
+        if (isGrounded and not ridingSeat) then
             -- On the ground
             if (crouching) then
                 if (walking) then
@@ -615,11 +622,29 @@ function events.render(delta, context) --=======================================
             elseif (sitting ~= nil) then
                 -- Sitting/Riding
                 if (ridingMount and walking) then
-                    state = "ridingMount"
+                    if (horseSitting) then
+                        state = "ridingHorse"
+                        stopBasicAnims({AnimHorseRiding})
+                        AnimHorseRiding:play()
+                    else
+                        state = "sitting"
+                        stopBasicAnims({AnimSit})
+                        AnimSit:play()
+                    end
                 elseif (ridingSeat and walking) then
-                    state = "ridingCartOrBoat"
-                elseif (not walking and (ridingMount or ridingSeat)) then
                     state = "sitting"
+                    stopBasicAnims({AnimSit})
+                    AnimSit:play()
+                elseif (not walking and (ridingMount or ridingSeat)) then
+                    if (horseSitting) then
+                        state = "horseSitting"
+                        stopBasicAnims({AnimHorseSit})
+                        AnimHorseSit:play()
+                    else
+                        state = "sitting"
+                        stopBasicAnims({AnimSit})
+                        AnimSit:play()
+                    end
                 end
             else
                 state = "inAir"
@@ -709,14 +734,14 @@ function events.render(delta, context) --=======================================
     if (oldState ~= state) then
         -- play respective animation
         if (state == "climbing") then
-            stopBasicAnims({AnimClimbN})
-            AnimClimbN:play()
+            stopBasicAnims({AnimClimb})
+            AnimClimb:play()
         elseif (state == "holdingLadder") then
-            stopBasicAnims({AnimClimbHoldN})
-            AnimClimbHoldN:play()
+            stopBasicAnims({AnimClimbHold})
+            AnimClimbHold:play()
         else
-            AnimClimbN:stop()
-            AnimClimbHoldN:stop()
+            AnimClimb:stop()
+            AnimClimbHold:stop()
         end
     end
     if (state == "climbing" or state == "holdingLadder") then
