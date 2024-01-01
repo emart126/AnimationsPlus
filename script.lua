@@ -443,7 +443,7 @@ squapi.smoothTorso(modelMainBody, 0.5)
 -- Render animation conditions by in game ticks
 function events.tick() --============================================================================================================================
     -- Attack animation priorities ----------------------------------------------
-    AnimPunch:setPriority(2)
+    AnimPunch:setPriority(1)
     -- AnimSwing1:setPriority(1)
     -- AnimSwing2:setPriority(2)
     -- AnimSwingCombo:setPriority(3)
@@ -475,12 +475,9 @@ function events.tick() --=======================================================
     AnimShortLand:setPriority(2)
     AnimFalling:setPriority(2)
     AnimFallLand:setPriority(2)
-    -- AnimSprinting:setPriority(1)
-    -- AnimSprinting:setPriority(1)
-    -- AnimFalling:setPriority(2)
-    -- AnimJumping:setPriority(2)
-    -- AnimSwimming:setPriority(3)
-    -- AnimFloating:setPriority(3)
+    
+    AnimSwim:setPriority(1)
+    AnimFloat:setPriority(1)
     -- AnimClimbing:setPriority(4)
     -- AnimRidingHorse:setPriority(4)
 
@@ -513,6 +510,13 @@ function events.tick() --=======================================================
         AnimIdling3:stop()
     end
 
+    if (hitKey:isPressed()) then
+        idleTick = 0
+        AnimIdling1:stop()
+        AnimIdling2:stop()
+        AnimIdling3:stop()
+    end
+
 end
 
 -- Render animation condtions using render function
@@ -524,11 +528,13 @@ function events.render(delta, context) --=======================================
     local walking = player:getVelocity().xz:length() > .001
     local climbing = player:isClimbing()
     local isGrounded = isOnGround(player)
-    local sitting = player:getVehicle()
+    local sitting = player:getVehicle() and not player:getVehicle():getType() == "minecraft:horse"
     local ridingMount = player:getVehicle() and (player:getVehicle():getType() == "minecraft:horse"
                                             or player:getVehicle():getType() == "minecraft:pig")
     local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
                                             or player:getVehicle():getType() == "minecraft:boat")
+    local horseSitting = player:getVehicle():getType() == "minecraft:horse" and 
+    local horseRiding =
 
     -- Play animation under certain conditions ----------------------------------
 
