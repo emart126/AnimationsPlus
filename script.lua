@@ -76,9 +76,9 @@ AnimFalling = animations.model["Falling"]
 AnimFallLand = animations.model["Land"]
 
 AnimSprint = animations.model["Sprinting"]
--- AnimHitGround = animations.model["animation.model.hitGround"]
 
 -- Attacks
+AnimPunch = animations.model["Punch"]
 -- AnimSwing1 = animations.model["animation.model.swing1"]
 -- AnimSwing2 = animations.model["animation.model.swing2"]
 -- AnimSwingCombo = animations.model["animation.model.swingCombo"]
@@ -284,9 +284,7 @@ function pings.onHitDo()
     end
 
     -- Holding none weapon --
-    if (currItem.id == "minecraft:air") then
-        -- print("punch")
-    end
+    AnimPunch:restart()
 
 end
 
@@ -445,6 +443,7 @@ squapi.smoothTorso(modelMainBody, 0.5)
 -- Render animation conditions by in game ticks
 function events.tick() --============================================================================================================================
     -- Attack animation priorities ----------------------------------------------
+    AnimPunch:setPriority(2)
     -- AnimSwing1:setPriority(1)
     -- AnimSwing2:setPriority(2)
     -- AnimSwingCombo:setPriority(3)
@@ -497,7 +496,6 @@ function events.tick() --=======================================================
         idleTick = idleTick + 1
         if (idleTick == randTick) then
             randAnim = math.random(0, 2)
-            print(randAnim)
             if (randAnim == 0) then
                 AnimIdling1:play()
             elseif (randAnim == 1) then
@@ -507,7 +505,6 @@ function events.tick() --=======================================================
             end
             idleTick = 0
             randTick = GetRandIdleTick()
-            print(randTick)
         end
     else
         idleTick = 0
