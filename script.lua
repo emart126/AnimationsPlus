@@ -879,13 +879,13 @@ function events.render(delta, context) --=======================================
     lArm:doBounce(armTarget, 0.01, .2)
 
     -- Idle Arms affected by gravity --------------------------------------------
-    if (state == "idle") then
+    if (state == "idle" and headRot[1] > 0) then
         modelRightArm:setOffsetRot(-headRot[1],0,0)
         modelLeftArm:setOffsetRot(-headRot[1],0,0)
     else
         modelRightArm:setOffsetRot(0,0,0)
         modelLeftArm:setOffsetRot(0,0,0)
-    end -- Known Bug: reverting back to normal arms is not smooth 
+    end
 
     -- Head physics -------------------------------------------------------------
     modelHead:setRot(head.pos*1.5, 0, 0)
