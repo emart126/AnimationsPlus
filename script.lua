@@ -249,6 +249,19 @@ function stopBasicAnims(exceptionTable)
     end
 end
 
+-- Get the priority of the animation currently playing
+function getAnimPriority()
+    local animationTable = {AnimJump, AnimJumpLand, AnimCrouch, AnimUnCrouch, AnimFall, AnimShortLand, AnimFallLand,
+                            AnimIdle, AnimCrouching, AnimCrouchWalk, AnimWalk, AnimSprint, AnimJumping, AnimCrouchJumping,
+                            AnimShortFalling, AnimFalling, AnimSwim, AnimFloat, AnimClimb, AnimClimbHold, AnimSit, AnimHorseSit, AnimHorseRiding}
+    for i,anim in ipairs(animationTable) do
+        if (anim:isPlaying()) then
+            return(anim:getPriority())
+        end
+    end
+    return(0)
+end
+
 -- left-clicking detection ==============================================================================
 local hitKey = keybinds:of("Punch",keybinds:getVanillaKey("key.attack"))
 
@@ -423,19 +436,19 @@ local action1 = mainPage:newAction()
     :title("Dance")
     :item("minecraft:stick")
     :hoverColor(1, 1, 1)
-    :onLeftClick(pings.actionDance)
+    :setOnRightClick(pings.actionDance)
 
 local action2 = mainPage:newAction()
     :title("idle1")
     :item("minecraft:stick")
     :hoverColor(1, 1, 1)
-    :onLeftClick(pings.action2)
+    :setOnRightClick(pings.action2)
 
 local action3 = mainPage:newAction()
     :title("idle2")
     :item("minecraft:stick")
     :hoverColor(1, 1, 1)
-    :onLeftClick(pings.action3)
+    :setOnRightClick(pings.action3)
 
 -- SquAPI Animation Handling ============================================================================
 
@@ -447,7 +460,7 @@ squapi.smoothTorso(modelMainBody, 0.5)
 -- Render animation conditions by in game ticks
 function events.tick() --============================================================================================================================
     -- Attack animation priorities ----------------------------------------------
-    AnimPunch:setPriority(1)
+    AnimPunch:setPriority(getAnimPriority())
     -- AnimSwing1:setPriority(1)
     -- AnimSwing2:setPriority(2)
     -- AnimSwingCombo:setPriority(3)
@@ -468,6 +481,7 @@ function events.tick() --=======================================================
     AnimUnCrouch:setPriority(2)
 
     AnimWalk:setPriority(2)
+    AnimSprint:setPriority(2)
 
     AnimJumping:setPriority(1)
     AnimJump:setPriority(2)
@@ -479,7 +493,7 @@ function events.tick() --=======================================================
     AnimShortLand:setPriority(2)
     AnimFalling:setPriority(2)
     AnimFallLand:setPriority(2)
-    
+
     AnimSwim:setPriority(1)
     AnimFloat:setPriority(1)
 
