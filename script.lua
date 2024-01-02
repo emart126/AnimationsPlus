@@ -601,7 +601,7 @@ function events.render(delta, context) --=======================================
             if (crouching) then
                 if (walking) then
                     state = "crouch walking"
-                    stopBasicAnims({AnimCrouchWalk})
+                    stopBasicAnims({AnimCrouchWalk, AnimCrouchJumping})
                     AnimCrouchWalk:play()
                 else
                     state = "crouching"
@@ -722,13 +722,13 @@ function events.render(delta, context) --=======================================
             -- Going into Crouch Jump
             AnimUnCrouch:play()
             AnimCrouchJumping:play()
-        elseif (AnimCrouchJumping:isPlaying() and isOnGround(player)) then
+        elseif (AnimCrouchJumping:isPlaying() and isGrounded) then
             -- Stop Crouch Jumping
             AnimCrouchJumping:stop()
             if (state == "crouching" or state == "crouch walking") then
                 AnimCrouch:play()
             end
-        elseif (AnimJumping:isPlaying() and isOnGround(player)) then
+        elseif (AnimJumping:isPlaying() and isGrounded) then
             -- Stop Jumping
             AnimJumping:stop()
             AnimJumpLand:play()
