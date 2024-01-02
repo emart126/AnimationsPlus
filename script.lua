@@ -233,7 +233,7 @@ end
 -- Stop playing all 'basic action' animations except animations given
 function stopBasicAnims(exceptionTable)
     local animationTable = {AnimIdle, AnimWalk, AnimCrouching, AnimCrouchWalk, AnimSprint, AnimJumping, AnimShortFalling,
-                            AnimClimb, AnimClimbHold, AnimFloat, AnimSwim, AnimSit, AnimHorseSit, AnimHorseRiding}
+                            AnimClimb, AnimClimbHold, AnimFloat, AnimSwim, AnimSit, AnimHorseSit, AnimHorseRiding, AnimCrouchJumping}
     local isException
     for i,anim in ipairs(animationTable) do
         isException = false
@@ -620,7 +620,7 @@ function events.render(delta, context) --=======================================
                     AnimSprint:play()
                 else
                     state = "idle"
-                    stopBasicAnims({AnimIdle, AnimJumping})
+                    stopBasicAnims({AnimIdle, AnimJumping, AnimShortFalling})
                     AnimIdle:play()
                 end
             end
@@ -662,7 +662,7 @@ function events.render(delta, context) --=======================================
                 end
             else
                 state = "inAir"
-                stopBasicAnims({AnimJumping, AnimShortFalling, AnimCrouching, AnimCrouchWalk})
+                stopBasicAnims({AnimJumping, AnimShortFalling, AnimCrouching, AnimCrouchWalk, AnimCrouchJumping})
             end
         end
     end
@@ -680,7 +680,7 @@ function events.render(delta, context) --=======================================
 
     -- Crouching conditions
     if (state ~= oldState) then
-        if (state == "crouching" and oldState == "idle") then
+        if (state == "crouching" and (oldState == "idle" or oldState == "inAir")) then
             AnimCrouch:play()
         elseif (oldState == "crouching" and state == "idle") then
             AnimUnCrouch:play()
