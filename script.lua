@@ -702,7 +702,7 @@ function events.render(delta, context) --=======================================
             AnimJumpMoveStop2:play()
         end
 
-        if (oldState == "sprinting" and state == "inAir") then
+        if (oldState == "sprinting" and state == "inAir" and player:getVelocity()[2] > 0) then
             -- Jump sprinting
             jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
         elseif (oldState == "inAir" and state == "falling") then
@@ -732,7 +732,7 @@ function events.render(delta, context) --=======================================
             -- Stop Jumping
             AnimJumping:stop()
             AnimJumpLand:play()
-        elseif ((oldState == "idle" or oldState == "walking") and state == "inAir") then
+        elseif ((oldState == "idle" or oldState == "walking" or oldState == "sprinting") and state == "inAir") then
             -- Going into short Falling
             AnimFall:play()
             AnimShortFalling:play()
