@@ -41,7 +41,7 @@ local modelRightArm = pModel.Upper.body.Arms.Arm_R
 local modelLeftArm = pModel.Upper.body.Arms.Arm_L
 
 -- Set players skin to their own skin
--- pModel:setPrimaryTexture("SKIN")
+pModel:setPrimaryTexture("SKIN")
 
 -- Basic Action Animations
 AnimIdle = animations.model["Idle_0"]
