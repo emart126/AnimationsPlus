@@ -43,7 +43,7 @@ local modelLeftArm = pModel.Upper.body.Arms.Arm_L
 -- Set players skin to their own skin
 pModel:setPrimaryTexture("SKIN")
 
--- Basic Action Animations
+-- Basic Action Animations ==============================================================================
 AnimIdle = animations.model["Idle_0"]
 AnimIdling1 = animations.model["Idle_1"]
 AnimIdling2 = animations.model["Idle_2"]
@@ -81,43 +81,51 @@ AnimSit = animations.model["Sit"]
 AnimHorseSit = animations.model["Horse_Sitting"]
 AnimHorseRiding = animations.model["Horse_Riding"]
 
--- Attacks
-AnimPunch = animations.model["Punch"]
--- AnimSwing1 = animations.model["animation.model.swing1"]
--- AnimSwing2 = animations.model["animation.model.swing2"]
--- AnimSwingCombo = animations.model["animation.model.swingCombo"]
+-- Attacks ----------------------------------------------------------
 
--- Wynncraft Spells
+AnimPunch = animations.model["Punch"]
+
+-- Assassin -----
+AssassinSwing1 = animations.model["Sword_Swing_1"]
+AssassinSwing2 = animations.model["Sword_Swing_2"]
+AssassinSwing3 = animations.model["Sword_Swing_3"]
+
+-- Warrior -----
+WarriorSwing1 = animations.model["Spear_Swing_1"]
+WarriorSwing2 = animations.model["Spear_Swing_2"]
+WarriorSwing3 = animations.model["Spear_Swing_3"]
+
+-- Wynncraft Spells -------------------------------------------------
 -- R1, L2, R3 = s1
 -- R1, L2, L3 = s2
 -- R1, R2, L3 = s3
 -- R1, R2, R3 = Move
 
--- AnimMovement = animations.model["animation.model.movement"]
--- AnimThirdSpell = animations.model["animation.model.ThirdSpell"]
--- AnimSecondSpell = animations.model["animation.model.SecondSpell"]
--- AnimFirstSpell = animations.model["animation.model.FirstSpell"]
+AnimR1 = animations.model["R1"]
+AnimR2 = animations.model["R2"]
+AnimL2 = animations.model["L2"]
 
--- AnimR1 = animations.model["animation.model.R1"]
--- AnimR2 = animations.model["animation.model.R2"]
--- AnimL2 = animations.model["animation.model.L2"]
+-- AnimMovement = animations.model["animation.model.movement"]
+AnimThirdSpell = animations.model["spell3"]
+AnimSecondSpell = animations.model["spell2"]
+-- AnimFirstSpell = animations.model["animation.model.FirstSpell"]
 
 -- Katt Armor Handling ==================================================================================
 
-vanilla_model.ARMOR:setVisible(false)
-local kattArmor = require("KattArmor")()
-kattArmor.Armor.Helmet
--- the `addParts` function is not strict with the number of ModelParts provided. Add or remove parts as desired.
-    :addParts(
-        pModel.Upper.head.Helmet,
-        pModel.Upper.head.HelmetHat
-    )
-kattArmor.Armor.Chestplate
-    :addParts(
-      pModel.Upper.body.Chestplate,
-      pModel.Upper.body.Arms.Arm_R.RightArmArmor,
-      pModel.Upper.body.Arms.Arm_L.LeftArmArmor
-    )
+-- vanilla_model.ARMOR:setVisible(false)
+-- local kattArmor = require("KattArmor")()
+-- kattArmor.Armor.Helmet
+-- -- the `addParts` function is not strict with the number of ModelParts provided. Add or remove parts as desired.
+--     :addParts(
+--         pModel.Upper.head.Helmet,
+--         pModel.Upper.head.HelmetHat
+--     )
+-- kattArmor.Armor.Chestplate
+--     :addParts(
+--       pModel.Upper.body.Chestplate,
+--       pModel.Upper.body.Arms.Arm_R.RightArmArmor,
+--       pModel.Upper.body.Arms.Arm_L.LeftArmArmor
+--     )
 
 -- Helper Functions =====================================================================================
 
@@ -150,7 +158,7 @@ function CheckAnimToPlayLeftClick(r1, r2, l2, swing1, swing2, swingCombo, second
     elseif (swing1:isPlaying() and not swing2:isPlaying() and not swingCombo:isPlaying()) then
         swing2:play()
     elseif (not swing1:isPlaying() and not swing2:isPlaying() and not swingCombo:isPlaying()) then
-        AnimSwing1:play()
+        swing1:play()
     end
 end
 
@@ -288,7 +296,7 @@ function pings.onHitDo()
 
     -- Spears --
     if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
+        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, WarriorSwing1, WarriorSwing2, WarriorSwing3, AnimSecondSpell, AnimThirdSpell)
         return
     end
 
@@ -300,7 +308,7 @@ function pings.onHitDo()
 
     -- Daggers --
     if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
+        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AssassinSwing1, AssassinSwing2, AssassinSwing3, AnimSecondSpell, AnimThirdSpell)
         return
     end
 
@@ -477,10 +485,17 @@ squapi.smoothTorso(modelMainBody, 0.5)
 -- Render animation conditions by in game ticks
 function events.tick() --============================================================================================================================
     -- Attack animation priorities ----------------------------------------------
-    AnimPunch:setPriority(getAnimPriority())
-    -- AnimSwing1:setPriority(1)
-    -- AnimSwing2:setPriority(2)
-    -- AnimSwingCombo:setPriority(3)
+    local p = getAnimPriority()
+    AnimPunch:setPriority(p)
+
+    AssassinSwing1:setPriority(p)
+    AssassinSwing2:setPriority(p)
+    AssassinSwing3:setPriority(p)
+
+    WarriorSwing1:setPriority(p)
+    WarriorSwing2:setPriority(p)
+    WarriorSwing3:setPriority(p)
+    
     -- AnimMovement:setPriority(4)
     -- AnimFirstSpell:setPriority(4)
     -- AnimSecondSpell:setPriority(4)
