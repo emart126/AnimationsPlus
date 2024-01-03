@@ -102,6 +102,23 @@ AnimPunch = animations.model["Punch"]
 -- AnimR2 = animations.model["animation.model.R2"]
 -- AnimL2 = animations.model["animation.model.L2"]
 
+-- Katt Armor Handling ==================================================================================
+
+vanilla_model.ARMOR:setVisible(false)
+local kattArmor = require("KattArmor")()
+kattArmor.Armor.Helmet
+-- the `addParts` function is not strict with the number of ModelParts provided. Add or remove parts as desired.
+    :addParts(
+        pModel.Upper.head.Helmet,
+        pModel.Upper.head.HelmetHat
+    )
+kattArmor.Armor.Chestplate
+    :addParts(
+      pModel.Upper.body.Chestplate,
+      pModel.Upper.body.Arms.Arm_R.RightArmArmor,
+      pModel.Upper.body.Arms.Arm_L.LeftArmArmor
+    )
+
 -- Helper Functions =====================================================================================
 
 -- Stop playing all animations pertaining to combat
