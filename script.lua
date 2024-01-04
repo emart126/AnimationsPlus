@@ -112,31 +112,52 @@ AnimSecondSpell = animations.model["spell2"]
 
 -- Katt Armor Handling ==================================================================================
 
--- vanilla_model.ARMOR:setVisible(false)
--- local kattArmor = require("KattArmor")()
--- kattArmor.Armor.Helmet
--- -- the `addParts` function is not strict with the number of ModelParts provided. Add or remove parts as desired.
---     :addParts(
---         pModel.Upper.head.Helmet,
---         pModel.Upper.head.HelmetHat
---     )
--- kattArmor.Armor.Chestplate
---     :addParts(
---       pModel.Upper.body.Chestplate,
---       pModel.Upper.body.Arms.Arm_R.RightArmArmor,
---       pModel.Upper.body.Arms.Arm_L.LeftArmArmor
---     )
+vanilla_model.ARMOR:setVisible(false)
+local kattArmor = require("KattArmor")()
+kattArmor.Armor.Helmet
+-- the `addParts` function is not strict with the number of ModelParts provided. Add or remove parts as desired.
+    :addParts(
+        pModel.Upper.head.Helmet,
+        pModel.Upper.head.HelmetHat
+    )
+kattArmor.Armor.Chestplate
+    :addParts(
+      pModel.Upper.body.Chestplate,
+      pModel.Upper.body.Arms.Arm_R.RightArmArmor,
+      pModel.Upper.body.Arms.Arm_L.LeftArmArmor
+    )
+kattArmor.Armor.Leggings
+    :addParts(
+      pModel.Upper.body.Belt,
+      pModel.Lower.Leg_R.RightLeggingsArmor,
+      pModel.Lower.Leg_R.Knee_R.RightAnkleArmor,
+      pModel.Lower.Leg_L.LeftLeggingsArmor,
+      pModel.Lower.Leg_L.Knee_L.LeftAnkleArmor
+    )
+kattArmor.Armor.Boots
+    :addParts(
+      pModel.Lower.Leg_R.Knee_R.RightBootArmor,
+      pModel.Lower.Leg_L.Knee_L.LeftBootArmor
+    )
 
 -- Helper Functions =====================================================================================
 
 -- Stop playing all animations pertaining to combat
 function StopAllSpell()
-    AnimSwing1:stop()
-    AnimSwing2:stop()
-    AnimSwingCombo:stop()
     AnimR1:stop()
     AnimR2:stop()
     AnimL2:stop()
+
+    -- Assassin -----
+    AssassinSwing1:stop()
+    AssassinSwing2:stop()
+    AssassinSwing3:stop()
+
+    -- Warrior -----
+    WarriorSwing1:stop()
+    WarriorSwing2:stop()
+    WarriorSwing3:stop()
+    
     AnimFirstSpell:stop()
     AnimSecondSpell:stop()
     AnimThirdSpell:stop()
@@ -154,8 +175,10 @@ function CheckAnimToPlayLeftClick(r1, r2, l2, swing1, swing2, swingCombo, second
     elseif (r1:isPlaying() and not l2:isPlaying()) then             -- R1, L2
         l2:play()
     elseif (swing2:isPlaying() and not swingCombo:isPlaying()) then
+        swing2:stop()
         swingCombo:play()
     elseif (swing1:isPlaying() and not swing2:isPlaying() and not swingCombo:isPlaying()) then
+        swing1:stop()
         swing2:play()
     elseif (not swing1:isPlaying() and not swing2:isPlaying() and not swingCombo:isPlaying()) then
         swing1:play()
@@ -243,17 +266,17 @@ function GetRandIdleTick()
     return(num)
 end
 
--- smoothly play an animation
-function smoothPlay(anim, modelElem, pVel)
-    anim:setBlend(modelElem:doBounce(pVel*4.633, .001, .2))
-	anim:setSpeed(modelElem.pos)
-end
+-- -- smoothly play an animation
+-- function smoothPlay(anim, modelElem, pVel)
+--     anim:setBlend(modelElem:doBounce(pVel*4.633, .001, .2))
+-- 	anim:setSpeed(modelElem.pos)
+-- end
 
--- Slow down animation and stop playing it
-function smoothStop(anim, modelElem)
-    anim:setBlend(modelElem:doBounce(0, .001, .2))
-	anim:setSpeed(modelElem.pos)
-end
+-- -- Slow down animation and stop playing it
+-- function smoothStop(anim, modelElem)
+--     anim:setBlend(modelElem:doBounce(0, .001, .2))
+-- 	anim:setSpeed(modelElem.pos)
+-- end
 
 -- Stop playing all 'basic action' animations except animations given
 function stopBasicAnims(exceptionTable)
@@ -816,9 +839,9 @@ function events.render(delta, context) --=======================================
 
     -- print("---")
     -- print(state)
-    if (state ~= oldState) then
-        print(oldState, "->", state)
-    end
+    -- if (state ~= oldState) then
+    --     print(oldState, "->", state)
+    -- end
 
     oldState = state
 end
