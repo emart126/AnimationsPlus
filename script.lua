@@ -91,9 +91,9 @@ WarriorSwing2 = animations.model["Spear_Swing_2"]
 WarriorSwing3 = animations.model["Spear_Swing_3"]
 
 -- Mage ---------
--- MageSwing1 = animations.model["Wand_Swing_1"]
--- MageSwing2 = animations.model["Wand_Swing_2"]
--- MageSwing3 = animations.model["Wand_Swing_3"]
+MageSwing1 = animations.model["Wand_Cast_1"]
+MageSwing2 = animations.model["Wand_Cast_2"]
+MageSwing3 = animations.model["Wand_Cast_3"]
 
 -- Assassin -----
 AssassinSwing1 = animations.model["Sword_Swing_1"]
@@ -101,7 +101,7 @@ AssassinSwing2 = animations.model["Sword_Swing_2"]
 AssassinSwing3 = animations.model["Sword_Swing_3"]
 
 -- Shaman -------
--- ShamanSwing = animations.model["Relik_Strike"]
+ShamanSwing = animations.model["Relik_Strike"]
 
 -- Archer -------
 ArcherShoot = animations.model["Bow_Shoot"]
@@ -159,20 +159,31 @@ function StopAllSpell()
     AnimR2:stop()
     AnimL2:stop()
 
+    -- Warrior -----
+    WarriorSwing1:stop()
+    WarriorSwing2:stop()
+    WarriorSwing3:stop()
+
+    -- Mage -----
+    MageSwing1:stop()
+    MageSwing2:stop()
+    MageSwing3:stop()
+
     -- Assassin -----
     AssassinSwing1:stop()
     AssassinSwing2:stop()
     AssassinSwing3:stop()
 
-    -- Warrior -----
-    WarriorSwing1:stop()
-    WarriorSwing2:stop()
-    WarriorSwing3:stop()
-    
-    AnimFirstSpell:stop()
+    -- Shaman -----
+    ShamanSwing:stop()
+
+    -- Archer -----
+    ArcherShoot:stop()
+
+    -- AnimFirstSpell:stop()
     AnimSecondSpell:stop()
     AnimThirdSpell:stop()
-    AnimMovement:stop()
+    -- AnimMovement:stop()
 end
 
 -- Given what animations that need to play, check which one to play under certain conditions on a left click
@@ -338,7 +349,7 @@ function pings.onHitDo()
 
     -- Wands --
     if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, MageSwing1, MageSwing2, MageSwing3, AnimSecondSpell, AnimThirdSpell)
+        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, MageSwing2, MageSwing1, MageSwing3, AnimSecondSpell, AnimThirdSpell)
         return
     end
 
@@ -408,74 +419,74 @@ useKey.press = pings.onRightClickDo
 
 -- Key Bind detection (wynntils macros) =================================================================
 
-function pings.onZPressDo()
-    local currItem = player:getHeldItem()
-    local currItemStack = currItem:toStackString()
+-- function pings.onZPressDo()
+--     local currItem = player:getHeldItem()
+--     local currItemStack = currItem:toStackString()
 
-    if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
-        PlaySpellWithDelay(AnimFirstSpell)
-    elseif (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
-        PlaySpellWithDelay(AnimFirstSpell)
-    elseif (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
-        PlaySpellWithDelay(AnimFirstSpell)
-    elseif (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
-        PlaySpellWithDelay(AnimFirstSpell)
-    end
-end
+--     if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+--         PlaySpellWithDelay(AnimFirstSpell)
+--     elseif (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+--         PlaySpellWithDelay(AnimFirstSpell)
+--     elseif (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+--         PlaySpellWithDelay(AnimFirstSpell)
+--     elseif (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+--         PlaySpellWithDelay(AnimFirstSpell)
+--     end
+-- end
 
-function pings.onXPressDo()
-    local currItem = player:getHeldItem()
-    local currItemStack = currItem:toStackString()
+-- function pings.onXPressDo()
+--     local currItem = player:getHeldItem()
+--     local currItemStack = currItem:toStackString()
 
-    if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
-        PlaySpellWithDelay(AnimMovement)
-    elseif (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
-        PlaySpellWithDelay(AnimMovement)
-    elseif (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
-        PlaySpellWithDelay(AnimMovement)
-    elseif (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
-        PlaySpellWithDelay(AnimMovement)
-    end
-end
+--     if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+--         PlaySpellWithDelay(AnimMovement)
+--     elseif (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+--         PlaySpellWithDelay(AnimMovement)
+--     elseif (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+--         PlaySpellWithDelay(AnimMovement)
+--     elseif (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+--         PlaySpellWithDelay(AnimMovement)
+--     end
+-- end
 
-function pings.onCPressDo()
-    local currItem = player:getHeldItem()
-    local currItemStack = currItem:toStackString()
+-- function pings.onCPressDo()
+--     local currItem = player:getHeldItem()
+--     local currItemStack = currItem:toStackString()
 
-    if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
-        PlaySpellWithDelay(AnimSecondSpell)
-    elseif (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
-        PlaySpellWithDelay(AnimSecondSpell)
-    elseif (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
-        PlaySpellWithDelay(AnimSecondSpell)
-    elseif (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
-        PlaySpellWithDelay(AnimSecondSpell)
-    end
-end
+--     if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+--         PlaySpellWithDelay(AnimSecondSpell)
+--     elseif (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+--         PlaySpellWithDelay(AnimSecondSpell)
+--     elseif (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+--         PlaySpellWithDelay(AnimSecondSpell)
+--     elseif (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+--         PlaySpellWithDelay(AnimSecondSpell)
+--     end
+-- end
 
-function pings.onVPressDo()
-    local currItem = player:getHeldItem()
-    local currItemStack = currItem:toStackString()
+-- function pings.onVPressDo()
+--     local currItem = player:getHeldItem()
+--     local currItemStack = currItem:toStackString()
 
-    if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
-        PlaySpellWithDelay(AnimThirdSpell)
-    elseif (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
-        PlaySpellWithDelay(AnimThirdSpell)
-    elseif (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
-        PlaySpellWithDelay(AnimThirdSpell)
-    elseif (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
-        PlaySpellWithDelay(AnimThirdSpell)
-    end
-end
+--     if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+--         PlaySpellWithDelay(AnimThirdSpell)
+--     elseif (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+--         PlaySpellWithDelay(AnimThirdSpell)
+--     elseif (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+--         PlaySpellWithDelay(AnimThirdSpell)
+--     elseif (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+--         PlaySpellWithDelay(AnimThirdSpell)
+--     end
+-- end
 
-local zKey = keybinds:of("Z","key.keyboard.z")
-local xKey = keybinds:of("X","key.keyboard.x")
-local cKey = keybinds:of("C","key.keyboard.c")
-local vKey = keybinds:of("V","key.keyboard.v")
-zKey.press = pings.onZPressDo
-xKey.press = pings.onXPressDo
-cKey.press = pings.onCPressDo
-vKey.press = pings.onVPressDo
+-- local zKey = keybinds:of("Z","key.keyboard.z")
+-- local xKey = keybinds:of("X","key.keyboard.x")
+-- local cKey = keybinds:of("C","key.keyboard.c")
+-- local vKey = keybinds:of("V","key.keyboard.v")
+-- zKey.press = pings.onZPressDo
+-- xKey.press = pings.onXPressDo
+-- cKey.press = pings.onCPressDo
+-- vKey.press = pings.onVPressDo
 
 -- Action Wheel =========================================================================================
 
@@ -529,9 +540,9 @@ function events.tick() --=======================================================
     WarriorSwing2:setPriority(p)
     WarriorSwing3:setPriority(p)
 
-    -- MageSwing1:setPriority(p)
-    -- MageSwing2:setPriority(p)
-    -- MageSwing3:setPriority(p)
+    MageSwing1:setPriority(p)
+    MageSwing2:setPriority(p)
+    MageSwing3:setPriority(p)
 
     AssassinSwing1:setPriority(p)
     AssassinSwing2:setPriority(p)
@@ -539,7 +550,7 @@ function events.tick() --=======================================================
 
     ArcherShoot:setPriority(p)
 
-    -- ShamanSwing:setPriority(p)
+    ShamanSwing:setPriority(p)
     
     -- AnimMovement:setPriority(4)
     -- AnimFirstSpell:setPriority(4)
