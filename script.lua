@@ -85,15 +85,24 @@ AnimHorseRiding = animations.model["Horse_Riding"]
 
 AnimPunch = animations.model["Punch"]
 
+-- Warrior ------
+WarriorSwing1 = animations.model["Spear_Swing_1"]
+WarriorSwing2 = animations.model["Spear_Swing_2"]
+WarriorSwing3 = animations.model["Spear_Swing_3"]
+
+-- Mage ---------
+
+
 -- Assassin -----
 AssassinSwing1 = animations.model["Sword_Swing_1"]
 AssassinSwing2 = animations.model["Sword_Swing_2"]
 AssassinSwing3 = animations.model["Sword_Swing_3"]
 
--- Warrior -----
-WarriorSwing1 = animations.model["Spear_Swing_1"]
-WarriorSwing2 = animations.model["Spear_Swing_2"]
-WarriorSwing3 = animations.model["Spear_Swing_3"]
+-- Shaman -------
+
+
+-- Archer -------
+ArcherShoot = animations.model["Bow_Shoot"]
 
 -- Wynncraft Spells -------------------------------------------------
 -- R1, L2, R3 = s1
@@ -190,12 +199,12 @@ function CheckAnimToPlayRightClick(r1, r2, l2, firstSpell, movement)
     if (l2:isPlaying() and not r2:isPlaying()) then                                         -- R1, L2, s1
         StopAllSpell()
         firstSpell:play()
-    elseif (r2:isPlaying() and not movement:isPlaying()) then                                -- R1, R2, Movement
+    elseif (r2:isPlaying() and not movement:isPlaying()) then                               -- R1, R2, Movement
         StopAllSpell()
         movement:play()
     elseif (r1:isPlaying() and not r2:isPlaying()) then                                     -- R1, R2
         r2:play()
-    elseif (not r1:isPlaying() and not r2:isPlaying() and not movement:isPlaying()) then -- R1
+    elseif (not r1:isPlaying() and not r2:isPlaying() and not movement:isPlaying()) then    -- R1
         r1:play()
     end
 end
@@ -303,7 +312,9 @@ function getAnimPriority()
                             AnimIdle, AnimCrouching, AnimCrouchWalk, AnimWalk, AnimSprint, AnimJumping, AnimCrouchJumping,
                             AnimShortFalling, AnimFalling, AnimSwim, AnimFloat, AnimClimb, AnimClimbHold, AnimSit, AnimHorseSit, AnimHorseRiding}
     for i,anim in ipairs(animationTable) do
-        if (anim:isPlaying()) then
+        if (anim == AnimIdle and anim:isPlaying()) then
+            return(anim:getPriority()+1)
+        elseif (anim:isPlaying()) then
             return(anim:getPriority())
         end
     end
@@ -386,7 +397,7 @@ function pings.onRightClickDo()
     -- Bows --
     if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
         -- use opposite click for archer
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
+        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ArcherShoot, ArcherShoot, ArcherShoot, AnimSecondSpell, AnimThirdSpell)
     end -- hold down button to attack?
 
 end
@@ -509,15 +520,18 @@ squapi.smoothTorso(modelMainBody, 0.5)
 function events.tick() --============================================================================================================================
     -- Attack animation priorities ----------------------------------------------
     local p = getAnimPriority()
+
     AnimPunch:setPriority(p)
+
+    WarriorSwing1:setPriority(p)
+    WarriorSwing2:setPriority(p)
+    WarriorSwing3:setPriority(p)
 
     AssassinSwing1:setPriority(p)
     AssassinSwing2:setPriority(p)
     AssassinSwing3:setPriority(p)
 
-    WarriorSwing1:setPriority(p)
-    WarriorSwing2:setPriority(p)
-    WarriorSwing3:setPriority(p)
+    ArcherShoot:setPriority(p)
     
     -- AnimMovement:setPriority(4)
     -- AnimFirstSpell:setPriority(4)
