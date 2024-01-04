@@ -91,7 +91,9 @@ WarriorSwing2 = animations.model["Spear_Swing_2"]
 WarriorSwing3 = animations.model["Spear_Swing_3"]
 
 -- Mage ---------
-
+-- MageSwing1 = animations.model["Wand_Swing_1"]
+-- MageSwing2 = animations.model["Wand_Swing_2"]
+-- MageSwing3 = animations.model["Wand_Swing_3"]
 
 -- Assassin -----
 AssassinSwing1 = animations.model["Sword_Swing_1"]
@@ -99,7 +101,7 @@ AssassinSwing2 = animations.model["Sword_Swing_2"]
 AssassinSwing3 = animations.model["Sword_Swing_3"]
 
 -- Shaman -------
-
+-- ShamanSwing = animations.model["Relik_Strike"]
 
 -- Archer -------
 ArcherShoot = animations.model["Bow_Shoot"]
@@ -336,7 +338,7 @@ function pings.onHitDo()
 
     -- Wands --
     if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
+        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, MageSwing1, MageSwing2, MageSwing3, AnimSecondSpell, AnimThirdSpell)
         return
     end
 
@@ -348,16 +350,16 @@ function pings.onHitDo()
 
     -- Reliks --
     if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AnimSwing1, AnimSwing2, AnimSwingCombo, AnimSecondSpell, AnimThirdSpell)
+        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ShamanSwing, ShamanSwing, ShamanSwing, AnimSecondSpell, AnimThirdSpell)
         return
     end
 
     -- Bows --
-    if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
-        -- use opposite click for archer
-        CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
-        return
-    end
+    -- if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
+    --     -- use opposite click for archer
+    --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+    --     return
+    -- end
 
     -- Holding none weapon --
     AnimPunch:restart()
@@ -374,25 +376,25 @@ function pings.onRightClickDo()
     local currItem = player:getHeldItem()
     local currItemStack = currItem:toStackString()
 
-    -- Spears --
-    if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
-        CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
-    end
+    -- -- Spears --
+    -- if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+    --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+    -- end
 
-    -- Wands --
-    if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
-        CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
-    end
+    -- -- Wands --
+    -- if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+    --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+    -- end
 
-    -- Daggers --
-    if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
-        CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
-    end
+    -- -- Daggers --
+    -- if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+    --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+    -- end
 
-    -- Reliks --
-    if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
-        CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
-    end
+    -- -- Reliks --
+    -- if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+    --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+    -- end
 
     -- Bows --
     if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
@@ -493,21 +495,21 @@ local mainPage = action_wheel:newPage("Taunts")
 action_wheel:setPage(mainPage)
 local action1 = mainPage:newAction()
     :title("Dance")
-    :item("minecraft:stick")
+    :item("minecraft:music_disc_chirp")
     :hoverColor(1, 1, 1)
     :setOnRightClick(pings.actionDance)
 
-local action2 = mainPage:newAction()
-    :title("idle1")
-    :item("minecraft:stick")
-    :hoverColor(1, 1, 1)
-    :setOnRightClick(pings.action2)
+-- local action2 = mainPage:newAction()
+--     :title("idle1")
+--     :item("minecraft:stick")
+--     :hoverColor(1, 1, 1)
+--     :setOnRightClick(pings.action2)
 
-local action3 = mainPage:newAction()
-    :title("idle2")
-    :item("minecraft:stick")
-    :hoverColor(1, 1, 1)
-    :setOnRightClick(pings.action3)
+-- local action3 = mainPage:newAction()
+--     :title("idle2")
+--     :item("minecraft:stick")
+--     :hoverColor(1, 1, 1)
+--     :setOnRightClick(pings.action3)
 
 -- SquAPI Animation Handling ============================================================================
 
@@ -527,11 +529,17 @@ function events.tick() --=======================================================
     WarriorSwing2:setPriority(p)
     WarriorSwing3:setPriority(p)
 
+    -- MageSwing1:setPriority(p)
+    -- MageSwing2:setPriority(p)
+    -- MageSwing3:setPriority(p)
+
     AssassinSwing1:setPriority(p)
     AssassinSwing2:setPriority(p)
     AssassinSwing3:setPriority(p)
 
     ArcherShoot:setPriority(p)
+
+    -- ShamanSwing:setPriority(p)
     
     -- AnimMovement:setPriority(4)
     -- AnimFirstSpell:setPriority(4)
