@@ -312,7 +312,7 @@ function getAnimPriority()
                             AnimIdle, AnimCrouching, AnimCrouchWalk, AnimWalk, AnimSprint, AnimJumping, AnimCrouchJumping,
                             AnimShortFalling, AnimFalling, AnimSwim, AnimFloat, AnimClimb, AnimClimbHold, AnimSit, AnimHorseSit, AnimHorseRiding}
     for i,anim in ipairs(animationTable) do
-        if (anim == AnimIdle and anim:isPlaying()) then
+        if (anim == AnimIdle and anim:isPlaying() and not AnimCrouching:isPlaying()) then
             return(anim:getPriority()+1)
         elseif (anim:isPlaying()) then
             return(anim:getPriority())
