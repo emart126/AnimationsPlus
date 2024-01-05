@@ -328,8 +328,9 @@ end
 -- Get the priority of the animation currently playing
 function getAnimPriority()
     local animationTable = {AnimJump, AnimJumpLand, AnimCrouch, AnimUnCrouch, AnimFall, AnimShortLand, AnimFallLand,
-                            AnimIdle, AnimCrouching, AnimCrouchWalk, AnimWalk, AnimSprint, AnimJumping, AnimCrouchJumping,
-                            AnimShortFalling, AnimFalling, AnimSwim, AnimFloat, AnimClimb, AnimClimbHold, AnimSit, AnimHorseSit, AnimHorseRiding}
+                            AnimJumpMove1, AnimJumpMove2, AnimJumpMoveStop1, AnimJumpMoveStop2, AnimIdle, AnimCrouching,
+                            AnimCrouchWalk, AnimWalk, AnimSprint, AnimJumping, AnimCrouchJumping, AnimShortFalling,
+                            AnimFalling, AnimSwim, AnimFloat, AnimClimb, AnimClimbHold, AnimSit, AnimHorseSit, AnimHorseRiding}
     for i,anim in ipairs(animationTable) do
         if (anim == AnimIdle and anim:isPlaying() and not AnimCrouching:isPlaying()) then
             return(anim:getPriority()+1)
@@ -530,10 +531,8 @@ local action1 = mainPage:newAction()
 
 -- SquAPI Animation Handling ============================================================================
 
--- squapi.walk(AnimWalk, AnimSprint)
 squapi.smoothHead(modelHead, 0.4, 1, false)
 squapi.smoothTorso(modelMainBody, 0.5)
--- squapi.crouch(AnimCrouch, AnimUnCrouch)
 
 -- Render animation conditions by in game ticks
 function events.tick() --============================================================================================================================
@@ -580,6 +579,10 @@ function events.tick() --=======================================================
     AnimJumping:setPriority(1)
     AnimJump:setPriority(2)
     AnimJumpLand:setPriority(2)
+    AnimJumpMove1:setPriority(2)
+    AnimJumpMove2:setPriority(2)
+    AnimJumpMoveStop1:setPriority(2)
+    AnimJumpMoveStop2:setPriority(2)
     AnimCrouchJumping:setPriority(2)
 
     AnimShortFalling:setPriority(1)
