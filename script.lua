@@ -6,13 +6,25 @@ vanilla_model.PLAYER:setVisible(false)
 -- Get model type
 function events.entity_init() --=====================================================================================================================
     if (player:getModelType() == "DEFAULT") then
-        print("default type")
-        models.model.Player:setVisible(true)
-        --models.model.rootSlim:setVisible(false)
+        models.model.Player.Upper.body.Arms.Arm_L.Bicep_Default_L:setVisible(true)
+        models.model.Player.Upper.body.Arms.Arm_L.Bicep_Slim_L:setVisible(false)
+        models.model.Player.Upper.body.Arms.Arm_L.Elbow_L.Limb_Default_L:setVisible(true)
+        models.model.Player.Upper.body.Arms.Arm_L.Elbow_L.Limb_Slim_L:setVisible(false)
+
+        models.model.Player.Upper.body.Arms.Arm_R.Bicep_Default_R:setVisible(true)
+        models.model.Player.Upper.body.Arms.Arm_R.Bicep_Slim_R:setVisible(false)
+        models.model.Player.Upper.body.Arms.Arm_R.Elbow_R.Limb_Default_R:setVisible(true)
+        models.model.Player.Upper.body.Arms.Arm_R.Elbow_R.Limb_Slim_R:setVisible(false)
     else
-        print("slim type")
-        -- models.model.rootDefault:setVisible(false)
-        -- models.model.rootSlim:setVisible(true)
+        models.model.Player.Upper.body.Arms.Arm_L.Bicep_Default_L:setVisible(false)
+        models.model.Player.Upper.body.Arms.Arm_L.Bicep_Slim_L:setVisible(true)
+        models.model.Player.Upper.body.Arms.Arm_L.Elbow_L.Limb_Default_L:setVisible(false)
+        models.model.Player.Upper.body.Arms.Arm_L.Elbow_L.Limb_Slim_L:setVisible(true)
+
+        models.model.Player.Upper.body.Arms.Arm_R.Bicep_Default_R:setVisible(false)
+        models.model.Player.Upper.body.Arms.Arm_R.Bicep_Slim_R:setVisible(true)
+        models.model.Player.Upper.body.Arms.Arm_R.Elbow_R.Limb_Default_R:setVisible(false)
+        models.model.Player.Upper.body.Arms.Arm_R.Elbow_R.Limb_Slim_R:setVisible(true)
     end
 end
 
@@ -28,13 +40,7 @@ local idleTick = 0
 local jump = 1
 
 -- BlockBench model parts
-local pModel
-if (models.model.Player:getVisible()) then
-    pModel = models.model.Player
-else
-    --pModel = models.model.PlayerSlim
-end
-
+local pModel = models.model.Player
 local modelHead = pModel.Upper.head
 local modelMainBody = pModel.Upper
 local modelRightArm = pModel.Upper.body.Arms.Arm_R
