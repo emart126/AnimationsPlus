@@ -196,14 +196,20 @@ function CheckAnimToPlayLeftClick(r1, r2, l2, swing1, swing2, swingCombo, second
         thirdSpell:play()
     elseif (r1:isPlaying() and not l2:isPlaying()) then             -- R1, L2
         l2:play()
-    elseif (swing2:isPlaying() and not swingCombo:isPlaying()) then
-        swing2:stop()
-        swingCombo:play()
-    elseif (swing1:isPlaying() and not swing2:isPlaying() and not swingCombo:isPlaying()) then
-        swing1:stop()
-        swing2:play()
-    elseif (not swing1:isPlaying() and not swing2:isPlaying() and not swingCombo:isPlaying()) then
-        swing1:play()
+    elseif (swing2 ~= nil and swingCombo ~= nil) then
+        -- Three swing combo attack
+        if (swing2:isPlaying() and not swingCombo:isPlaying()) then
+            swing2:stop()
+            swingCombo:play()
+        elseif (swing1:isPlaying() and not swing2:isPlaying() and not swingCombo:isPlaying()) then
+            swing1:stop()
+            swing2:play()
+        elseif (not swing1:isPlaying() and not swing2:isPlaying() and not swingCombo:isPlaying()) then
+            swing1:play()
+        end
+    else
+        -- One swing attack
+        swing1:restart()
     end
 end
 
@@ -361,7 +367,7 @@ function pings.onHitDo()
 
     -- Reliks --
     if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ShamanSwing, ShamanSwing, ShamanSwing, AnimSecondSpell, AnimThirdSpell)
+        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ShamanSwing, nil, nil, AnimSecondSpell, AnimThirdSpell)
         return
     end
 
@@ -410,7 +416,7 @@ function pings.onRightClickDo()
     -- Bows --
     if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
         -- use opposite click for archer
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ArcherShoot, ArcherShoot, ArcherShoot, AnimSecondSpell, AnimThirdSpell)
+        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ArcherShoot, nil, nil, AnimSecondSpell, AnimThirdSpell)
     end -- hold down button to attack?
 
 end
