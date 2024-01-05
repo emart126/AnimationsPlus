@@ -559,9 +559,9 @@ function events.tick() --=======================================================
 
     -- Basic action animation prioirites ----------------------------------------
     AnimIdle:setPriority(1)
-    AnimIdling1:setPriority(1)
-    AnimIdling2:setPriority(1)
-    AnimIdling3:setPriority(1)
+    AnimIdling1:setPriority(2)
+    AnimIdling2:setPriority(2)
+    AnimIdling3:setPriority(2)
 
     AnimCrouching:setPriority(1)
     AnimCrouchWalk:setPriority(1)
