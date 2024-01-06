@@ -97,9 +97,9 @@ WarriorSwing2 = animations.model["Spear_Swing_2"]
 WarriorSwing3 = animations.model["Spear_Swing_3"]
 
 -- Mage ---------
-MageSwing1 = animations.model["Wand_Cast_1"]
-MageSwing2 = animations.model["Wand_Cast_2"]
-MageSwing3 = animations.model["Wand_Cast_3"]
+MageSwing1 = animations.model["Wand_Wave_1"]
+MageSwing2 = animations.model["Wand_Wave_2"]
+MageSwing3 = animations.model["Wand_Wave_3"]
 
 -- Assassin -----
 AssassinSwing1 = animations.model["Sword_Swing_1"]
@@ -362,7 +362,7 @@ function pings.onHitDo()
 
     -- Wands --
     if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, MageSwing2, MageSwing1, MageSwing3, AnimSecondSpell, AnimThirdSpell)
+        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, MageSwing1, MageSwing2, MageSwing3, AnimSecondSpell, AnimThirdSpell)
         return
     end
 
