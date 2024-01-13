@@ -1008,3 +1008,40 @@ function events.render(delta, context) --=======================================
     --     acceleration[2] = 0
     -- end
 end
+
+-- Sheathing weapon
+-- local itemInFirst
+-- local task
+-- local currSlot
+-- local oldSlot
+
+-- function events.entity_init() --=====================================================================================================================
+--     task = pModel.Upper.body.SheathedWeapon:newItem("weapon")
+--     task:setDisplayMode("GUI")
+--     task:setScale(2.25,2.25,2.25)
+-- end
+
+-- function events.tick()
+--     currSlot = player:getNbt().SelectedItemSlot
+
+--     itemInFirst = host:getSlot(0)
+--     local damage = itemInFirst["tag"]["Damage"]
+--     local itemID
+--     if (damage ~= nil) then
+--         itemID = itemInFirst.id.."{Damage:"..damage..",Unbreakable:1}"
+--     else
+--         itemID = itemInFirst.id
+--     end
+
+--     if (currSlot ~= oldSlot) then
+--         task:setItem(itemID or "minecraft:air")
+--     end
+
+--     if (player:getNbt().SelectedItemSlot == 0) then
+--         task:setVisible(false)
+--     else
+--         task:setVisible(true)
+--     end
+    
+--     oldSlot = currSlot
+-- end
