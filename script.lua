@@ -129,7 +129,6 @@ AnimSecondSpell = animations.model["spell2"]
 
 -- Katt Armor Handling ==================================================================================
 
-vanilla_model.ARMOR:setVisible(false)
 local kattArmor = require("KattArmor")()
 kattArmor.Armor.Helmet
 -- the `addParts` function is not strict with the number of ModelParts provided. Add or remove parts as desired.
