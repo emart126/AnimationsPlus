@@ -30,6 +30,9 @@ end
 
 -- global vars ==========================================================================================
 
+-- Settings
+local sheathOption = 1;
+
 -- Animation states/ticks
 local state
 local oldState
@@ -518,27 +521,33 @@ function pings.actionDance()
     AnimIdling3:play()
 end
 
-function pings.action2()
-    AnimIdling2:play()
+function pings.actionSheath(setting)
+    if (setting == 0) then
+        sheathOption = 1;
+    else
+        sheathOption = 0;
+    end
 end
 
-function pings.action3()
+function pings.action3(setting)
     AnimIdling1:play()
 end
 
 local mainPage = action_wheel:newPage("Taunts")
 action_wheel:setPage(mainPage)
 local action1 = mainPage:newAction()
-    :title("Dance")
+    :title("Dance (Right-Click)")
     :item("minecraft:music_disc_chirp")
     :hoverColor(1, 1, 1)
     :setOnRightClick(pings.actionDance)
 
--- local action2 = mainPage:newAction()
---     :title("idle1")
---     :item("minecraft:stick")
---     :hoverColor(1, 1, 1)
---     :setOnRightClick(pings.action2)
+local action2 = mainPage:newAction()
+    :title("Sheath (on/off)")
+    :item("minecraft:diamond_sword")
+    :hoverColor(1, 1, 1)
+    :setOnRightClick(function()
+        pings.actionSheath(sheathOption)
+    end)
 
 -- local action3 = mainPage:newAction()
 --     :title("idle2")
@@ -1022,52 +1031,56 @@ function events.render(delta, context) --=======================================
 end
 
 -- Sheathing weapon
--- local itemInFirst
--- local oldItemInFirst
--- local itemInFirstStack
--- local oldItemInFirstStack
--- local task
--- local currSlot
--- local oldSlot
+local itemInFirst
+local oldItemInFirst
+local itemInFirstStack
+local oldItemInFirstStack
+local task
+local currSlot
+local oldSlot
 
--- function events.entity_init() --=====================================================================================================================
---     task = pModel.Upper.body.SheathedWeapon:newItem("weapon")
---     task:setDisplayMode("GUI")
---     task:setScale(2.25,2.25,2.25)
--- end
+function events.entity_init() --=====================================================================================================================
+    task = pModel.Upper.body.SheathedWeapon:newItem("weapon")
+    task:setDisplayMode("GUI")
+    task:setScale(2.25,2.25,2.25)
+end
 
--- function events.tick()
---     currSlot = player:getNbt().SelectedItemSlot
---     itemInFirst = host:getSlot(0)
---     itemInFirstStack = itemInFirst:toStackString()
---     if (oldItemInFirstStack == nil) then
---         oldItemInFirstStack = itemInFirstStack
---     end
+function events.tick()
+    if (sheathOption == 1) then
+        currSlot = player:getNbt().SelectedItemSlot
+        itemInFirst = host:getSlot(0)
+        itemInFirstStack = itemInFirst:toStackString()
+        if (oldItemInFirstStack == nil) then
+            oldItemInFirstStack = itemInFirstStack
+        end
 
---     local damage = itemInFirst["tag"]["Damage"]
---     local itemID
---     if (damage ~= nil) then
---         itemID = itemInFirst.id.."{Damage:"..damage..",Unbreakable:1}"
---     else
---         itemID = itemInFirst.id
---     end
+        local damage = itemInFirst["tag"]["Damage"]
+        local itemID
+        if (damage ~= nil) then
+            itemID = itemInFirst.id.."{Damage:"..damage..",Unbreakable:1}"
+        else
+            itemID = itemInFirst.id
+        end
 
---     if ((currSlot ~= oldSlot and (currSlot == 0 or oldSlot == 0)) or (CheckClassItem(itemInFirstStack) ~= CheckClassItem(oldItemInFirstStack))) then
---         if (CheckClassItem(itemInFirstStack)) then
---             task:setItem(itemID)
---         else
---             task:setItem("minecraft:air")
---         end
---     end
+        if ((currSlot ~= oldSlot and (currSlot == 0 or oldSlot == 0)) or (CheckClassItem(itemInFirstStack) ~= CheckClassItem(oldItemInFirstStack))) then
+            if (CheckClassItem(itemInFirstStack)) then
+                task:setItem(itemID)
+            else
+                task:setItem("minecraft:air")
+            end
+        end
 
---     -- holding/not holding weapon
---     if (currSlot == 0) then
---         task:setVisible(false)
---     else
---         task:setVisible(true)
---     end
-    
---     oldSlot = currSlot
---     oldItemInFirst = itemInFirst
---     oldItemInFirstStack = itemInFirstStack
--- end
+        -- holding/not holding weapon
+        if (currSlot == 0) then
+            task:setVisible(false)
+        else
+            task:setVisible(true)
+        end
+        
+        oldSlot = currSlot
+        oldItemInFirst = itemInFirst
+        oldItemInFirstStack = itemInFirstStack
+    else
+        task:setVisible(false);
+    end
+end
