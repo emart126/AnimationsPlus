@@ -191,6 +191,18 @@ function StopAllSpell()
     -- AnimMovement:stop()
 end
 
+-- Check if itemStack has a class identified with it
+function CheckClassItem(item)
+    if (string.find(item, "Warrior/Knight") ~= nil or
+        string.find(item, "Mage/Dark Wizard") ~= nil or
+        string.find(item, "Assassin/Ninja") ~= nil or
+        string.find(item, "Shaman/Skyseer") ~= nil or
+        string.find(item, "Archer/Hunter") ~= nil) then
+        return(true)
+    end
+    return(false)
+end
+
 -- Given what animations that need to play, check which one to play under certain conditions on a left click
 function CheckAnimToPlayLeftClick(r1, r2, l2, swing1, swing2, swingCombo, secondSpell, thirdSpell)
     if (l2:isPlaying() and not secondSpell:isPlaying()) then        -- R1, L2, s2
@@ -1011,6 +1023,9 @@ end
 
 -- Sheathing weapon
 -- local itemInFirst
+-- local oldItemInFirst
+-- local itemInFirstStack
+-- local oldItemInFirstStack
 -- local task
 -- local currSlot
 -- local oldSlot
@@ -1023,8 +1038,12 @@ end
 
 -- function events.tick()
 --     currSlot = player:getNbt().SelectedItemSlot
-
 --     itemInFirst = host:getSlot(0)
+--     itemInFirstStack = itemInFirst:toStackString()
+--     if (oldItemInFirstStack == nil) then
+--         oldItemInFirstStack = itemInFirstStack
+--     end
+
 --     local damage = itemInFirst["tag"]["Damage"]
 --     local itemID
 --     if (damage ~= nil) then
@@ -1033,15 +1052,22 @@ end
 --         itemID = itemInFirst.id
 --     end
 
---     if (currSlot ~= oldSlot) then
---         task:setItem(itemID or "minecraft:air")
+--     if ((currSlot ~= oldSlot and (currSlot == 0 or oldSlot == 0)) or (CheckClassItem(itemInFirstStack) ~= CheckClassItem(oldItemInFirstStack))) then
+--         if (CheckClassItem(itemInFirstStack)) then
+--             task:setItem(itemID)
+--         else
+--             task:setItem("minecraft:air")
+--         end
 --     end
 
---     if (player:getNbt().SelectedItemSlot == 0) then
+--     -- holding/not holding weapon
+--     if (currSlot == 0) then
 --         task:setVisible(false)
 --     else
 --         task:setVisible(true)
 --     end
     
 --     oldSlot = currSlot
+--     oldItemInFirst = itemInFirst
+--     oldItemInFirstStack = itemInFirstStack
 -- end
