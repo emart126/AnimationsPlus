@@ -31,7 +31,7 @@ end
 -- global vars ==========================================================================================
 
 -- Settings
-local sheathOption = 1;
+local sheathOption = 0;
 
 -- Animation states/ticks
 local state
@@ -557,8 +557,8 @@ local action2 = mainPage:newAction()
 
 -- SquAPI Animation Handling ============================================================================
 
-squapi.smoothHead(modelHead, 0.4, 1, false)
-squapi.smoothTorso(modelMainBody, 0.5)
+squapi.smoothHead(modelHead, 0.3, 1, false)
+squapi.smoothTorso(modelMainBody, 0.2)
 
 -- Render animation conditions by in game ticks
 function events.tick() --============================================================================================================================
@@ -1002,13 +1002,13 @@ function events.render(delta, context) --=======================================
     lArm:doBounce(armTarget, 0.01, .2)
 
     -- Idle Arms affected by gravity --------------------------------------------
-    if (state == "idle" and headRot[1] > 0) then
-        modelRightArm:setOffsetRot(-headRot[1],0,0)
-        modelLeftArm:setOffsetRot(-headRot[1],0,0)
-    else
-        modelRightArm:setOffsetRot(0,0,0)
-        modelLeftArm:setOffsetRot(0,0,0)
-    end
+    -- if (state == "idle" and headRot[1] > 0) then
+    --     modelRightArm:setOffsetRot(-headRot[1],0,0)
+    --     modelLeftArm:setOffsetRot(-headRot[1],0,0)
+    -- else
+    --     modelRightArm:setOffsetRot(0,0,0)
+    --     modelLeftArm:setOffsetRot(0,0,0)
+    -- end
 
     -- Head physics -------------------------------------------------------------
     modelHead:setRot(head.pos*1.5, 0, 0)
