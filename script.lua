@@ -1,3 +1,6 @@
+-- Wynncraft Animations Plus --
+
+
 local squapi = require("SquAPI")
 
 -- Hide vanilla model
@@ -381,81 +384,84 @@ end
 local hitKey = keybinds:of("Punch",keybinds:getVanillaKey("key.attack"))
 
 function pings.onHitDo()
-    local currItem = player:getHeldItem()
-    local currItemStack = currItem:toStackString()
+    if (not action_wheel:isEnabled()) then
+        local currItem = player:getHeldItem()
+        local currItemStack = currItem:toStackString()
 
-    -- Spears --
-    if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, WarriorSwing1, WarriorSwing2, WarriorSwing3, AnimSecondSpell, AnimThirdSpell)
-        return
+        -- Spears --
+        if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+            CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, WarriorSwing1, WarriorSwing2, WarriorSwing3, AnimSecondSpell, AnimThirdSpell)
+            return
+        end
+
+        -- Wands --
+        if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+            CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, MageSwing1, MageSwing2, MageSwing3, AnimSecondSpell, AnimThirdSpell)
+            return
+        end
+
+        -- Daggers --
+        if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+            CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AssassinSwing1, AssassinSwing2, AssassinSwing3, AnimSecondSpell, AnimThirdSpell)
+            return
+        end
+
+        -- Reliks --
+        if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+            CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ShamanSwing, nil, nil, AnimSecondSpell, AnimThirdSpell)
+            return
+        end
+
+        -- Bows --
+        -- if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
+        --     -- use opposite click for archer
+        --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+        --     return
+        -- end
+
+        -- Holding none weapon --
+        AnimPunch:restart()
+    
     end
-
-    -- Wands --
-    if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, MageSwing1, MageSwing2, MageSwing3, AnimSecondSpell, AnimThirdSpell)
-        return
-    end
-
-    -- Daggers --
-    if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AssassinSwing1, AssassinSwing2, AssassinSwing3, AnimSecondSpell, AnimThirdSpell)
-        return
-    end
-
-    -- Reliks --
-    if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ShamanSwing, nil, nil, AnimSecondSpell, AnimThirdSpell)
-        return
-    end
-
-    -- Bows --
-    -- if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
-    --     -- use opposite click for archer
-    --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
-    --     return
-    -- end
-
-    -- Holding none weapon --
-    AnimPunch:restart()
-
 end
 
 hitKey.press = pings.onHitDo
-
 
 -- right-clicking detection =============================================================================
 local useKey = keybinds:of("Use",keybinds:getVanillaKey("key.use"))
 
 function pings.onRightClickDo()
-    local currItem = player:getHeldItem()
-    local currItemStack = currItem:toStackString()
+    if (not action_wheel:isEnabled()) then
+        local currItem = player:getHeldItem()
+        local currItemStack = currItem:toStackString()
 
-    -- -- Spears --
-    -- if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
-    --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
-    -- end
+        -- -- Spears --
+        -- if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+        --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+        -- end
 
-    -- -- Wands --
-    -- if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
-    --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
-    -- end
+        -- -- Wands --
+        -- if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+        --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+        -- end
 
-    -- -- Daggers --
-    -- if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
-    --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
-    -- end
+        -- -- Daggers --
+        -- if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+        --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+        -- end
 
-    -- -- Reliks --
-    -- if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
-    --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
-    -- end
+        -- -- Reliks --
+        -- if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+        --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
+        -- end
 
-    -- Bows --
-    if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
-        -- use opposite click for archer
-        CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ArcherShoot, nil, nil, AnimSecondSpell, AnimThirdSpell)
-    end -- hold down button to attack?
+        -- Bows --
+        if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
+            -- use opposite click for archer
+            CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ArcherShoot, nil, nil, AnimSecondSpell, AnimThirdSpell)
+        end -- hold down button to attack?
 
+    end
 end
 
 useKey.press = pings.onRightClickDo
@@ -632,7 +638,7 @@ function events.tick() --=======================================================
         AnimIdling3:stop()
     end
 
-    if (hitKey:isPressed()) then
+    if (hitKey:isPressed() and not action_wheel:isEnabled()) then
         idleTick = 0
         AnimIdling1:stop()
         AnimIdling2:stop()
@@ -870,7 +876,7 @@ function events.render(delta, context) --=======================================
             rot = player:getBodyYaw(delta)-90
         end
         pModel:setOffsetRot(0,rot,0)
-        pModel.Upper:setRot(-player:getLookDir()[2]*45,0,0)
+        --pModel.Upper:setRot(-player:getLookDir()[2]*45,0,0)
 
         -- rotate more when at top of ladder
         if (world.getBlockState(player:getPos()).id == "minecraft:ladder" and world.getBlockState(player:getPos():add(0,1,0)).id == "minecraft:air") then
@@ -1278,10 +1284,10 @@ local mainPage = action_wheel:newPage("Taunts")
 action_wheel:setPage(mainPage)
 
 local action1 = mainPage:newAction()
-    :title("Dance (Right-Click)")
+    :title("Dance")
     :item("minecraft:music_disc_chirp")
     :hoverColor(1, 1, 1)
-    :onRightClick(pings.actionDance)
+    :onLeftClick(pings.actionDance)
 
 local action2 = mainPage:newAction()
     :title("Enable Sheath")
