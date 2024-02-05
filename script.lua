@@ -196,6 +196,10 @@ end
 
 -- Check if itemStack has a class identified with it
 function CheckClassItem(item)
+    if (item == nil) then
+        return(nil)
+    end
+
     if (string.find(item, "Warrior/Knight") ~= nil) then
         return("Warrior/Knight")
     elseif (string.find(item, "Mage/Dark Wizard") ~= nil) then
@@ -1043,15 +1047,28 @@ function events.render(delta, context) --=======================================
 end
 
 -- Sheathing weapon
-local itemInFirst
-local oldItemInFirst
-local itemInFirstStack
-local oldItemInFirstStack
 local task
-local currSlot
+
+local syncedItemID
+local oldItemID
+
+local syncedPlayerSlot
 local oldSlot
-local damage
-local oldDamage
+
+local currWeapon
+local oldWeapon
+
+function pings.updateItemID(id)
+    syncedItemID = id
+end
+
+function pings.updateSlot(slot)
+    syncedPlayerSlot = slot
+end
+
+function pings.updateWeaponClass(class)
+    currWeapon = class
+end
 
 function events.entity_init() --=====================================================================================================================
     task = pModel.Upper.body.SheathedWeapon:newItem("weapon")
@@ -1060,25 +1077,22 @@ function events.entity_init() --================================================
     task:setScale(1.5,1.5,1.5)
 end
 
-function events.tick()
-    if (sheathOption == 1) then
-        currSlot = player:getNbt().SelectedItemSlot
-        itemInFirst = host:getSlot(0)
-
-        itemInFirstStack = itemInFirst:toStackString()
-        if (oldItemInFirstStack == nil) then
-            oldItemInFirstStack = itemInFirstStack
+if (host:isHost()) then
+    function events.tick()
+        if (world.getTime() % 5 ~= 0) then
+            return
         end
 
+        -- Sync item id and damage value
+        local itemInFirst = host:getSlot(0)
+        local itemInFirstStack = itemInFirst:toStackString()
+
         local itemID
-        damage = itemInFirst["tag"]["Damage"]
+        local damage = itemInFirst["tag"]["Damage"]
 
         if (damage ~= nil or itemInFirst.id == "minecraft:stick") then
             if (damage ~= nil) then
                 itemID = itemInFirst.id.."{Damage:"..damage..",Unbreakable:1}"
-                if (oldDamage == nil) then
-                    oldDamage = damage
-                end
             else
                 itemID = itemInFirst.id
             end
@@ -1245,26 +1259,35 @@ function events.tick()
             itemID = itemInFirst.id
         end
 
-        if ((currSlot ~= oldSlot and (currSlot == 0 or oldSlot == 0)) or (CheckClassItem(itemInFirstStack) ~= CheckClassItem(oldItemInFirstStack)) or (oldDamage ~= damage)) then
-            if (CheckClassItem(itemInFirstStack)) then
-                task:setItem(itemID)
-            else
-                task:setItem("minecraft:air")
-            end
-        end
+        pings.updateItemID(itemID)
 
-        -- holding/not holding weapon
-        if (currSlot == 0) then
-            task:setVisible(false)
-        else
-            task:setVisible(true)
-        end
-        
-        oldSlot = currSlot
-        oldItemInFirst = itemInFirst
-        oldItemInFirstStack = itemInFirstStack
-        oldDamage = damage
-    else
-        task:setVisible(false);
+        -- Sync selected slot
+        local currSlot = player:getNbt().SelectedItemSlot
+        pings.updateSlot(currSlot)
+
+        -- Sync bool check if itemstack is weapon
+        local hasClassStr = CheckClassItem(itemInFirstStack)
+        pings.updateWeaponClass(hasClassStr)
     end
+end
+
+function events.tick()
+    if ((syncedPlayerSlot ~= oldSlot and (syncedPlayerSlot == 0 or oldSlot == 0)) or (currWeapon ~= oldWeapon) or (syncedItemID ~= oldItemID)) then
+        if (currWeapon ~= nil) then
+            task:setItem(syncedItemID)
+        else
+            task:setItem("minecraft:air")
+        end
+    end
+
+    -- holding/not holding weapon
+    if (syncedPlayerSlot == 0) then
+        task:setVisible(false)
+    else
+        task:setVisible(true)
+    end
+
+    oldItemID = syncedItemID
+    oldSlot = syncedPlayerSlot
+    oldWeapon = currWeapon
 end
