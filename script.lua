@@ -31,7 +31,7 @@ end
 -- global vars ==========================================================================================
 
 -- Settings
-local sheathOption = 1;
+local sheathOption = true;
 
 -- Animation states/ticks
 local state
@@ -530,46 +530,6 @@ useKey.press = pings.onRightClickDo
 -- xKey.press = pings.onXPressDo
 -- cKey.press = pings.onCPressDo
 -- vKey.press = pings.onVPressDo
-
--- Action Wheel =========================================================================================
-
-function pings.actionDance()
-    AnimIdling3:play()
-end
-
-function pings.actionSheath(setting)
-    if (setting == 0) then
-        sheathOption = 1;
-    else
-        sheathOption = 0;
-    end
-end
-
-function pings.action3(setting)
-    AnimIdling1:play()
-end
-
-local mainPage = action_wheel:newPage("Taunts")
-action_wheel:setPage(mainPage)
-local action1 = mainPage:newAction()
-    :title("Dance (Right-Click)")
-    :item("minecraft:music_disc_chirp")
-    :hoverColor(1, 1, 1)
-    :onRightClick(pings.actionDance)
-
-local action2 = mainPage:newAction()
-    :title("Sheath (on/off)")
-    :item("minecraft:diamond_sword")
-    :hoverColor(1, 1, 1)
-    :onRightClick(function()
-        pings.actionSheath(sheathOption)
-    end)
-
--- local action3 = mainPage:newAction()
---     :title("idle2")
---     :item("minecraft:stick")
---     :hoverColor(1, 1, 1)
---     :setOnRightClick(pings.action3)
 
 -- SquAPI Animation Handling ============================================================================
 
@@ -1079,215 +1039,260 @@ end
 
 if (host:isHost()) then
     function events.tick()
-        if (world.getTime() % 5 ~= 0) then
-            return
-        end
+        if (sheathOption) then
+            if (world.getTime() % 5 ~= 0) then
+                return
+            end
 
-        -- Sync item id and damage value
-        local itemInFirst = host:getSlot(0)
-        local itemInFirstStack = itemInFirst:toStackString()
+            -- Sync item id and damage value
+            local itemInFirst = host:getSlot(0)
+            local itemInFirstStack = itemInFirst:toStackString()
 
-        local itemID
-        local damage = itemInFirst["tag"]["Damage"]
+            local itemID
+            local damage = itemInFirst["tag"]["Damage"]
 
-        if (damage ~= nil or itemInFirst.id == "minecraft:stick") then
-            if (damage ~= nil) then
-                itemID = itemInFirst.id.."{Damage:"..damage..",Unbreakable:1}"
+            if (damage ~= nil or itemInFirst.id == "minecraft:stick") then
+                if (damage ~= nil) then
+                    itemID = itemInFirst.id.."{Damage:"..damage..",Unbreakable:1}"
+                else
+                    itemID = itemInFirst.id
+                end
+
+                -- Edit scale and rotation depending on its damage value
+                if (CheckClassItem(itemInFirstStack) == "Warrior/Knight") then
+                    task:setPos(0, 17, 4)
+                    task:setScale(1.5, 1.5, 1.5)
+                    task:setRot(-20, 20, 100)
+
+                    if (IsBetweenXY(damage, 0, 1)) then         -- neutral
+                        task:setPos(0, 18, 4);
+                    elseif (IsBetweenXY(damage, 5, 7)) then     -- thunder
+                        task:setPos(0, 18, 4)
+                    elseif (IsBetweenXY(damage, 8, 9)) then    -- fire
+                        task:setPos(0, 17, 3.5)
+                    elseif (damage == 10) then
+                        task:setPos(0, 17, 4)
+                    elseif (damage == 12) then                  -- air
+                        task:setPos(0, 17, 5.5)
+                        task:setScale(2.25, 2.25, 2.25)
+                    elseif (damage == 13) then
+                        task:setPos(0, 16, 5)
+                        task:setScale(2.25, 2.25, 2.25)
+                        task:setRot(-20, 20, 100)
+                    elseif (damage == 14) then                  -- water
+                        task:setPos(0,18, 2)
+                        task:setScale(2.5, 2.5, 2.5)
+                    elseif (IsBetweenXY(damage, 15, 16)) then
+                        task:setPos(0, 18, 3)
+                        task:setScale(2.5, 2.5, 2.5)
+                    elseif (IsBetweenXY(damage, 17, 19)) then   -- rainbow
+                        task:setPos(0, 18, 3)
+                        task:setScale(2.5, 2.5, 2.5)
+                    else
+                        task:setPos(0, 17, 4)
+                        task:setScale(1.5, 1.5, 1.5)
+                        task:setRot(-20, 20, 100)
+                    end
+                elseif (CheckClassItem(itemInFirstStack) == "Mage/Dark Wizard") then
+                    task:setPos(0, 16.5, 4)
+                    task:setScale(1.5, 1.5, 1.5)
+                    task:setRot(-15, 15, 105)
+
+                    if (itemInFirst.id == "minecraft:stick" or damage == 1) then -- neutral
+                        task:setPos(0, 18, 3)
+                        task:setScale(1.25, 1.25, 1.25)
+                        task:setRot(-20, 20, 100)
+                    else
+                        task:setPos(0, 16.5, 4)
+                        task:setScale(1.5, 1.5, 1.5)
+                        task:setRot(-15, 15, 105)
+                    end
+                elseif (CheckClassItem(itemInFirstStack) == "Assassin/Ninja") then
+                    task:setPos(0, 19, 3.5)
+                    task:setScale(1, 1, 1)
+                    task:setRot(160, 25, -10)
+
+                    if (IsBetweenXY(damage, 0, 1)) then         -- neutral
+                        task:setPos(5, 12, 0)
+                        task:setScale(0.9, 0.9, 0.9)
+                        task:setRot(70, 0, 120)
+                    elseif (damage == 2) then                   -- earth
+                        task:setPos(1, 21, 3.5)
+                        task:setRot(160, -10, -10)
+                    elseif (IsBetweenXY(damage, 3, 4)) then
+                    elseif (damage == 5) then                   -- thunder
+                        task:setPos(2, 20, 2.5)
+                        task:setRot(160, -10, -10)
+                    elseif (IsBetweenXY(damage, 6, 7)) then
+                        task:setRot(160, -10, -10)
+                    elseif (damage == 8) then                   -- fire
+                        task:setPos(0, 19, 2.5)
+                    elseif (damage == 12) then                   -- air
+                        task:setPos(0, 19, 2)
+                    elseif (damage == 13) then
+                        task:setScale(1.25, 1.25, 1.25)
+                        task:setPos(0, 18, 4.5)
+                    elseif (damage == 14) then                  -- water
+                        task:setPos(-2, 19, 1)
+                        task:setRot(160, 25, -20)
+                    elseif (IsBetweenXY(damage, 15, 16)) then
+                        task:setPos(-2, 19, 2)
+                        task:setRot(160, 25, -20)
+                    elseif (damage == 17) then                  -- rainbow
+                        task:setScale(1.25, 1.25, 1.25)
+                        task:setPos(0, 19, 1.5)
+                    elseif (damage == 18) then
+                        task:setScale(1.25, 1.25, 1.25)
+                        task:setPos(-1, 20, 1.5)
+                    elseif (damage == 19) then
+                        task:setScale(1.25, 1.25, 1.25)
+                        task:setPos(2, 20, 3.5)
+                    else
+                        task:setPos(0, 19, 3.5)
+                        task:setScale(1, 1, 1)
+                        task:setRot(160, 25, -10)
+                    end
+                elseif (CheckClassItem(itemInFirstStack) == "Archer/Hunter") then
+                    task:setPos(0, 18, 2.75)
+                    task:setScale(1.5, 1.5, 1.5)
+                    task:setRot(-25, 200, 70)
+
+                    if (IsBetweenXY(damage, 0, 1)) then         -- neutral
+                        task:setScale(1.25, 1.25, 1.25)
+                        task:setRot(-12, 210, 80)
+                    elseif (IsBetweenXY(damage, 2, 4)) then     -- earth
+                        task:setPos(0, 25, 11)
+                        task:setScale(1.25, 1.25, 1.25)
+                        task:setRot(-40, 190, -190)
+                    elseif (damage == 5) then                   -- thunder
+                        task:setPos(0, 18, 2)
+                    elseif (IsBetweenXY(damage, 6, 7)) then
+                        task:setPos(0, 18, 1.5)
+                    elseif (IsBetweenXY(damage, 8, 10)) then    -- fire
+                        task:setPos(0, 18, 6.5)
+                        task:setRot(-5, 200, 70)
+                    elseif (damage == 12) then                  -- air
+                        task:setPos(-2, 16.5, 0)
+                        task:setRot(10, -35, 10)
+                    elseif (damage == 13) then
+                        task:setPos(-3, 16.5, -0.65)
+                        task:setRot(10, -35, 10)
+                    elseif (damage == 16) then                  -- water
+                        task:setPos(0, 16.5, 0)
+                        task:setRot(10, -35, 10)
+                    elseif (damage == 18) then                  -- rainbow
+                        task:setPos(-3, 16.5, -0.5)
+                        task:setRot(10, -35, 10)
+                    elseif (damage == 19) then
+                        task:setPos(0, 16.5, 0)
+                        task:setRot(10, -35, 10)
+                    else
+                        task:setPos(0, 18, 2.75)
+                        task:setScale(1.5, 1.5, 1.5)
+                        task:setRot(-25, 200, 70)
+                    end
+                elseif (CheckClassItem(itemInFirstStack) == "Shaman/Skyseer") then
+                    task:setPos(0, 20, 4)
+                    task:setScale(1, 1, 1)
+                    task:setRot(-25, 200, 170)
+
+                    if (damage == 11) then                      -- earth
+                        task:setScale(1.15, 1.15, 1.15)
+                    elseif (damage == 14) then                  -- thunder
+                        task:setScale(1.15, 1.15, 1.15)
+                    elseif (IsBetweenXY(damage, 16, 17)) then   -- fire
+                        task:setScale(1.15, 1.15, 1.15)
+                    elseif (damage == 20) then                  -- air
+                        task:setScale(1.15, 1.15, 1.15)
+                    elseif (IsBetweenXY(damage, 21, 23)) then   -- water
+                        task:setPos(0, 20, 3.5)
+                        task:setScale(1.15, 1.15, 1.15)
+                        task:setRot(-20, 200, 170)
+                    elseif (IsBetweenXY(damage, 24, 26)) then   -- rainbow
+                        task:setScale(1.15, 1.15, 1.15)
+                    else
+                        task:setPos(0, 20, 4)
+                        task:setScale(1, 1, 1)
+                        task:setRot(-25, 200, 170)
+                    end
+                end
             else
                 itemID = itemInFirst.id
             end
 
-            -- Edit scale and rotation depending on its damage value
-            if (CheckClassItem(itemInFirstStack) == "Warrior/Knight") then
-                task:setPos(0, 17, 4)
-                task:setScale(1.5, 1.5, 1.5)
-                task:setRot(-20, 20, 100)
+            pings.updateItemID(itemID)
 
-                if (IsBetweenXY(damage, 0, 1)) then         -- neutral
-                    task:setPos(0, 18, 4);
-                elseif (IsBetweenXY(damage, 5, 7)) then     -- thunder
-                    task:setPos(0, 18, 4)
-                elseif (IsBetweenXY(damage, 8, 9)) then    -- fire
-                    task:setPos(0, 17, 3.5)
-                elseif (damage == 10) then
-                    task:setPos(0, 17, 4)
-                elseif (damage == 12) then                  -- air
-                    task:setPos(0, 17, 5.5)
-                    task:setScale(2.25, 2.25, 2.25)
-                elseif (damage == 13) then
-                    task:setPos(0, 16, 5)
-                    task:setScale(2.25, 2.25, 2.25)
-                    task:setRot(-20, 20, 100)
-                elseif (damage == 14) then                  -- water
-                    task:setPos(0,18, 2)
-                    task:setScale(2.5, 2.5, 2.5)
-                elseif (IsBetweenXY(damage, 15, 16)) then
-                    task:setPos(0, 18, 3)
-                    task:setScale(2.5, 2.5, 2.5)
-                elseif (IsBetweenXY(damage, 17, 19)) then   -- rainbow
-                    task:setPos(0, 18, 3)
-                    task:setScale(2.5, 2.5, 2.5)
-                else
-                    task:setPos(0, 17, 4)
-                    task:setScale(1.5, 1.5, 1.5)
-                    task:setRot(-20, 20, 100)
-                end
-            elseif (CheckClassItem(itemInFirstStack) == "Mage/Dark Wizard") then
-                task:setPos(0, 16.5, 4)
-                task:setScale(1.5, 1.5, 1.5)
-                task:setRot(-15, 15, 105)
+            -- Sync selected slot
+            local currSlot = player:getNbt().SelectedItemSlot
+            pings.updateSlot(currSlot)
 
-                if (itemInFirst.id == "minecraft:stick" or damage == 1) then -- neutral
-                    task:setPos(0, 18, 3)
-                    task:setScale(1.25, 1.25, 1.25)
-                    task:setRot(-20, 20, 100)
-                else
-                    task:setPos(0, 16.5, 4)
-                    task:setScale(1.5, 1.5, 1.5)
-                    task:setRot(-15, 15, 105)
-                end
-            elseif (CheckClassItem(itemInFirstStack) == "Assassin/Ninja") then
-                task:setPos(0, 19, 3.5)
-                task:setScale(1, 1, 1)
-                task:setRot(160, 25, -10)
-
-                if (IsBetweenXY(damage, 0, 1)) then         -- neutral
-                    task:setPos(5, 12, 0)
-                    task:setScale(0.9, 0.9, 0.9)
-                    task:setRot(70, 0, 120)
-                elseif (damage == 2) then                   -- earth
-                    task:setPos(1, 21, 3.5)
-                    task:setRot(160, -10, -10)
-                elseif (IsBetweenXY(damage, 3, 4)) then
-                elseif (damage == 5) then                   -- thunder
-                    task:setPos(2, 20, 2.5)
-                    task:setRot(160, -10, -10)
-                elseif (IsBetweenXY(damage, 6, 7)) then
-                    task:setRot(160, -10, -10)
-                elseif (damage == 8) then                   -- fire
-                    task:setPos(0, 19, 2.5)
-                elseif (damage == 12) then                   -- air
-                    task:setPos(0, 19, 2)
-                elseif (damage == 13) then
-                    task:setScale(1.25, 1.25, 1.25)
-                    task:setPos(0, 18, 4.5)
-                elseif (damage == 14) then                  -- water
-                    task:setPos(-2, 19, 1)
-                    task:setRot(160, 25, -20)
-                elseif (IsBetweenXY(damage, 15, 16)) then
-                    task:setPos(-2, 19, 2)
-                    task:setRot(160, 25, -20)
-                elseif (damage == 17) then                  -- rainbow
-                    task:setScale(1.25, 1.25, 1.25)
-                    task:setPos(0, 19, 1.5)
-                elseif (damage == 18) then
-                    task:setScale(1.25, 1.25, 1.25)
-                    task:setPos(-1, 20, 1.5)
-                elseif (damage == 19) then
-                    task:setScale(1.25, 1.25, 1.25)
-                    task:setPos(2, 20, 3.5)
-                else
-                    task:setPos(0, 19, 3.5)
-                    task:setScale(1, 1, 1)
-                    task:setRot(160, 25, -10)
-                end
-            elseif (CheckClassItem(itemInFirstStack) == "Archer/Hunter") then
-                task:setPos(0, 18, 2.75)
-                task:setScale(1.5, 1.5, 1.5)
-                task:setRot(-25, 200, 70)
-
-                if (IsBetweenXY(damage, 0, 1)) then         -- neutral
-                    task:setScale(1.25, 1.25, 1.25)
-                    task:setRot(-12, 210, 80)
-                elseif (IsBetweenXY(damage, 2, 4)) then     -- earth
-                    task:setPos(0, 25, 11)
-                    task:setScale(1.25, 1.25, 1.25)
-                    task:setRot(-40, 190, -190)
-                elseif (damage == 5) then                   -- thunder
-                    task:setPos(0, 18, 2)
-                elseif (IsBetweenXY(damage, 6, 7)) then
-                    task:setPos(0, 18, 1.5)
-                elseif (IsBetweenXY(damage, 8, 10)) then    -- fire
-                    task:setPos(0, 18, 6.5)
-                    task:setRot(-5, 200, 70)
-                elseif (damage == 12) then                  -- air
-                    task:setPos(-2, 16.5, 0)
-                    task:setRot(10, -35, 10)
-                elseif (damage == 13) then
-                    task:setPos(-3, 16.5, -0.65)
-                    task:setRot(10, -35, 10)
-                elseif (damage == 16) then                  -- water
-                    task:setPos(0, 16.5, 0)
-                    task:setRot(10, -35, 10)
-                elseif (damage == 18) then                  -- rainbow
-                    task:setPos(-3, 16.5, -0.5)
-                    task:setRot(10, -35, 10)
-                elseif (damage == 19) then
-                    task:setPos(0, 16.5, 0)
-                    task:setRot(10, -35, 10)
-                else
-                    task:setPos(0, 18, 2.75)
-                    task:setScale(1.5, 1.5, 1.5)
-                    task:setRot(-25, 200, 70)
-                end
-            elseif (CheckClassItem(itemInFirstStack) == "Shaman/Skyseer") then
-                task:setPos(0, 20, 4)
-                task:setScale(1, 1, 1)
-                task:setRot(-25, 200, 170)
-
-                if (damage == 11) then                      -- earth
-                    task:setScale(1.15, 1.15, 1.15)
-                elseif (damage == 14) then                  -- thunder
-                    task:setScale(1.15, 1.15, 1.15)
-                elseif (IsBetweenXY(damage, 16, 17)) then   -- fire
-                    task:setScale(1.15, 1.15, 1.15)
-                elseif (damage == 20) then                  -- air
-                    task:setScale(1.15, 1.15, 1.15)
-                elseif (IsBetweenXY(damage, 21, 23)) then   -- water
-                    task:setPos(0, 20, 3.5)
-                    task:setScale(1.15, 1.15, 1.15)
-                    task:setRot(-20, 200, 170)
-                elseif (IsBetweenXY(damage, 24, 26)) then   -- rainbow
-                    task:setScale(1.15, 1.15, 1.15)
-                else
-                    task:setPos(0, 20, 4)
-                    task:setScale(1, 1, 1)
-                    task:setRot(-25, 200, 170)
-                end
-            end
-        else
-            itemID = itemInFirst.id
+            -- Sync bool check if itemstack is weapon
+            local hasClassStr = CheckClassItem(itemInFirstStack)
+            pings.updateWeaponClass(hasClassStr)
         end
-
-        pings.updateItemID(itemID)
-
-        -- Sync selected slot
-        local currSlot = player:getNbt().SelectedItemSlot
-        pings.updateSlot(currSlot)
-
-        -- Sync bool check if itemstack is weapon
-        local hasClassStr = CheckClassItem(itemInFirstStack)
-        pings.updateWeaponClass(hasClassStr)
     end
 end
 
 function events.tick()
-    if ((syncedPlayerSlot ~= oldSlot and (syncedPlayerSlot == 0 or oldSlot == 0)) or (currWeapon ~= oldWeapon) or (syncedItemID ~= oldItemID)) then
-        if (currWeapon ~= nil) then
-            task:setItem(syncedItemID)
-        else
-            task:setItem("minecraft:air")
+    if (sheathOption) then
+        if ((syncedPlayerSlot ~= oldSlot and (syncedPlayerSlot == 0 or oldSlot == 0)) or (currWeapon ~= oldWeapon) or (syncedItemID ~= oldItemID)) then
+            if (currWeapon ~= nil) then
+                task:setItem(syncedItemID)
+            else
+                task:setItem("minecraft:air")
+            end
         end
-    end
 
-    -- holding/not holding weapon
-    if (syncedPlayerSlot == 0) then
-        task:setVisible(false)
+        -- holding/not holding weapon
+        if (syncedPlayerSlot == 0) then
+            task:setVisible(false)
+        else
+            task:setVisible(true)
+        end
+
+        oldItemID = syncedItemID
+        oldSlot = syncedPlayerSlot
+        oldWeapon = currWeapon
     else
-        task:setVisible(true)
+        task:setVisible(false)
     end
-
-    oldItemID = syncedItemID
-    oldSlot = syncedPlayerSlot
-    oldWeapon = currWeapon
 end
+
+-- Action Wheel =========================================================================================
+
+function pings.actionDance()
+    AnimIdling3:play()
+end
+
+function sheathWeapon(bool)
+    sheathOption = bool
+    --task:setVisible(bool)
+end
+pings.actionSheath = sheathWeapon
+
+-- function pings.action3(setting)
+--     AnimIdling1:play()
+-- end
+
+local mainPage = action_wheel:newPage("Taunts")
+action_wheel:setPage(mainPage)
+
+local action1 = mainPage:newAction()
+    :title("Dance (Right-Click)")
+    :item("minecraft:music_disc_chirp")
+    :hoverColor(1, 1, 1)
+    :onRightClick(pings.actionDance)
+
+local action2 = mainPage:newAction()
+    :title("Enable Sheath")
+    :toggleTitle("Disable Sheath")
+    :item("minecraft:diamond_sword")
+    :hoverColor(1, 1, 1)
+    :onToggle(pings.actionSheath)
+    :toggled(sheathOption)
+
+-- local action3 = mainPage:newAction()
+--     :title("idle2")
+--     :item("minecraft:stick")
+--     :hoverColor(1, 1, 1)
+--     :setOnRightClick(pings.action3)
