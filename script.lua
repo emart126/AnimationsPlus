@@ -1024,6 +1024,8 @@ local oldSlot
 local currWeapon
 local oldWeapon
 
+local taskRotation
+
 function pings.updateItemID(id)
     syncedItemID = id
 end
@@ -1034,6 +1036,10 @@ end
 
 function pings.updateWeaponClass(class)
     currWeapon = class
+end
+
+function pings.updateWeaponRot(vect)
+    taskRotation = vect
 end
 
 function events.entity_init() --=====================================================================================================================
@@ -1235,6 +1241,9 @@ if (host:isHost()) then
             -- Sync bool check if itemstack is weapon
             local hasClassStr = CheckClassItem(itemInFirstStack)
             pings.updateWeaponClass(hasClassStr)
+
+            -- Sync item rotation vector
+            pings.updateWeaponRot(task:getRot())
         end
     end
 end
@@ -1244,6 +1253,7 @@ function events.tick()
         if ((syncedPlayerSlot ~= oldSlot and (syncedPlayerSlot == 0 or oldSlot == 0)) or (currWeapon ~= oldWeapon) or (syncedItemID ~= oldItemID)) then
             if (currWeapon ~= nil) then
                 task:setItem(syncedItemID)
+                task:setRot(taskRotation)
             else
                 task:setItem("minecraft:air")
             end
