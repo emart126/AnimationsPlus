@@ -881,6 +881,8 @@ function events.render(delta, context) --=======================================
         -- rotate more when at top of ladder
         if (world.getBlockState(player:getPos()).id == "minecraft:ladder" and world.getBlockState(player:getPos():add(0,1,0)).id == "minecraft:air") then
             pModel.Upper:setRot(-player:getLookDir()[2]*45-35,0,0)
+        else
+            pModel.Upper:setRot(0,0,0)
         end
     else
         pModel:setOffsetRot(0,0,0)
