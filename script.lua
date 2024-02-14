@@ -389,31 +389,31 @@ function pings.onHitDo()
         local currItemStack = currItem:toStackString()
 
         -- Spears --
-        if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+        if (CheckClassItem(currItemStack) == "Warrior/Knight") then
             CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, WarriorSwing1, WarriorSwing2, WarriorSwing3, AnimSecondSpell, AnimThirdSpell)
             return
         end
 
         -- Wands --
-        if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+        if (CheckClassItem(currItemStack) == "Mage/Dark Wizard") then
             CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, MageSwing1, MageSwing2, MageSwing3, AnimSecondSpell, AnimThirdSpell)
             return
         end
 
         -- Daggers --
-        if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+        if (CheckClassItem(currItemStack) == "Assassin/Ninja") then
             CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AssassinSwing1, AssassinSwing2, AssassinSwing3, AnimSecondSpell, AnimThirdSpell)
             return
         end
 
         -- Reliks --
-        if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+        if (CheckClassItem(currItemStack) == "Shaman/Skyseer") then
             CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ShamanSwing, nil, nil, AnimSecondSpell, AnimThirdSpell)
             return
         end
 
         -- Bows --
-        -- if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
+        -- if (CheckClassItem(currItemStack) == "Archer/Hunter") then
         --     -- use opposite click for archer
         --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
         --     return
@@ -436,27 +436,27 @@ function pings.onRightClickDo()
         local currItemStack = currItem:toStackString()
 
         -- -- Spears --
-        -- if (string.find(currItemStack, "Warrior/Knight") ~= nil) then
+        -- if (CheckClassItem(currItemStack) == "Warrior/Knight") then
         --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
         -- end
 
         -- -- Wands --
-        -- if (string.find(currItemStack, "Mage/Dark Wizard") ~= nil) then
+        -- if (CheckClassItem(currItemStack) == "Mage/Dark Wizard") then
         --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
         -- end
 
         -- -- Daggers --
-        -- if (string.find(currItemStack, "Assassin/Ninja") ~= nil) then
+        -- if (CheckClassItem(currItemStack) == "Assassin/Ninja") then
         --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
         -- end
 
         -- -- Reliks --
-        -- if (string.find(currItemStack, "Shaman/Skyseer") ~= nil) then
+        -- if (CheckClassItem(currItemStack) == "Shaman/Skyseer") then
         --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
         -- end
 
         -- Bows --
-        if (string.find(currItemStack, "Archer/Hunter") ~= nil) then
+        if (CheckClassItem(currItemStack) == "Archer/Hunter") then
             -- use opposite click for archer
             CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ArcherShoot, nil, nil, AnimSecondSpell, AnimThirdSpell)
         end -- hold down button to attack?
@@ -609,14 +609,14 @@ function events.tick() --=======================================================
     AnimHorseSit:setPriority(1)
     AnimHorseRiding:setPriority(1)
 
-    -- Handle crouch model position
+    -- Handle crouch model position ---------------------------------------------
     if (crouching) then
         pModel:setPos(0,2,0)
     else
         pModel:setPos(0,0,0)
     end
 
-    -- Idling
+    -- Idling -------------------------------------------------------------------
     if (state == "idle") then
         idleTick = idleTick + 1
         if (idleTick == randTick) then
@@ -1027,6 +1027,8 @@ local currWeapon
 local oldWeapon
 
 local taskRotation
+local taskPosition
+local taskScale
 
 function pings.updateItemID(id)
     syncedItemID = id
@@ -1040,8 +1042,10 @@ function pings.updateWeaponClass(class)
     currWeapon = class
 end
 
-function pings.updateWeaponRot(vect)
-    taskRotation = vect
+function pings.updateWeaponTask(vectRot, vecPos, vecScale)
+    taskRotation = vectRot
+    taskPosition = vecPos
+    taskScale = vecScale
 end
 
 function events.entity_init() --=====================================================================================================================
@@ -1244,8 +1248,8 @@ if (host:isHost()) then
             local hasClassStr = CheckClassItem(itemInFirstStack)
             pings.updateWeaponClass(hasClassStr)
 
-            -- Sync item rotation vector
-            pings.updateWeaponRot(task:getRot())
+            -- Sync item task vectors
+            pings.updateWeaponTask(task:getRot(), task:getPos(), task:getScale())
         end
     end
 end
@@ -1256,6 +1260,8 @@ function events.tick()
             if (currWeapon ~= nil) then
                 task:setItem(syncedItemID)
                 task:setRot(taskRotation)
+                task:setPos(taskPosition)
+                task:setScale(taskScale)
             else
                 task:setItem("minecraft:air")
             end
