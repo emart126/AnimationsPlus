@@ -1042,10 +1042,10 @@ function pings.updateWeaponClass(class)
     currWeapon = class
 end
 
-function pings.updateWeaponTask(vectRot, vecPos, vecScale)
-    taskRotation = vectRot
-    taskPosition = vecPos
-    taskScale = vecScale
+function pings.updateWeaponTask(vectRotX, vectRotY, vectRotZ, vecPosX, vecPosY, vecPosZ, vecScaleX, vecScaleY, vecScaleZ)
+    taskRotation = vectors.vec3(vectRotX, vectRotY, vectRotZ)
+    taskPosition = vectors.vec3(vecPosX, vecPosY, vecPosZ)
+    taskScale = vectors.vec3(vecScaleX, vecScaleY, vecScaleZ)
 end
 
 function events.entity_init() --=====================================================================================================================
@@ -1249,7 +1249,7 @@ if (host:isHost()) then
             pings.updateWeaponClass(hasClassStr)
 
             -- Sync item task vectors
-            pings.updateWeaponTask(task:getRot(), task:getPos(), task:getScale())
+            pings.updateWeaponTask(task:getRot()[1], task:getRot()[2], task:getRot()[3], task:getPos()[1], task:getPos()[2], task:getPos()[3], task:getScale()[1], task:getScale()[2], task:getScale()[3])
         end
     end
 end
