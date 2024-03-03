@@ -380,40 +380,65 @@ function getAnimPriority()
     return(0)
 end
 
+-- Host Synchronization Values ==========================================================================
+local weaponClass
+local isActionWheelOpen
+
+function pings.syncHeldItemIsWeapon(strClass)
+    weaponClass = strClass
+end
+
+function pings.syncAcitonWheel(bool)
+    isActionWheelOpen = bool
+end
+
+function events.tick()
+    if (world.getTime() % 5 ~= 0) then
+        return
+    end
+
+    -- Held Item Wynncraft Class
+    local currItem = player:getHeldItem()
+    local currItemStack = currItem:toStackString()
+    local class = CheckClassItem(currItemStack)
+    pings.syncHeldItemIsWeapon(class)
+
+    -- Is Action Wheel Open
+    pings.syncAcitonWheel(action_wheel:isEnabled())
+end
+
 -- left-clicking detection ==============================================================================
 local hitKey = keybinds:of("Punch",keybinds:getVanillaKey("key.attack"))
 
 function pings.onHitDo()
-    if (not action_wheel:isEnabled()) then
-        local currItem = player:getHeldItem()
-        local currItemStack = currItem:toStackString()
+    if (not isActionWheelOpen) then
 
         -- Spears --
-        if (CheckClassItem(currItemStack) == "Warrior/Knight") then
+        if (weaponClass == "Warrior/Knight") then
             CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, WarriorSwing1, WarriorSwing2, WarriorSwing3, AnimSecondSpell, AnimThirdSpell)
             return
         end
 
         -- Wands --
-        if (CheckClassItem(currItemStack) == "Mage/Dark Wizard") then
+        if (weaponClass == "Mage/Dark Wizard") then
             CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, MageSwing1, MageSwing2, MageSwing3, AnimSecondSpell, AnimThirdSpell)
             return
         end
 
         -- Daggers --
-        if (CheckClassItem(currItemStack) == "Assassin/Ninja") then
+        if (weaponClass == "Assassin/Ninja") then
             CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AssassinSwing1, AssassinSwing2, AssassinSwing3, AnimSecondSpell, AnimThirdSpell)
             return
         end
 
         -- Reliks --
-        if (CheckClassItem(currItemStack) == "Shaman/Skyseer") then
+        if (weaponClass == "Shaman/Skyseer") then
             CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ShamanSwing, nil, nil, AnimSecondSpell, AnimThirdSpell)
             return
         end
 
         -- Bows --
-        -- if (CheckClassItem(currItemStack) == "Archer/Hunter") then
+        -- if (weaponClass == "Archer/Hunter") then
         --     -- use opposite click for archer
         --     CheckAnimToPlayRightClick(AnimR1, AnimR2, AnimL2, AnimFirstSpell, AnimMovement)
         --     return
@@ -431,9 +456,9 @@ hitKey.press = pings.onHitDo
 local useKey = keybinds:of("Use",keybinds:getVanillaKey("key.use"))
 
 function pings.onRightClickDo()
-    if (not action_wheel:isEnabled()) then
-        local currItem = player:getHeldItem()
-        local currItemStack = currItem:toStackString()
+    if (not isActionWheelOpen) then
+        -- local currItem = player:getHeldItem()
+        -- local currItemStack = currItem:toStackString()
 
         -- -- Spears --
         -- if (CheckClassItem(currItemStack) == "Warrior/Knight") then
@@ -456,7 +481,7 @@ function pings.onRightClickDo()
         -- end
 
         -- Bows --
-        if (CheckClassItem(currItemStack) == "Archer/Hunter") then
+        if (weaponClass == "Archer/Hunter") then
             -- use opposite click for archer
             CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, ArcherShoot, nil, nil, AnimSecondSpell, AnimThirdSpell)
         end -- hold down button to attack?
