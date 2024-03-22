@@ -310,6 +310,10 @@ local function isOnGround(entity)
     if (i ~= nil and j ~= nil) then
         return true
     end
+    i, j = string.find(blockBelow, "wall")
+    if (i ~= nil and j ~= nil) then
+        return true
+    end
 
     return false
 end
