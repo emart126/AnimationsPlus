@@ -136,6 +136,7 @@ AnimSecondSpell = animations.model["spell2"]
 
 -- Katt Armor Handling ==================================================================================
 
+vanilla_model.ARMOR:setVisible(false)
 local kattArmor = require("KattArmor")()
 kattArmor.Armor.Helmet
 -- the `addParts` function is not strict with the number of ModelParts provided. Add or remove parts as desired.
@@ -640,7 +641,7 @@ function events.tick() --=======================================================
     AnimHorseRiding:setPriority(1)
 
     -- Handle crouch model position ---------------------------------------------
-    if (crouching) then
+    if (player:getPose() == "CROUCHING") then
         pModel:setPos(0,2,0)
     else
         pModel:setPos(0,0,0)
