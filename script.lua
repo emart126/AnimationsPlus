@@ -686,9 +686,9 @@ function events.tick() --=======================================================
     end
 
     -- Scales walk/run speed animation based on player vel -------------------
-    AnimWalk:setSpeed(squapi.getForwardVel()*4.7)
-    AnimSprint:setSpeed(squapi.getForwardVel()*3.8)
-    AnimCrouchWalk:setSpeed(squapi.getForwardVel()*16)
+    AnimWalk:setSpeed(player:getVelocity():length()*4.7)
+    AnimSprint:setSpeed(player:getVelocity():length()*3.8)
+    AnimCrouchWalk:setSpeed(player:getVelocity():length()*16)
 
 end
 
