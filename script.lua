@@ -685,6 +685,11 @@ function events.tick() --=======================================================
         rightWasPressed = false
     end
 
+    -- Scales walk/run speed animation based on player vel -------------------
+    AnimWalk:setSpeed(squapi.getForwardVel()*4.7)
+    AnimSprint:setSpeed(squapi.getForwardVel()*3.8)
+    AnimCrouchWalk:setSpeed(squapi.getForwardVel()*16)
+
 end
 
 -- Render animation condtions using render function
