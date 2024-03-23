@@ -40,6 +40,7 @@ local sheathOption = true;
 local state
 local oldState
 local randAnim
+local rightWasPressed
 local randTick = 400
 local fallTick = 0
 local idleTick = 0
@@ -672,6 +673,15 @@ function events.tick() --=======================================================
         AnimIdling1:stop()
         AnimIdling2:stop()
         AnimIdling3:stop()
+    end
+
+    -- Dedect right click use arm swing -----------------------------------------
+    if (useKey:isPressed()) then
+        rightWasPressed = true
+    end
+    if (rightWasPressed and player:isSwingingArm() and player:getSwingTime() == 1) then
+        AnimPunch:restart()
+        rightWasPressed = false
     end
 
 end
