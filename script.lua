@@ -686,9 +686,22 @@ function events.tick() --=======================================================
     end
 
     -- Scales walk/run speed animation based on player vel -------------------
-    AnimWalk:setSpeed(player:getVelocity().x_z:length()*4.7)
-    AnimSprint:setSpeed(player:getVelocity().x_z:length()*3.8)
-    AnimCrouchWalk:setSpeed(player:getVelocity().x_z:length()*16)
+    local horizontalVel = player:getVelocity().x_z:length()
+
+    -- Walking
+    if (horizontalVel*3.8 >= 2) then
+        AnimWalk:setSpeed(2)
+    else
+        AnimWalk:setSpeed(horizontalVel*3.8)
+    end
+    -- Sprinting
+    if (horizontalVel*3.4 >= 1.1) then
+        AnimSprint:setSpeed(1.1)
+    else
+        AnimSprint:setSpeed(horizontalVel*3.4)
+    end
+    -- Crouch Walking
+    AnimCrouchWalk:setSpeed(horizontalVel*10)
 
 end
 
