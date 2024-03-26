@@ -135,8 +135,6 @@ AnimSecondSpell = animations.model["spell2"]
 -- AnimFirstSpell = animations.model["animation.model.FirstSpell"]
 
 -- Katt Armor Handling ==================================================================================
-
-vanilla_model.ARMOR:setVisible(false)
 local kattArmor = require("KattArmor")()
 kattArmor.Armor.Helmet
 -- the `addParts` function is not strict with the number of ModelParts provided. Add or remove parts as desired.
@@ -702,6 +700,13 @@ function events.tick() --=======================================================
     end
     -- Crouch Walking
     AnimCrouchWalk:setSpeed(horizontalVel*10)
+
+    -- Handle Helmet/Hat visibility ---------------------------------------------
+    if (string.find(player:getItem(6).id, "helmet") ~= nil) then
+        vanilla_model.ARMOR:setVisible(false)
+    else
+        vanilla_model.ARMOR:setVisible(true)
+    end
 
 end
 
