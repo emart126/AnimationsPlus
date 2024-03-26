@@ -1357,20 +1357,15 @@ function sheathWeapon(bool)
 end
 pings.actionSheath = sheathWeapon
 
--- function pings.action3(setting)
---     AnimIdling1:play()
--- end
+function pings.actionEmoteTemp(setting)
+    -- AnimIdling1:play()
+    print("Temp")
+end
 
 local mainPage = action_wheel:newPage("Taunts")
 action_wheel:setPage(mainPage)
 
-local action1 = mainPage:newAction()
-    :title("Dance")
-    :item("minecraft:music_disc_chirp")
-    :hoverColor(1, 1, 1)
-    :onLeftClick(pings.actionDance)
-
-local action2 = mainPage:newAction()
+local setting1 = mainPage:newAction()
     :title("Enable Sheath")
     :toggleTitle("Disable Sheath")
     :item("minecraft:diamond_sword")
@@ -1378,8 +1373,44 @@ local action2 = mainPage:newAction()
     :onToggle(pings.actionSheath)
     :toggled(sheathOption)
 
--- local action3 = mainPage:newAction()
---     :title("idle2")
---     :item("minecraft:stick")
---     :hoverColor(1, 1, 1)
---     :setOnRightClick(pings.action3)
+local emote1 = mainPage:newAction()
+    :title("Dance")
+    :item("minecraft:music_disc_chirp")
+    :hoverColor(1, 1, 1)
+    :onLeftClick(pings.actionDance)
+
+local emote2 = mainPage:newAction()
+    :title("placeholder2")
+    :item("minecraft:music_disc_11")
+    :hoverColor(1, 1, 1)
+    -- :onLeftClick(pings.actionEmoteTemp)
+
+local emote3 = mainPage:newAction()
+    :title("placeholder3")
+    :item("minecraft:music_disc_11")
+    :hoverColor(1, 1, 1)
+    -- :onLeftClick(pings.actionEmoteTemp)
+
+local emote4 = mainPage:newAction()
+    :title("placeholder4")
+    :item("minecraft:music_disc_11")
+    :hoverColor(1, 1, 1)
+    -- :onLeftClick(pings.actionEmoteTemp)
+
+local emote5 = mainPage:newAction()
+    :title("placeholder5")
+    :item("minecraft:music_disc_11")
+    :hoverColor(1, 1, 1)
+    -- :onLeftClick(pings.actionEmoteTemp)
+
+local emote6 = mainPage:newAction()
+    :title("placeholder6")
+    :item("minecraft:music_disc_11")
+    :hoverColor(1, 1, 1)
+    -- :onLeftClick(pings.actionEmoteTemp)
+
+local emote6 = mainPage:newAction()
+    :title("placeholder7")
+    :item("minecraft:music_disc_11")
+    :hoverColor(1, 1, 1)
+    -- :onLeftClick(pings.actionEmoteTemp)
