@@ -397,7 +397,7 @@ function pings.syncAcitonWheel(bool)
 end
 
 function events.tick()
-    if (world.getTime() % 10 ~= 0) then
+    if (world.getTime() % 20 ~= 0) then
         return
     end
 
