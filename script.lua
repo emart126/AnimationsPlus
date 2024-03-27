@@ -387,6 +387,7 @@ end
 -- Host Synchronization Values ==========================================================================
 local weaponClass
 local isActionWheelOpen
+local oldWeaponClass
 
 function pings.syncHeldItemIsWeapon(strClass)
     weaponClass = strClass
@@ -405,7 +406,10 @@ function events.tick()
     local currItem = player:getHeldItem()
     local currItemStack = currItem:toStackString()
     local class = CheckClassItem(currItemStack)
-    pings.syncHeldItemIsWeapon(class)
+    if (class ~= oldWeaponClass) then
+        pings.syncHeldItemIsWeapon(class)
+    end
+    oldWeaponClass = class
 
     -- Is Action Wheel Open
     pings.syncAcitonWheel(action_wheel:isEnabled())
@@ -1101,6 +1105,14 @@ function pings.updateSlot(slot)
     syncedPlayerSlot = slot
 end
 
+function pings.updateSlotKey()
+    syncedPlayerSlot = 0
+end
+
+function pings.updateSlotNonZeroKey()
+    syncedPlayerSlot = 1
+end
+
 function pings.updateWeaponClass(class)
     currWeapon = class
 end
@@ -1119,6 +1131,7 @@ function events.entity_init() --================================================
 end
 
 if (host:isHost()) then
+    local eventOldItemId
     function events.tick()
         if (sheathOption) then
             if (world.getTime() % 20 ~= 0) then
@@ -1301,11 +1314,14 @@ if (host:isHost()) then
                 itemID = itemInFirst.id
             end
 
-            pings.updateItemID(itemID)
+            -- ping only when item has changed
+            if (eventOldItemId == itemInFirst) then
+                return
+            end
+            eventOldItemId = itemInFirst
 
-            -- Sync selected slot
-            local currSlot = player:getNbt().SelectedItemSlot
-            pings.updateSlot(currSlot)
+            -- Sync item identifier
+            pings.updateItemID(itemID)
 
             -- Sync bool check if itemstack is weapon
             local hasClassStr = CheckClassItem(itemInFirstStack)
@@ -1315,6 +1331,53 @@ if (host:isHost()) then
             pings.updateWeaponTask(task:getRot()[1], task:getRot()[2], task:getRot()[3], task:getPos()[1], task:getPos()[2], task:getPos()[3], task:getScale()[1], task:getScale()[2], task:getScale()[3])
         end
     end
+
+    -- Sync selected slot
+    function events.MOUSE_SCROLL(delta)
+        if (not player:isLoaded()) then
+            return
+        end
+
+        local eventCurrSlot = player:getNbt().SelectedItemSlot
+        if (delta < 0) then
+            if (eventCurrSlot == 8) then
+                eventCurrSlot = 0
+            else
+                eventCurrSlot = eventCurrSlot + 1
+            end
+        else
+            if (eventCurrSlot == 0) then
+                eventCurrSlot = 8
+            else
+                eventCurrSlot = eventCurrSlot - 1
+            end
+        end
+
+        -- ping only when mouse scrolled over 0
+        if (eventCurrSlot == 0 or eventCurrSlot == 1 or eventCurrSlot == 8) then
+            pings.updateSlot(eventCurrSlot)
+        end
+    end
+
+    -- Handle changing slot on keypress
+    local slotOneKey = keybinds:newKeybind("hotbar1", keybinds:getVanillaKey("key.hotbar.1"))
+    slotOneKey.press = pings.updateSlotKey
+    local slotTwoKey = keybinds:newKeybind("hotbar2", keybinds:getVanillaKey("key.hotbar.2"))
+    local slotThreeKey = keybinds:newKeybind("hotbar3", keybinds:getVanillaKey("key.hotbar.3"))
+    local slotFourKey = keybinds:newKeybind("hotbar4", keybinds:getVanillaKey("key.hotbar.4"))
+    local slotFiveKey = keybinds:newKeybind("hotbar5", keybinds:getVanillaKey("key.hotbar.5"))
+    local slotSixKey = keybinds:newKeybind("hotbar6", keybinds:getVanillaKey("key.hotbar.6"))
+    local slotSevenKey = keybinds:newKeybind("hotbar7", keybinds:getVanillaKey("key.hotbar.7"))
+    local slotEightKey = keybinds:newKeybind("hotbar8", keybinds:getVanillaKey("key.hotbar.8"))
+    local slotNineKey = keybinds:newKeybind("hotbar9", keybinds:getVanillaKey("key.hotbar.9"))
+    slotTwoKey.press = pings.updateSlotNonZeroKey
+    slotThreeKey.press = pings.updateSlotNonZeroKey
+    slotFourKey.press = pings.updateSlotNonZeroKey
+    slotFiveKey.press = pings.updateSlotNonZeroKey
+    slotSixKey.press = pings.updateSlotNonZeroKey
+    slotSevenKey.press = pings.updateSlotNonZeroKey
+    slotEightKey.press = pings.updateSlotNonZeroKey
+    slotNineKey.press = pings.updateSlotNonZeroKey
 end
 
 function events.tick()
@@ -1351,11 +1414,10 @@ function pings.actionDance()
     AnimIdling3:play()
 end
 
-function sheathWeapon(bool)
+function SheathWeapon(bool)
     sheathOption = bool
-    --task:setVisible(bool)
 end
-pings.actionSheath = sheathWeapon
+pings.actionSheath = SheathWeapon
 
 function pings.actionEmoteTemp(setting)
     -- AnimIdling1:play()
