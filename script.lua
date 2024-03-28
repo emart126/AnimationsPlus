@@ -1265,21 +1265,12 @@ if (host:isHost()) then
                     elseif (IsBetweenXY(damage, 8, 10)) then    -- fire
                         task:setPos(0, 18, 6.5)
                         task:setRot(-5, 200, 70)
-                    elseif (damage == 12) then                  -- air
-                        task:setPos(-2, 16.5, 0)
-                        task:setRot(10, -35, 10)
-                    elseif (damage == 13) then
-                        task:setPos(-3, 16.5, -0.65)
-                        task:setRot(10, -35, 10)
-                    elseif (damage == 16) then                  -- water
-                        task:setPos(0, 16.5, 0)
-                        task:setRot(10, -35, 10)
-                    elseif (damage == 18) then                  -- rainbow
-                        task:setPos(-3, 16.5, -0.5)
-                        task:setRot(10, -35, 10)
-                    elseif (damage == 19) then
-                        task:setPos(0, 16.5, 0)
-                        task:setRot(10, -35, 10)
+                    elseif (damage == 12 or damage == 13) then  -- air
+                        task:setPos(4, 20, 2.75)
+                        task:setRot(-25, 200, 50)
+                    elseif (damage == 18 or damage == 19) then  -- rainbow
+                        task:setPos(4, 20, 2.75)
+                        task:setRot(-25, 200, 50)
                     else
                         task:setPos(0, 18, 2.75)
                         task:setScale(1.5, 1.5, 1.5)
