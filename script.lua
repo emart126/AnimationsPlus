@@ -1,5 +1,10 @@
--- Wynncraft Animations Plus --
-
+-- ///////////////////////////////////////////////////////////////// --
+--                          Wynn Extra Bendz
+--                              Vance568
+--                               v1.0.0
+--
+--               Helper Library Authors: Squishy, Katt962
+-- ///////////////////////////////////////////////////////////////// --
 
 local squapi = require("SquAPI")
 
