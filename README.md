@@ -2,7 +2,8 @@
 Figura Animation Overhaul Avatar made particularly for Wynncraft.\
 This figura avatar makes the normal Minecraft player avatar have\
 arm and leg limbs and adds numerous animations that replace\
-the normal Minecraft animations.
+the normal Minecraft animations. This avatar was made using\
+Figura version 0.1.4
 
 ### Animated Features
 +Walking\
