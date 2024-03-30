@@ -1,4 +1,4 @@
-# Wynn Extra Bendz
+# Wynn Extra Bends
 Figura Animation Overhaul Avatar made particularly for Wynncraft.\
 This figura avatar makes the normal Minecraft player avatar have\
 arm and leg limbs and adds numerous animations that replace\
@@ -43,7 +43,7 @@ in future versions of the avatar.
 
 ### Credits
 Main Programming: Vance568\
-Animations: Kazarov20\
+Animations: Kazarov\
 Helper Library Help:\
 Squishy ("SquAPI" Library for physics)\
 Katt962 ("KattArmor" Library for Armor overlays)
