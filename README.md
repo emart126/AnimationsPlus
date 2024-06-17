@@ -5,6 +5,9 @@ arm and leg limbs and adds numerous animations that replace\
 the normal Minecraft animations. This avatar was made using\
 Figura version 0.1.4
 
+![MovementAnimationDemo](https://github.com/emart126/AnimationsPlus/assets/125086504/ad378241-bdb0-43a9-8d58-9f0e7041f687)
+![ClimbingAnimationDemo](https://github.com/emart126/AnimationsPlus/assets/125086504/65b0baa1-a695-4efc-825c-3cfb761c2ccd)
+
 ### Animated Features
 +Walking\
 +Sprinting\
