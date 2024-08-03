@@ -773,7 +773,7 @@ function events.render(delta, context) --=======================================
         end
     else
         -- Outside of water
-        if (isGrounded and not ridingSeat) then
+        if (isGrounded and (not ridingSeat and not sitting)) then
             -- On the ground
             if (crouching) then
                 if (walking) then
@@ -826,7 +826,7 @@ function events.render(delta, context) --=======================================
                     state = "sitting"
                     stopBasicAnims({AnimSit})
                     AnimSit:play()
-                elseif (not walking and (ridingMount or ridingSeat)) then
+                elseif (not walking and (sitting or ridingMount or ridingSeat)) then
                     if (horseSitting) then
                         state = "horseSitting"
                         stopBasicAnims({AnimHorseSit})
