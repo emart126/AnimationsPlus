@@ -7,6 +7,7 @@
 -- ///////////////////////////////////////////////////////////////// --
 
 local squapi = require("SquAPI")
+local squassets = require("SquAssets")
 
 -- Hide vanilla model
 vanilla_model.PLAYER:setVisible(false)
@@ -577,8 +578,7 @@ useKey.press = pings.onRightClickDo
 
 -- SquAPI Animation Handling ============================================================================
 
-squapi.smoothHead(modelHead, 0.3, 1, false)
-squapi.smoothTorso(modelMainBody, 0.2)
+squapi.smoothHead:new({modelHead, modelMainBody}, {0.6, 0.25}, 0.1, 1.75, false)
 
 -- Render animation conditions by in game ticks
 function events.tick() --============================================================================================================================
@@ -1006,24 +1006,9 @@ end
 -- end
 
 -- Physics variables ====================================================================================
-local stiff = 0.025
-local bounce = 0.06
-local bendability = 2
-local rArm = squapi.bounceObject:new()
-local lArm = squapi.bounceObject:new()
-local head = squapi.bounceObject:new()
-
-local currVel
-local oldVel
-local acceleration
-
--- initial phys calculations
-function events.entity_init() --=====================================================================================================================
-    -- Get initial velocity
-    currVel = player:getVelocity()
-    oldVel = player:getVelocity()
-    acceleration = player:getVelocity()
-end
+local rArm = squassets.BERP:new()
+local lArm = squassets.BERP:new()
+local head = squassets.BERP:new()
 
 -- "delta" is the percentage between the last and the next tick (as a decimal value, 0.0 to 1.0)
 -- "context" is a string that tells from where this render event was called (the paperdoll, gui, player render, first person)
@@ -1033,17 +1018,11 @@ function events.render(delta, context) --=======================================
     vanilla_model.RIGHT_ARM:setVisible(context == "FIRST_PERSON")
 
     -- Physics handling ---------------------------------------------------------
-    local vel = squapi.getForwardVel()
-	local yvel = squapi.yvel()
+    local vel = squassets.forwardVel()
+	local yvel = squassets.verticalVel()
     local headRot = (modelHead:getOffsetRot()+180)%360-180
     local armTarget
     local headTarget
-
-    -- acceleration -------------------------------------------------------------
-    if (currVel ~= oldVel) then
-        acceleration = currVel - oldVel
-    end
-    currVel = player:getVelocity()
 
     -- Arm physics --------------------------------------------------------------
     modelRightArm:setRot(0, 0, rArm.pos*2)
@@ -1054,36 +1033,23 @@ function events.render(delta, context) --=======================================
     elseif (armTarget < -3) then
         armTarget = -3
     end
-	rArm:doBounce(armTarget, 0.01, .2)
-    lArm:doBounce(armTarget, 0.01, .2)
 
-    -- Idle Arms affected by gravity --------------------------------------------
-    -- if (state == "idle" and headRot[1] > 0) then
-    --     modelRightArm:setOffsetRot(-headRot[1],0,0)
-    --     modelLeftArm:setOffsetRot(-headRot[1],0,0)
-    -- else
-    --     modelRightArm:setOffsetRot(0,0,0)
-    --     modelLeftArm:setOffsetRot(0,0,0)
-    -- end
+    rArm:berp(armTarget, 0.25, 0.01, 0.2)
+    lArm:berp(armTarget, 0.25, 0.01, 0.2)
 
     -- Head physics -------------------------------------------------------------
     modelHead:setRot(head.pos*1.5, 0, 0)
-	headTarget = -yvel * 20
+    headTarget = -yvel * 20
     if (headTarget > 20) then
         headTarget = 20
     elseif (headTarget < -10) then
         headTarget = -10
     end
-	head:doBounce(headTarget, 0.01, .2)
 
+    if (-yvel*20 > -10) then
+        head:berp(headTarget, 0.25, 0.01, 0.2)
+    end
 
-    -- Hitting ground detection -------------------------------------------------
-    -- if (isOnGround(player) and (currVel[2] == 0 and acceleration[2] ~= currVel[2])) then
-    --     if (acceleration[2] < -0.24) then
-    --         AnimHitGround:play()
-    --     end
-    --     acceleration[2] = 0
-    -- end
 end
 
 -- Sheathing weapon
