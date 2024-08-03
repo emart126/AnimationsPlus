@@ -1014,8 +1014,14 @@ local head = squassets.BERP:new()
 -- "context" is a string that tells from where this render event was called (the paperdoll, gui, player render, first person)
 function events.render(delta, context) --============================================================================================================
 
-    -- Deal with first person hand model ----------------------------------------
-    vanilla_model.RIGHT_ARM:setVisible(context == "FIRST_PERSON")
+    -- First person hand model --------------------------------------------------
+    if (player:isLeftHanded()) then
+        vanilla_model.LEFT_ARM:setVisible(renderer:isFirstPerson() and context == "FIRST_PERSON")
+        vanilla_model.RIGHT_ARM:setVisible(false)
+    else
+        vanilla_model.RIGHT_ARM:setVisible(renderer:isFirstPerson() and context == "FIRST_PERSON")
+        vanilla_model.LEFT_ARM:setVisible(false)
+    end
 
     -- Physics handling ---------------------------------------------------------
     local vel = squassets.forwardVel()
