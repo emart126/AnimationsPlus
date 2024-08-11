@@ -105,6 +105,8 @@ AnimHorseSit = animations.model["Horse_Sitting"]
 AnimHorseRiding = animations.model["Horse_Riding"]
 
 AnimTaunt1 = animations.model["Taunt_1"]
+AnimTaunt2 = animations.model["Taunt_2"]
+AnimTaunt3 = animations.model["Taunt_3"]
 
 -- Attacks ----------------------------------------------------------
 
@@ -666,6 +668,8 @@ function events.tick() --=======================================================
     AnimHorseRiding:setPriority(1)
 
     AnimTaunt1:setPriority(4)
+    AnimTaunt2:setPriority(p)
+    AnimTaunt3:setPriority(p)
 
     -- Handle crouch model position ---------------------------------------------
     if (player:getPose() == "CROUCHING") then
@@ -1414,16 +1418,24 @@ end
 
 -- Action Wheel =========================================================================================
 
-function pings.actionDance()
-    AnimTaunt1:play()
-end
-
 function SheathWeapon(bool)
     sheathOption = bool
 end
 pings.actionSheath = SheathWeapon
 
-function pings.actionEmoteTemp(setting)
+function pings.taunt1Dance()
+    AnimTaunt1:play()
+end
+
+function pings.taunt2Nod1()
+    AnimTaunt2:restart()
+end
+
+function pings.taunt3Nod2()
+    AnimTaunt3:restart()
+end
+
+function pings.actionTauntTemp(setting)
     -- AnimIdling1:play()
     print("Temp")
 end
@@ -1439,44 +1451,44 @@ local setting1 = mainPage:newAction()
     :onToggle(pings.actionSheath)
     :toggled(sheathOption)
 
-local emote1 = mainPage:newAction()
+local taunt1 = mainPage:newAction()
     :title("Dance")
     :item("minecraft:music_disc_chirp")
     :hoverColor(1, 1, 1)
-    :onLeftClick(pings.actionDance)
+    :onLeftClick(pings.taunt1Dance)
 
-local emote2 = mainPage:newAction()
-    :title("placeholder2")
+local taunt2 = mainPage:newAction()
+    :title("Nod 1")
     :item("minecraft:music_disc_11")
     :hoverColor(1, 1, 1)
-    -- :onLeftClick(pings.actionEmoteTemp)
+    :onLeftClick(pings.taunt2Nod1)
 
-local emote3 = mainPage:newAction()
-    :title("placeholder3")
+local taunt3 = mainPage:newAction()
+    :title("Nod 2")
     :item("minecraft:music_disc_11")
     :hoverColor(1, 1, 1)
-    -- :onLeftClick(pings.actionEmoteTemp)
+    :onLeftClick(pings.taunt3Nod2)
 
-local emote4 = mainPage:newAction()
+local taunt4 = mainPage:newAction()
     :title("placeholder4")
     :item("minecraft:music_disc_11")
     :hoverColor(1, 1, 1)
-    -- :onLeftClick(pings.actionEmoteTemp)
+    -- :onLeftClick(pings.actionTauntTemp)
 
-local emote5 = mainPage:newAction()
+local taunt5 = mainPage:newAction()
     :title("placeholder5")
     :item("minecraft:music_disc_11")
     :hoverColor(1, 1, 1)
-    -- :onLeftClick(pings.actionEmoteTemp)
+    -- :onLeftClick(pings.actionTauntTemp)
 
-local emote6 = mainPage:newAction()
+local taunt6 = mainPage:newAction()
     :title("placeholder6")
     :item("minecraft:music_disc_11")
     :hoverColor(1, 1, 1)
-    -- :onLeftClick(pings.actionEmoteTemp)
+    -- :onLeftClick(pings.actionTauntTemp)
 
-local emote6 = mainPage:newAction()
+local taunt7 = mainPage:newAction()
     :title("placeholder7")
     :item("minecraft:music_disc_11")
     :hoverColor(1, 1, 1)
-    -- :onLeftClick(pings.actionEmoteTemp)
+    -- :onLeftClick(pings.actionTauntTemp)
