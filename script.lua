@@ -74,6 +74,9 @@ AnimCrouch = animations.model["Crouch_1"]
 AnimUnCrouch = animations.model["Crouch_2"]
 AnimCrouchWalk = animations.model["Sneaking"]
 
+AnimCrawl = animations.model["Crawl_Still"]
+AnimCrawling = animations.model["Crawling"]
+
 AnimFloat = animations.model["Float"]
 AnimSwim = animations.model["Swim_0"]
 
@@ -368,7 +371,7 @@ end
 
 -- Stop playing all 'basic action' animations except animations given
 function stopBasicAnims(exceptionTable)
-    local animationTable = {AnimIdle, AnimWalk, AnimCrouching, AnimCrouchWalk, AnimSprint, AnimJumping, AnimShortFalling,
+    local animationTable = {AnimIdle, AnimWalk, AnimCrouching, AnimCrouchWalk, AnimSprint, AnimCrawl, AnimCrawling, AnimJumping, AnimShortFalling,
                             AnimClimb, AnimClimbHold, AnimFloat, AnimSwim, AnimSit, AnimHorseSit, AnimHorseRiding, AnimCrouchJumping}
     local isException
     for i,anim in ipairs(animationTable) do
@@ -389,7 +392,7 @@ end
 function getAnimPriority()
     local animationTable = {AnimJump, AnimJumpLand, AnimCrouch, AnimUnCrouch, AnimFall, AnimShortLand, AnimFallLand,
                             AnimJumpMove1, AnimJumpMove2, AnimJumpMoveStop1, AnimJumpMoveStop2, AnimIdle, AnimCrouching,
-                            AnimCrouchWalk, AnimWalk, AnimSprint, AnimJumping, AnimCrouchJumping, AnimShortFalling,
+                            AnimCrouchWalk, AnimWalk, AnimSprint, AnimCrawl, AnimCrawling, AnimJumping, AnimCrouchJumping, AnimShortFalling,
                             AnimFalling, AnimSwim, AnimFloat, AnimClimb, AnimClimbHold, AnimSit, AnimHorseSit, AnimHorseRiding}
     for i,anim in ipairs(animationTable) do
         if (anim == AnimIdle and anim:isPlaying() and not AnimCrouching:isPlaying()) then
@@ -634,6 +637,9 @@ function events.tick() --=======================================================
     AnimWalk:setPriority(2)
     AnimSprint:setPriority(2)
 
+    AnimCrawl:setPriority(2)
+    AnimCrawling:setPriority(2)
+
     AnimJumping:setPriority(1)
     AnimJump:setPriority(2)
     AnimJumpLand:setPriority(2)
@@ -757,7 +763,7 @@ function events.render(delta, context) --=======================================
     -- Play animation under certain conditions ----------------------------------
 
     -- Interacting with water
-    if (floating or swimming) then
+    if (floating or (swimming and floating)) then
         if (floating and not swimming and isGrounded) then
             -- On the ground, Underwater 
             if (crouching) then
@@ -807,7 +813,17 @@ function events.render(delta, context) --=======================================
                     AnimCrouching:play()
                 end
             elseif (not crouching) then
-                if (walking and not crouching and not sprinting) then
+                if (player:isVisuallySwimming()) then
+                    if (not walking) then
+                        state = "crawling"
+                        stopBasicAnims({AnimCrawl})
+                        AnimCrawl:play()
+                    elseif (walking) then
+                        state = "crawl walking"
+                        stopBasicAnims({AnimCrawling})
+                        AnimCrawling:play()
+                    end
+                elseif (walking and not crouching and not sprinting) then
                     state = "walking"
                     stopBasicAnims({AnimWalk, AnimJumping})
                     AnimWalk:play()
