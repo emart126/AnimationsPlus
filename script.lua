@@ -127,6 +127,7 @@ ShamanSwing = animations.model["Relik_Strike"]
 
 -- Archer -------
 ArcherShoot = animations.model["Bow_Shoot"]
+ArcherShootHold = animations.model["Bow_Shoot_Hold"]
 
 -- Wynncraft Spells -------------------------------------------------
 -- R1, L2, R3 = s1
@@ -610,6 +611,7 @@ function events.tick() --=======================================================
     AssassinSwing3:setPriority(p)
 
     ArcherShoot:setPriority(p)
+    ArcherShootHold:setPriority(p)
 
     ShamanSwing:setPriority(p)
     
@@ -689,6 +691,16 @@ function events.tick() --=======================================================
     if (hitKey:isPressed() and not action_wheel:isEnabled()) then
         idleTick = 0
         StopAllIdle()
+    end
+
+    -- Bow Shooting -------------------------------------------------------------
+    if (weaponClass ~= "Archer/Hunter" and string.find(player:getHeldItem():toStackString(), "bow") ~= nil) then
+        ShootingAction = player:getActiveItem():getUseAction() == "BOW" or player:getActiveItem():getUseAction() == "CROSSBOW"
+    end
+    if (ShootingAction) then
+        ArcherShootHold:play()
+    else
+        ArcherShootHold:stop()
     end
 
     -- Dedect right click use arm swing -----------------------------------------
