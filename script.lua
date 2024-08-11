@@ -67,6 +67,7 @@ AnimIdle = animations.model["Idle_0"]
 AnimIdling1 = animations.model["Idle_1"]
 AnimIdling2 = animations.model["Idle_2"]
 AnimIdling3 = animations.model["Idle_3"]
+
 AnimWalk = animations.model["Walking"]
 AnimCrouching = animations.model["Crouch_0"]
 AnimCrouch = animations.model["Crouch_1"]
@@ -99,6 +100,8 @@ AnimSprint = animations.model["Sprinting"]
 AnimSit = animations.model["Sit"]
 AnimHorseSit = animations.model["Horse_Sitting"]
 AnimHorseRiding = animations.model["Horse_Riding"]
+
+AnimTaunt1 = animations.model["Taunt_1"]
 
 -- Attacks ----------------------------------------------------------
 
@@ -201,6 +204,13 @@ function StopAllSpell()
     AnimSecondSpell:stop()
     AnimThirdSpell:stop()
     -- AnimMovement:stop()
+end
+
+function StopAllIdle()
+    AnimIdling1:stop()
+    AnimIdling2:stop()
+    AnimIdling3:stop()
+    AnimTaunt1:stop()
 end
 
 -- Check if itemStack has a class identified with it
@@ -647,6 +657,8 @@ function events.tick() --=======================================================
     AnimHorseSit:setPriority(1)
     AnimHorseRiding:setPriority(1)
 
+    AnimTaunt1:setPriority(4)
+
     -- Handle crouch model position ---------------------------------------------
     if (player:getPose() == "CROUCHING") then
         pModel:setPos(0,2,0)
@@ -671,16 +683,12 @@ function events.tick() --=======================================================
         end
     else
         idleTick = 0
-        AnimIdling1:stop()
-        AnimIdling2:stop()
-        AnimIdling3:stop()
+        StopAllIdle()
     end
 
     if (hitKey:isPressed() and not action_wheel:isEnabled()) then
         idleTick = 0
-        AnimIdling1:stop()
-        AnimIdling2:stop()
-        AnimIdling3:stop()
+        StopAllIdle()
     end
 
     -- Dedect right click use arm swing -----------------------------------------
@@ -1379,7 +1387,7 @@ end
 -- Action Wheel =========================================================================================
 
 function pings.actionDance()
-    AnimIdling3:play()
+    AnimTaunt1:play()
 end
 
 function SheathWeapon(bool)
