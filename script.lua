@@ -105,8 +105,8 @@ AnimHorseSit = animations.model["Horse_Sitting"]
 AnimHorseRiding = animations.model["Horse_Riding"]
 
 AnimTaunt1 = animations.model["Taunt_1"]
-AnimTaunt2 = animations.model["Taunt_2"]
-AnimTaunt3 = animations.model["Taunt_3"]
+AnimTaunt2a = animations.model["Taunt_2"]
+AnimTaunt2b = animations.model["Taunt_3"]
 
 -- Attacks ----------------------------------------------------------
 
@@ -668,8 +668,8 @@ function events.tick() --=======================================================
     AnimHorseRiding:setPriority(1)
 
     AnimTaunt1:setPriority(4)
-    AnimTaunt2:setPriority(p)
-    AnimTaunt3:setPriority(p)
+    AnimTaunt2a:setPriority(p)
+    AnimTaunt2b:setPriority(p)
 
     -- Handle crouch model position ---------------------------------------------
     if (player:getPose() == "CROUCHING") then
@@ -1434,12 +1434,13 @@ function pings.taunt1Dance()
     AnimTaunt1:play()
 end
 
-function pings.taunt2Nod1()
-    AnimTaunt2:restart()
-end
-
-function pings.taunt3Nod2()
-    AnimTaunt3:restart()
+function pings.taunt2Nod()
+    Rand = math.random(0,1)
+    if (Rand == 0) then
+        AnimTaunt2a:restart()
+    else
+        AnimTaunt2b:restart()
+    end
 end
 
 function pings.actionTauntTemp(setting)
@@ -1465,16 +1466,16 @@ local taunt1 = mainPage:newAction()
     :onLeftClick(pings.taunt1Dance)
 
 local taunt2 = mainPage:newAction()
-    :title("Nod 1")
-    :item("minecraft:music_disc_11")
+    :title("Nod")
+    :item("minecraft:player_head")
     :hoverColor(1, 1, 1)
-    :onLeftClick(pings.taunt2Nod1)
+    :onLeftClick(pings.taunt2Nod)
 
 local taunt3 = mainPage:newAction()
-    :title("Nod 2")
+    :title("placeholder3")
     :item("minecraft:music_disc_11")
     :hoverColor(1, 1, 1)
-    :onLeftClick(pings.taunt3Nod2)
+    -- :onLeftClick(pings.actionTauntTemp)
 
 local taunt4 = mainPage:newAction()
     :title("placeholder4")
