@@ -1447,8 +1447,10 @@ end
 function pings.taunt2Nod()
     Rand = math.random(0,1)
     if (Rand == 0) then
+        AnimTaunt2b:stop()
         AnimTaunt2a:restart()
     else
+        AnimTaunt2a:stop()
         AnimTaunt2b:restart()
     end
 end
