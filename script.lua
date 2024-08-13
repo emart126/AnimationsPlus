@@ -433,8 +433,18 @@ function events.tick()
     end
     oldWeaponClass = class
 
+end
+
+local wheelCheck
+local oldWheelCheck
+function events.render()
+    wheelCheck = action_wheel:isEnabled()
     -- Is Action Wheel Open
-    pings.syncAcitonWheel(action_wheel:isEnabled())
+    if (wheelCheck ~= oldWheelCheck) then
+        pings.syncAcitonWheel(wheelCheck)
+    end
+    oldWheelCheck = wheelCheck
+
 end
 
 -- left-clicking detection ==============================================================================
