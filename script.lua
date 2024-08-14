@@ -107,6 +107,8 @@ AnimHorseRiding = animations.model["Horse_Riding"]
 AnimTaunt1 = animations.model["Taunt_1"]
 AnimTaunt2a = animations.model["Taunt_2"]
 AnimTaunt2b = animations.model["Taunt_3"]
+AnimTaunt3 = animations.model["Taunt_4"]
+AnimTaunt4 = animations.model["Taunt_5"]
 
 -- Attacks ----------------------------------------------------------
 
@@ -217,6 +219,8 @@ function StopAllIdle()
     AnimIdling2:stop()
     AnimIdling3:stop()
     AnimTaunt1:stop()
+    AnimTaunt3:stop()
+    AnimTaunt4:stop()
 end
 
 -- Check if itemStack has a class identified with it
@@ -680,6 +684,8 @@ function events.tick() --=======================================================
     AnimTaunt1:setPriority(4)
     AnimTaunt2a:setPriority(p)
     AnimTaunt2b:setPriority(p)
+    AnimTaunt3:setPriority(4)
+    AnimTaunt4:setPriority(4)
 
     -- Handle crouch model position ---------------------------------------------
     if (player:getPose() == "CROUCHING") then
@@ -1441,6 +1447,7 @@ end
 pings.actionSheath = SheathWeapon
 
 function pings.taunt1Dance()
+    StopAllIdle()
     AnimTaunt1:play()
 end
 
@@ -1455,9 +1462,29 @@ function pings.taunt2Nod()
     end
 end
 
-function pings.actionTauntTemp(setting)
-    -- AnimIdling1:play()
-    print("Temp")
+function pings.taunt3JumpingJacks()
+    StopAllIdle()
+    AnimTaunt3:play()
+end
+
+function pings.taunt4Inspect()
+    StopAllIdle()
+    AnimTaunt4:play()
+end
+
+function pings.taunt5KickDirt()
+    StopAllIdle()
+    AnimIdling1:play()
+end
+
+function pings.taunt6Look()
+    StopAllIdle()
+    AnimIdling2:play()
+end
+
+function pings.taunt7Wait()
+    StopAllIdle()
+    AnimIdling3:play()
 end
 
 local mainPage = action_wheel:newPage("Taunts")
@@ -1484,31 +1511,31 @@ local taunt2 = mainPage:newAction()
     :onLeftClick(pings.taunt2Nod)
 
 local taunt3 = mainPage:newAction()
-    :title("placeholder3")
-    :item("minecraft:music_disc_11")
+    :title("Jumping Jacks")
+    :item("minecraft:feather")
     :hoverColor(1, 1, 1)
-    -- :onLeftClick(pings.actionTauntTemp)
+    :onLeftClick(pings.taunt3JumpingJacks)
 
 local taunt4 = mainPage:newAction()
-    :title("placeholder4")
-    :item("minecraft:music_disc_11")
+    :title("Inspect Item")
+    :item("minecraft:experience_bottle")
     :hoverColor(1, 1, 1)
-    -- :onLeftClick(pings.actionTauntTemp)
+    :onLeftClick(pings.taunt4Inspect)
 
 local taunt5 = mainPage:newAction()
-    :title("placeholder5")
-    :item("minecraft:music_disc_11")
+    :title("Boredom")
+    :item("minecraft:book")
     :hoverColor(1, 1, 1)
-    -- :onLeftClick(pings.actionTauntTemp)
+    :onLeftClick(pings.taunt5KickDirt)
 
 local taunt6 = mainPage:newAction()
-    :title("placeholder6")
-    :item("minecraft:music_disc_11")
+    :title("Look Around")
+    :item("minecraft:ender_eye")
     :hoverColor(1, 1, 1)
-    -- :onLeftClick(pings.actionTauntTemp)
+    :onLeftClick(pings.taunt6Look)
 
 local taunt7 = mainPage:newAction()
-    :title("placeholder7")
-    :item("minecraft:music_disc_11")
+    :title("Wait")
+    :item("minecraft:clock")
     :hoverColor(1, 1, 1)
-    -- :onLeftClick(pings.actionTauntTemp)
+    :onLeftClick(pings.taunt7Wait)
