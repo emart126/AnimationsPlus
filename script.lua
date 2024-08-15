@@ -41,6 +41,7 @@ end
 
 -- Settings
 local sheathOption = true;
+local idleAnimations = true;
 
 -- Animation states/ticks
 local state
@@ -695,28 +696,30 @@ function events.tick() --=======================================================
     end
 
     -- Idling -------------------------------------------------------------------
-    if (state == "idle") then
-        idleTick = idleTick + 1
-        if (idleTick == randTick) then
-            randAnim = math.random(0, 2)
-            if (randAnim == 0) then
-                AnimIdling1:play()
-            elseif (randAnim == 1) then
-                AnimIdling2:play()
-            else
-                AnimIdling3:play()
+    if (idleAnimations) then
+        if (state == "idle") then
+            idleTick = idleTick + 1
+            if (idleTick == randTick) then
+                randAnim = math.random(0, 2)
+                if (randAnim == 0) then
+                    AnimIdling1:play()
+                elseif (randAnim == 1) then
+                    AnimIdling2:play()
+                else
+                    AnimIdling3:play()
+                end
+                idleTick = 0
+                randTick = GetRandIdleTick()
             end
+        else
             idleTick = 0
-            randTick = GetRandIdleTick()
+            StopAllIdle()
         end
-    else
-        idleTick = 0
-        StopAllIdle()
-    end
 
-    if (hitKey:isPressed() and not action_wheel:isEnabled()) then
-        idleTick = 0
-        StopAllIdle()
+        if (hitKey:isPressed() and not action_wheel:isEnabled()) then
+            idleTick = 0
+            StopAllIdle()
+        end
     end
 
     -- Bow Shooting -------------------------------------------------------------
@@ -1446,6 +1449,11 @@ function SheathWeapon(bool)
 end
 pings.actionSheath = SheathWeapon
 
+function IdleAnimation(bool)
+    idleAnimations = bool
+end
+pings.actionIdleAnims = IdleAnimation
+
 function pings.taunt1Dance()
     StopAllIdle()
     AnimTaunt1:play()
@@ -1488,15 +1496,22 @@ function pings.taunt7Wait()
 end
 
 local mainPage = action_wheel:newPage("Taunts")
+local settingPage = action_wheel:newPage("Settings")
 action_wheel:setPage(mainPage)
 
-local setting1 = mainPage:newAction()
-    :title("Enable Sheath")
-    :toggleTitle("Disable Sheath")
-    :item("minecraft:diamond_sword")
-    :hoverColor(1, 1, 1)
-    :onToggle(pings.actionSheath)
-    :toggled(sheathOption)
+local toSettings = mainPage:newAction()
+    :title("Go to settings")
+    :item("minecraft:writable_book")
+    :onLeftClick(function()
+    action_wheel:setPage(settingPage)
+end)
+
+local toTaunts = settingPage:newAction()
+    :title("Go to Taunts")
+    :item("minecraft:writable_book")
+    :onLeftClick(function()
+    action_wheel:setPage(mainPage)
+end)
 
 local taunt1 = mainPage:newAction()
     :title("Dance")
@@ -1524,7 +1539,7 @@ local taunt4 = mainPage:newAction()
 
 local taunt5 = mainPage:newAction()
     :title("Boredom")
-    :item("minecraft:book")
+    :item("minecraft:enchanted_book")
     :hoverColor(1, 1, 1)
     :onLeftClick(pings.taunt5KickDirt)
 
@@ -1539,3 +1554,24 @@ local taunt7 = mainPage:newAction()
     :item("minecraft:clock")
     :hoverColor(1, 1, 1)
     :onLeftClick(pings.taunt7Wait)
+
+local setting1 = settingPage:newAction()
+    :title("Enable Sheath")
+    :toggleTitle("Disable Sheath")
+    :item("minecraft:diamond_sword")
+    :hoverColor(1, 1, 1)
+    :onToggle(pings.actionSheath)
+    :toggled(sheathOption)
+
+local setting2 = settingPage:newAction()
+    :title("Enable Idle Animations")
+    :toggleTitle("Disable Idle Animations")
+    :item("minecraft:armor_stand")
+    :hoverColor(1, 1, 1)
+    :onToggle(pings.actionIdleAnims)
+    :toggled(idleAnimations)
+
+local setting3 = settingPage:newAction()
+local setting4 = settingPage:newAction()
+local setting5 = settingPage:newAction()
+local setting6 = settingPage:newAction()
