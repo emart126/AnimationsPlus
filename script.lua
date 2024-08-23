@@ -443,8 +443,8 @@ end
 local wheelCheck
 local oldWheelCheck
 function events.render()
-    wheelCheck = action_wheel:isEnabled()
     -- Is Action Wheel Open
+    wheelCheck = action_wheel:isEnabled()
     if (wheelCheck ~= oldWheelCheck) then
         pings.syncAcitonWheel(wheelCheck)
     end
@@ -634,7 +634,7 @@ function events.tick() --=======================================================
     ArcherShootHold:setPriority(p)
 
     ShamanSwing:setPriority(p)
-    
+
     -- AnimMovement:setPriority(4)
     -- AnimFirstSpell:setPriority(4)
     -- AnimSecondSpell:setPriority(4)
@@ -1161,9 +1161,7 @@ end
 
 function events.entity_init() --=====================================================================================================================
     task = pModel.Upper.body.SheathedWeapon:newItem("weapon")
-    task:setDisplayMode("GUI")
-    task:setPos(0, 16.5, 4)
-    task:setScale(1.5,1.5,1.5)
+    task:setDisplayMode("THIRD_PERSON_RIGHT_HAND")
 end
 
 if (host:isHost()) then
@@ -1181,168 +1179,25 @@ if (host:isHost()) then
             local itemID
             local customModelData = itemInFirst["tag"]["CustomModelData"]
 
-            if (customModelData ~= nil or itemInFirst.id == "minecraft:stick") then
-                if (customModelData ~= nil) then
-                    itemID = itemInFirst.id.."{CustomModelData:"..customModelData.."}"
-                else
-                    itemID = itemInFirst.id
-                end
+            if (customModelData ~= nil) then
+                itemID = itemInFirst.id.."{CustomModelData:"..customModelData.."}"
 
                 -- Edit scale and rotation depending on its customModelData value
-                if (CheckClassItem(itemInFirstStack) == "Warrior/Knight") then  -- (data = 437->456)
-                    task:setPos(0, 17, 4)
-                    task:setScale(1.5, 1.5, 1.5)
-                    task:setRot(-20, 20, 100)
-
-                    if (IsBetweenXY(customModelData, 437, 438)) then        -- neutral
-                        task:setPos(0, 18, 4);
-                    elseif (IsBetweenXY(customModelData, 448, 450)) then    -- thunder
-                        task:setPos(0, 18, 4)
-                    elseif (IsBetweenXY(customModelData, 445, 446)) then    -- fire
-                        task:setPos(0, 17, 3.5)
-                    elseif (customModelData == 447) then
-                        task:setPos(0, 17, 4)
-                    elseif (customModelData == 440) then                    -- air
-                        task:setPos(0, 17, 5.5)
-                        task:setScale(2.25, 2.25, 2.25)
-                    elseif (customModelData == 441) then
-                        task:setPos(0, 16, 5)
-                        task:setScale(2.25, 2.25, 2.25)
-                        task:setRot(-20, 20, 100)
-                    elseif (customModelData == 451) then                     -- water
-                        task:setPos(0,18, 2)
-                        task:setScale(2.5, 2.5, 2.5)
-                    elseif (IsBetweenXY(customModelData, 452, 453)) then
-                        task:setPos(0, 18, 3)
-                        task:setScale(2.5, 2.5, 2.5)
-                    elseif (customModelData == 454) then                    -- rainbow
-                        task:setPos(0, 17, 3)
-                        task:setScale(1.5, 1.5, 1.5)
-                        task:setRot(-20, 20, 100)
-                    elseif (IsBetweenXY(customModelData, 455, 456)) then
-                        task:setPos(0, 18, 3)
-                        task:setScale(2.5, 2.5, 2.5)
-                    else
-                        task:setPos(0, 17, 4)
-                        task:setScale(1.5, 1.5, 1.5)
-                        task:setRot(-20, 20, 100)
-                    end
-                elseif (CheckClassItem(itemInFirstStack) == "Mage/Dark Wizard") then  -- (data = 308->328)
-                    task:setPos(0, 16.5, 4)
-                    task:setScale(1.5, 1.5, 1.5)
-                    task:setRot(-15, 15, 105)
-
-                    if (itemInFirst.id == "minecraft:stick" or customModelData == 308) then -- neutral
-                        task:setPos(0, 18, 3)
-                        task:setScale(1.25, 1.25, 1.25)
-                        task:setRot(-20, 20, 100)
-                    else
-                        task:setPos(0, 16.5, 4)
-                        task:setScale(1.5, 1.5, 1.5)
-                        task:setRot(-15, 15, 105)
-                    end
-                elseif (CheckClassItem(itemInFirstStack) == "Assassin/Ninja") then  -- (data = 244->263)
-                    task:setPos(0, 19, 3.5)
-                    task:setScale(1, 1, 1)
-                    task:setRot(160, 25, -10)
-
-                    if (IsBetweenXY(customModelData, 244, 245)) then         -- neutral
-                        task:setPos(5, 12, 0)
-                        task:setScale(0.9, 0.9, 0.9)
-                        task:setRot(70, 0, 120)
-                    elseif (customModelData == 249) then                    -- earth
-                        task:setPos(1, 21, 3.5)
-                        task:setRot(160, -10, -10)
-                    elseif (IsBetweenXY(customModelData, 250, 251)) then
-                        task:setPos(0, 19, 5)
-                        task:setScale(1, 1, 1)
-                        task:setRot(140, 25, -10)
-                    elseif (customModelData == 255) then                    -- thunder
-                        task:setPos(2, 20, 2.5)
-                        task:setRot(160, -10, -10)
-                    elseif (IsBetweenXY(customModelData, 256, 257)) then
-                        task:setRot(160, -10, -10)
-                    elseif (customModelData == 252) then                    -- fire
-                        task:setPos(0, 19, 2.5)
-                    elseif (customModelData == 247) then                    -- air
-                        task:setPos(0, 19, 2)
-                    elseif (customModelData == 248) then
-                        task:setScale(1.25, 1.25, 1.25)
-                        task:setPos(0, 18, 4.5)
-                    elseif (customModelData == 258) then                    -- water
-                        task:setPos(-2, 19, 1)
-                        task:setRot(160, 25, -20)
-                    elseif (IsBetweenXY(customModelData, 259, 260)) then
-                        task:setPos(-2, 19, 2)
-                        task:setRot(160, 25, -20)
-                    elseif (customModelData == 261) then                    -- rainbow
-                        task:setScale(1.25, 1.25, 1.25)
-                        task:setPos(0, 19, 1.5)
-                    elseif (customModelData == 262) then
-                        task:setScale(1.25, 1.25, 1.25)
-                        task:setPos(-1, 20, 1.5)
-                    elseif (customModelData == 263) then
-                        task:setScale(1.25, 1.25, 1.25)
-                        task:setPos(2, 20, 3.5)
-                    else
-                        task:setPos(0, 19, 3.5)
-                        task:setScale(1, 1, 1)
-                        task:setRot(160, 25, -10)
-                    end
-                elseif (CheckClassItem(itemInFirstStack) == "Archer/Hunter") then  -- (data = 182->201)
-                    task:setPos(0, 18, 2.75)
-                    task:setScale(1.5, 1.5, 1.5)
-                    task:setRot(-25, 200, 70)
-
-                    if (IsBetweenXY(customModelData, 182, 183)) then        -- neutral
-                        task:setScale(1.25, 1.25, 1.25)
-                        task:setRot(-12, 210, 80)
-                    elseif (IsBetweenXY(customModelData, 187, 189)) then    -- earth
-                        task:setPos(0, 25, 11)
-                        task:setScale(1.25, 1.25, 1.25)
-                        task:setRot(-40, 190, -190)
-                    elseif (customModelData == 193) then                    -- thunder
-                        task:setPos(0, 18, 2)
-                    elseif (IsBetweenXY(customModelData, 6, 7)) then
-                        task:setPos(0, 18, 1.5)
-                    elseif (IsBetweenXY(customModelData, 190, 192)) then    -- fire
-                        task:setPos(0, 18, 6.5)
-                        task:setRot(-5, 200, 70)
-                    elseif (IsBetweenXY(customModelData, 185, 186)) then    -- air
-                        task:setPos(4, 20, 2.75)
-                        task:setRot(-25, 200, 50)
-                    elseif (IsBetweenXY(customModelData, 200, 201)) then    -- rainbow
-                        task:setPos(4, 20, 2.75)
-                        task:setRot(-25, 200, 50)
-                    else
-                        task:setPos(0, 18, 2.75)
-                        task:setScale(1.5, 1.5, 1.5)
-                        task:setRot(-25, 200, 70)
-                    end
-                elseif (CheckClassItem(itemInFirstStack) == "Shaman/Skyseer") then -- (data = 373->392)
+                if (CheckClassItem(itemInFirstStack) == "Warrior/Knight") then  -- (data = 445->507)
                     task:setPos(0, 20, 4)
-                    task:setScale(1, 1, 1)
-                    task:setRot(-25, 200, 170)
-
-                    if (customModelData == 380) then                        -- earth
-                        task:setScale(1.15, 1.15, 1.15)
-                    elseif (customModelData == 386) then                    -- thunder
-                        task:setScale(1.15, 1.15, 1.15)
-                    elseif (IsBetweenXY(customModelData, 16, 17)) then      -- fire
-                        task:setScale(1.15, 1.15, 1.15)
-                    elseif (customModelData == 377) then                    -- air
-                        task:setScale(1.15, 1.15, 1.15)
-                    elseif (IsBetweenXY(customModelData, 387, 389)) then    -- water
-                        task:setPos(0, 20, 3.5)
-                        task:setScale(1.15, 1.15, 1.15)
-                        task:setRot(-20, 200, 170)
-                    elseif (IsBetweenXY(customModelData, 390, 392)) then    -- rainbow
-                        task:setScale(1.15, 1.15, 1.15)
-                    else
-                        task:setPos(0, 20, 4)
-                        task:setScale(1, 1, 1)
-                        task:setRot(-25, 200, 170)
-                    end
+                    task:setRot(0, 90, 125)
+                elseif (CheckClassItem(itemInFirstStack) == "Mage/Dark Wizard") then  -- (data = 312->378)
+                    task:setPos(0, 20, 4)
+                    task:setRot(0, 90, 125)
+                elseif (CheckClassItem(itemInFirstStack) == "Assassin/Ninja") then  -- (data = 246->311)
+                    task:setPos(5, 25, 4)
+                    task:setRot(0, 90, 130)
+                elseif (CheckClassItem(itemInFirstStack) == "Archer/Hunter") then  -- (data = 182->245)
+                    task:setPos(6, 17.5, 4)
+                    task:setRot(25, 90, 340)
+                elseif (CheckClassItem(itemInFirstStack) == "Shaman/Skyseer") then -- (data = 379->444)
+                    task:setPos(4, 20, 4)
+                    task:setRot(0, 270, 125)
                 end
             else
                 itemID = itemInFirst.id
