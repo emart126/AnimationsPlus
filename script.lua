@@ -244,12 +244,14 @@ function CheckClassItem(item)
     return(nil)
 end
 
--- Check if given number is between x and y (inclusive)
-function IsBetweenXY(num, x, y)
-    if (num >= x and num <= y) then
-        return true;
+-- Check if given number is in array
+function NumInArray(num, arr)
+    for i=1, #arr do
+        if (num == arr[i]) then
+            return true
+        end
     end
-    return false;
+    return false
 end
 
 -- Given what animations that need to play, check which one to play under certain conditions on a left click
@@ -1181,26 +1183,160 @@ if (host:isHost()) then
 
             if (customModelData ~= nil) then
                 itemID = itemInFirst.id.."{CustomModelData:"..customModelData.."}"
+                local classItem = CheckClassItem(itemInFirstStack)
 
                 -- Edit scale and rotation depending on its customModelData value
-                if (CheckClassItem(itemInFirstStack) == "Warrior/Knight") then  -- (data = 445->507)
-                    task:setPos(0, 20, 4)
-                    task:setRot(0, 90, 125)
-                elseif (CheckClassItem(itemInFirstStack) == "Mage/Dark Wizard") then  -- (data = 312->378)
-                    task:setPos(0, 20, 4)
-                    task:setRot(0, 90, 125)
-                elseif (CheckClassItem(itemInFirstStack) == "Assassin/Ninja") then  -- (data = 246->311)
-                    task:setPos(5, 25, 4)
-                    task:setRot(0, 90, 130)
-                elseif (CheckClassItem(itemInFirstStack) == "Archer/Hunter") then  -- (data = 182->245)
-                    task:setPos(6, 17.5, 4)
-                    task:setRot(25, 90, 340)
-                elseif (CheckClassItem(itemInFirstStack) == "Shaman/Skyseer") then -- (data = 379->444)
-                    task:setPos(4, 20, 4)
-                    task:setRot(0, 270, 125)
+                if (classItem == "Warrior/Knight") then  -- (data = 445->507)
+                    if (NumInArray(customModelData, {448, 449, 470, 473, 476})) then
+                        -- Scythe
+                        task:setPos(0, 15, 4)
+                        task:setRot(0, 270, 50)
+                        if (customModelData == 449) then -- Air Scythe
+                            task:setPos(5, 15, 4)
+                        end
+                    elseif (NumInArray(customModelData, {475, 482, 488, 494, 497, 498, 502, 505})) then
+                        -- Sword
+                        task:setPos(5, 25, 4)
+                        task:setRot(0, 90, 135)
+                    else
+                        -- Spear
+                        task:setPos(0, 20, 4)
+                        task:setRot(0, 90, 125)
+                    end
+                elseif (classItem == "Mage/Dark Wizard") then  -- (data = 312->378)
+                    if (NumInArray(customModelData, {323, 326, 335, 344, 349, 350, 357, 363, 366, 374})) then
+                        -- Short Wand
+                        task:setPos(5, 25, 4)
+                        task:setRot(0, 90, 135)
+                        if (customModelData == 366) then -- Lantern Wand
+                            task:setPos(-3, 18, 4)
+                            task:setRot(0, 270, 57)
+                        end
+                    else
+                        -- Wand
+                        task:setPos(0, 20, 4)
+                        task:setRot(0, 90, 125)
+                    end
+                elseif (classItem == "Assassin/Ninja") then  -- (data = 246->311)
+                    if (NumInArray(customModelData, {246, 247, 254, 267, 270, 285, 289, 298, 305})) then
+                        -- Short Dagger
+                        task:setPos(4.9, 12, -2)
+                        task:setRot(120, 0, 0)
+                        if (customModelData == 267) then -- Enchanted Dagger
+                            task:setPos(3, 25, 4)
+                            task:setRot(90, 80, 233)
+                        elseif (customModelData == 270) then -- Nunchucks
+                            task:setPos(4.5, 8, -2)
+                            task:setRot(30, 0, 0)
+                        elseif (customModelData == 289) then -- Pan
+                            task:setPos(5, 25, 5)
+                            task:setRot(0, 0, 130)
+                        elseif (customModelData == 298) then -- Saxaphone
+                            task:setPos(0, 20, 6)
+                            task:setRot(45, 88, 0)
+                        elseif (customModelData == 305) then -- Enchanted Sword
+                            task:setPos(5, 25, 5)
+                        task:setRot(0, 80, 135)
+                        end
+                    elseif (NumInArray(customModelData, {251, 252, 253, 257, 258, 259, 268, 279, 301, 311})) then
+                        -- Front Claw
+                        task:setPos(0, 20, 5.5)
+                        task:setRot(90, 0, 320)
+                    elseif (NumInArray(customModelData, {291, 297, 308})) then
+                        -- Side Claw
+                        task:setPos(0, 18, 5.5)
+                        task:setRot(90, 90, 320)
+                        if (customModelData == 308) then -- Tesla Claw
+                            task:setPos(3, 18, 4.8)
+                            task:setRot(90, 80, 320)
+                        end
+                    else
+                        -- Dagger
+                        task:setPos(5, 25, 4)
+                        task:setRot(0, 90, 130)
+                    end
+                elseif (classItem == "Archer/Hunter") then  -- (data = 182->245)
+                    if (NumInArray(customModelData, {187, 188, 189, 204, 206, 213, 234, 240, 243})) then
+                        -- Crossbows
+                        task:setPos(3, 20, 4)
+                        task:setRot(90, 0, 315)
+                        if (customModelData == 206) then -- Boltslinger Repeater
+                            task:setPos(1, 23, 4)
+                            task:setRot(110, 0, 315)
+                        elseif (customModelData == 213) then -- Crimson Crossbow
+                            task:setRot(100, 0, 315)
+                        elseif (customModelData == 240) then -- Spectral Crossbow
+                            task:setRot(80, 0, 315)
+                        elseif (customModelData == 243) then -- Slingshot
+                            task:setPos(6.5, 10, 0)
+                            task:setRot(0, 90, 0)
+                        end
+                    elseif (NumInArray(customModelData, {209, 211, 232, 236, 239})) then
+                        -- Hand Cannon
+                        task:setPos(3, 23, 4)
+                        task:setRot(90, 0, 315)
+                        if (customModelData == 209) then -- Brawler Blunderbuss
+                            task:setPos(2, 22, 4)
+                            task:setRot(110, 0, 325)
+                        elseif (customModelData == 232) then -- Flamethrower
+                            task:setPos(-1, 18, 4)
+                            task:setRot(-90, 0, 135)
+                        elseif (customModelData == 211) then -- Flame Cannon
+                            task:setRot(-90, 0, 135)
+                        end
+                    elseif (NumInArray(customModelData, {203, 215, 216, 219, 220, 228, 230, 233, 237, 238, 245})) then
+                        -- Long Bow
+                        task:setPos(3, 18, 4)
+                        task:setRot(25, 90, 340)
+                        if (customModelData == 219 or customModelData == 220 or customModelData == 228) then -- Dusack/Banana/Spiral
+                            task:setPos(3, 16, 4)
+                        elseif (customModelData == 233) then -- Harp
+                            task:setPos(6, 14, 4)
+                        elseif (customModelData == 237 or customModelData == 245) then -- Futuristic/Tropical
+                            task:setPos(1, 16, 4)
+                            task:setRot(25, 90, 330)
+                        end
+                    else
+                        -- Bows
+                        task:setPos(6, 17.5, 4)
+                        task:setRot(25, 90, 340)
+                    end
+                elseif (classItem == "Shaman/Skyseer") then -- (data = 379->444)
+                    if (NumInArray(customModelData, {403, 415, 433, 435, 438, 440, 442, 444})) then
+                        -- Lantern
+                        task:setPos(5, 16, 0)
+                        task:setRot(0, 90, -30)
+                        if (customModelData == 415) then -- Dynasty Fan 
+                            task:setPos(4, 23, 4)
+                            task:setRot(0, 65, 140)
+                        elseif (customModelData == 433) then -- Pan Pipes
+                            task:setPos(5, 14, -1)
+                            task:setRot(0, 0, 0)
+                        elseif (customModelData == 435) then -- Ritualist Focus
+                            task:setPos(-3, 15, 4)
+                            task:setRot(0, 270, 60)
+                        elseif (customModelData == 440) then -- Summoner's Marionette
+                            task:setPos(2, 19, 5)
+                            task:setRot(0, 280, 65)
+                        elseif (customModelData == 442 or customModelData == 444) then -- Voodoo Dolls
+                            task:setPos(3, 15, 5)
+                            task:setRot(10, 280, 0)
+                        end
+                    else
+                        -- Relik
+                        task:setPos(4, 20, 4)
+                        task:setRot(0, 270, 135)
+                        if (NumInArray(customModelData, {421, 422, 424, 427, 428})) then -- Hand Offset Models
+                            task:setPos(4, 20, 2)
+                            task:setRot(0, 270, 135)
+                        end
+                    end
                 end
-            else
-                itemID = itemInFirst.id
+
+                -- Hand Offset Models
+                if (NumInArray(customModelData, {202, 221, 224, 225, 227, 230, 231, 274, 282, 286, 290, 293, 296, 333, 352, 355, 356, 358, 361, 362, 465, 483, 486, 487, 489, 492, 493, 505})) then
+                    task:setPos(task:getPos().x, task:getPos().y, 6)
+                end
             end
 
             -- ping only when item has changed
