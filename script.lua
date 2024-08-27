@@ -49,7 +49,9 @@ local oldState
 local randAnim
 local rightWasPressed
 local randTick = 400
-local fallTick = 0
+local fallTimer = 0
+local startFallTime = 0
+local startedFall = false
 local idleTick = 0
 local jump = false
 
@@ -899,14 +901,19 @@ function events.render(delta, context) --=======================================
     end
 
     -- Falling conditions
+    --print((client:getSystemTime() % 10000) / 1000)
     if (state == "inAir" or state == "falling") then
-        fallTick = fallTick + 1
-        if (fallTick > 96) then
+        if (not startedFall) then
+            startFallTime = client:getSystemTime() / 1000
+            startedFall = true
+        end
+        fallTimer = (client:getSystemTime() / 1000 - startFallTime)
+
+        if (fallTimer > 0.6) then
             state = "falling"
-            fallTick = 96
         end
     else
-        fallTick = 0
+        startedFall = false
     end
 
     -- Crouching conditions
