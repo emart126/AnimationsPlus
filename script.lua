@@ -1362,7 +1362,7 @@ if (host:isHost()) then
 
     -- Sync selected slot
     function events.MOUSE_SCROLL(delta)
-        if (not player:isLoaded()) then
+        if (not player:isLoaded() or host:getScreen() ~= nil or isActionWheelOpen) then
             return
         end
 
