@@ -51,7 +51,7 @@ local rightWasPressed
 local randTick = 400
 local fallTick = 0
 local idleTick = 0
-local jump = 1
+local jump = false
 
 -- BlockBench model parts
 local pModel = models.model.Player
@@ -348,13 +348,14 @@ local function isOnGround(entity)
 end
 
 -- Given which jump to play, play that particular jump. returns next jump value
-function WhichJump(j, j1Anim, j2Anim)
-    if (j == 1) then
+function WhichJump(j1Anim, j2Anim)
+    if (jump) then
         j1Anim:play()
-        return 2
+        pings.legJump(false)
+        return
     end
     j2Anim:play()
-    return 1
+    pings.legJump(true)
 end
 
 -- Get random number between 400 and 600 that is also divisible by 80
@@ -412,6 +413,10 @@ end
 
 function pings.syncAcitonWheel(bool)
     isActionWheelOpen = bool
+end
+
+function pings.legJump(bool)
+    jump = bool
 end
 
 function events.tick()
@@ -930,7 +935,7 @@ function events.render(delta, context) --=======================================
 
         if (oldState == "sprinting" and state == "inAir" and player:getVelocity()[2] > 0) then
             -- Jump sprinting
-            jump = WhichJump(jump, AnimJumpMove1, AnimJumpMove2)
+            WhichJump(AnimJumpMove1, AnimJumpMove2)
         elseif (oldState == "inAir" and state == "falling") then
             -- Going into Long falling
             AnimJumping:stop()
