@@ -1202,6 +1202,9 @@ if (host:isHost()) then
                         -- Spear
                         task:setPos(0, 20, 4)
                         task:setRot(0, 90, 125)
+                        if (customModelData == 503) then
+                            task:setPos(0, 20, 5)
+                        end
                     end
                 elseif (classItem == "Mage/Dark Wizard") then  -- (data = 312->378)
                     if (NumInArray(customModelData, {323, 326, 335, 344, 349, 350, 357, 363, 366, 374})) then
