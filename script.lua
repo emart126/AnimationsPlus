@@ -366,18 +366,6 @@ function GetRandIdleTick()
     return(num)
 end
 
--- -- smoothly play an animation
--- function smoothPlay(anim, modelElem, pVel)
---     anim:setBlend(modelElem:doBounce(pVel*4.633, .001, .2))
--- 	anim:setSpeed(modelElem.pos)
--- end
-
--- -- Slow down animation and stop playing it
--- function smoothStop(anim, modelElem)
---     anim:setBlend(modelElem:doBounce(0, .001, .2))
--- 	anim:setSpeed(modelElem.pos)
--- end
-
 -- Stop playing all 'basic action' animations except animations given
 function stopBasicAnims(exceptionTable)
     local animationTable = {AnimIdle, AnimWalk, AnimCrouching, AnimCrouchWalk, AnimSprint, AnimCrawl, AnimCrawling, AnimJumping, AnimShortFalling,
@@ -1030,41 +1018,6 @@ function events.render(delta, context) --=======================================
 
     oldState = state
 end
-
--- function events.render() --=======================================================================================================================
---     local crouching = player:getPose() == "CROUCHING"
---     local swimming = player:isVisuallySwimming()
---     local floating = player:isInWater()
---     local sprinting = player:isSprinting()
---     local walking = player:getVelocity().xz:length() > .001
---     local climbing = player:isClimbing()
---     local isGrounded = isOnGround(player)
---     local sitting = player:getVehicle()
---     local ridingMount = player:getVehicle() and (player:getVehicle():getType() == "minecraft:horse"
---                                             or player:getVehicle():getType() == "minecraft:pig")
---     local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
---                                             or player:getVehicle():getType() == "minecraft:boat")
-
---     -- Testing animation transitions
---     local vel = squapi.getForwardVel()
--- 	if vel > 0.3 then vel = 0.3 end
---     if (walking and not crouching and not sprinting) then
---         if (not AnimWalk:isPlaying()) then
---             smoothWalkObj = squapi.bounceObject:new()
---             AnimWalk:play()
---         end
---         smoothPlay(AnimWalk, smoothWalkObj, vel)
---     else
---         if (AnimWalk:isPlaying()) then
---             smoothStop(AnimWalk, smoothWalkObj)
---         end
---         if (AnimWalk:getSpeed() <= 0) then
---             AnimWalk:stop()
---         end
---     end
-
---     print(AnimWalk:isPlaying(), AnimWalk:getSpeed())
--- end
 
 -- Physics variables ====================================================================================
 local rArm = squassets.BERP:new()
