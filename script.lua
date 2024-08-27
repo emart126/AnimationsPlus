@@ -408,6 +408,8 @@ end
 local weaponClass
 local isActionWheelOpen
 local oldWeaponClass
+local wheelCheck
+local oldWheelCheck
 
 function pings.syncHeldItemIsWeapon(strClass)
     weaponClass = strClass
@@ -421,10 +423,13 @@ function pings.legJump(bool)
     jump = bool
 end
 
-function events.tick()
-    if (world.getTime() % 20 ~= 0) then
-        return
+function events.render(delta)
+    -- Is Action Wheel Open
+    wheelCheck = action_wheel:isEnabled()
+    if (wheelCheck ~= oldWheelCheck) then
+        pings.syncAcitonWheel(wheelCheck)
     end
+    oldWheelCheck = wheelCheck
 
     -- Held Item Wynncraft Class
     local currItem = player:getHeldItem()
@@ -434,18 +439,6 @@ function events.tick()
         pings.syncHeldItemIsWeapon(class)
     end
     oldWeaponClass = class
-
-end
-
-local wheelCheck
-local oldWheelCheck
-function events.render()
-    -- Is Action Wheel Open
-    wheelCheck = action_wheel:isEnabled()
-    if (wheelCheck ~= oldWheelCheck) then
-        pings.syncAcitonWheel(wheelCheck)
-    end
-    oldWheelCheck = wheelCheck
 
 end
 
