@@ -1091,7 +1091,6 @@ local oldWeapon
 
 local taskRotation
 local taskPosition
-local taskScale
 
 function pings.updateItemID(id)
     syncedItemID = id
@@ -1113,10 +1112,9 @@ function pings.updateWeaponClass(class)
     currWeapon = class
 end
 
-function pings.updateWeaponTask(vectRotX, vectRotY, vectRotZ, vecPosX, vecPosY, vecPosZ, vecScaleX, vecScaleY, vecScaleZ)
+function pings.updateWeaponTask(vectRotX, vectRotY, vectRotZ, vecPosX, vecPosY, vecPosZ)
     taskRotation = vectors.vec3(vectRotX, vectRotY, vectRotZ)
     taskPosition = vectors.vec3(vecPosX, vecPosY, vecPosZ)
-    taskScale = vectors.vec3(vecScaleX, vecScaleY, vecScaleZ)
 end
 
 function events.entity_init() --=====================================================================================================================
@@ -1314,7 +1312,7 @@ if (host:isHost()) then
             pings.updateWeaponClass(hasClassStr)
 
             -- Sync item task vectors
-            pings.updateWeaponTask(task:getRot()[1], task:getRot()[2], task:getRot()[3], task:getPos()[1], task:getPos()[2], task:getPos()[3], task:getScale()[1], task:getScale()[2], task:getScale()[3])
+            pings.updateWeaponTask(task:getRot()[1], task:getRot()[2], task:getRot()[3], task:getPos()[1], task:getPos()[2], task:getPos()[3])
         end
     end
 
@@ -1373,7 +1371,6 @@ function events.tick()
                 task:setItem(syncedItemID)
                 task:setRot(taskRotation)
                 task:setPos(taskPosition)
-                task:setScale(taskScale)
             else
                 task:setItem("minecraft:air")
             end
