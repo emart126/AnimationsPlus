@@ -461,7 +461,7 @@ function pings.onHitDo()
         end
 
         -- Daggers --
-        if (weaponClass == "Assassin/Ninja") then
+        if (weaponClass == "Assassin/Ninja" or string.find(player:getHeldItem():toStackString(), "sword") ~= nil) then
             CheckAnimToPlayLeftClick(AnimR1, AnimR2, AnimL2, AssassinSwing1, AssassinSwing2, AssassinSwing3, AnimSecondSpell, AnimThirdSpell)
             return
         end
