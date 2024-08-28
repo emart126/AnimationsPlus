@@ -17,6 +17,7 @@ Now works with Minecraft version 1.20 and 1.21
 +Jumping\
 +Crouch Jumping\
 +Sprint Jumping\
++Crawling\
 +Falling\
 +Landing\
 +Swimming\
@@ -26,7 +27,10 @@ Now works with Minecraft version 1.20 and 1.21
 +Sitting\
 +Riding Horse\
 +Idling\
-+Punching
++Punching\
++Sword Swinging\
++Bow Shooting\
++Crossbow Shooting
 
 ### Added Features for Wynncraft
 +Warrior Attacking\
@@ -40,10 +44,11 @@ Now works with Minecraft version 1.20 and 1.21
 -Left handed mode
 
 ### Other Added Feature (Figura Action Wheel)
-The firgura action wheel has an added setting to turn off and\
-on weapon holstering.\
-The action wheel also has one added emote and may get more\
-in future versions of the avatar.
+The firgura action wheel has temporary taunt animations\
+that will get future updates but animations are still\
+in development.\
+There is now a second page to change the avatars settings\
+such as enabling/disabling weapon holstering and idle animations
 
 ### Credits
 Main Programming: Vance568\
