@@ -902,7 +902,7 @@ function events.render(delta, context) --=======================================
         end
         fallTimer = (client:getSystemTime() / 1000 - startFallTime)
 
-        if (fallTimer > 0.6) then
+        if (fallTimer > 0.7) then
             state = "falling"
         end
     else
