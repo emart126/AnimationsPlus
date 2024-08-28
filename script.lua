@@ -1124,12 +1124,8 @@ end
 
 if (host:isHost()) then
     local eventOldItemId
-    function events.tick()
+    function events.render()
         if (sheathOption) then
-            if (world.getTime() % 20 ~= 0) then
-                return
-            end
-
             -- Sync item id and damage value
             local itemInFirst = host:getSlot(0)
             local itemInFirstStack = itemInFirst:toStackString()
