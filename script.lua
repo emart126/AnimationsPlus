@@ -45,6 +45,12 @@ local idleTick = 0
 local randTick = 400
 local randAnim
 
+local rightLeg = false
+local wasSprintJup = false
+local wasSprintJDown = false
+local isSprintJup
+local isSprintJDown
+
 local fallTimer = 0
 local startFallTime = 0
 local startedFall = false
@@ -482,14 +488,14 @@ end
 -- Render animation condtions using render function
 function events.render(delta, context) --============================================================================================================================
     
-    -- Is Action Wheel Open
+    -- Is Action Wheel Open -----------------------------------------------------
     wheelCheck = action_wheel:isEnabled()
     if (wheelCheck ~= oldWheelCheck) then
         pings.syncAcitonWheel(wheelCheck)
     end
     oldWheelCheck = wheelCheck
 
-    -- Held Item Wynncraft Class
+    -- Held Item Wynncraft Class ------------------------------------------------
     local currItem = player:getHeldItem()
     local currItemStack = currItem:toStackString()
     local class = CheckClassItem(currItemStack)
@@ -498,6 +504,26 @@ function events.render(delta, context) --=======================================
     end
     oldWeaponClass = class
 
+    -- Spirnt Jumping -----------------------------------------------------------
+    isSprintJup = AnimSprintJumpUp:isPlaying()
+    isSprintJDown = AnimSprintJumpDown:isPlaying()
+
+    if wasSprintJup ~= isSprintJup and isSprintJup then
+        rightLeg = not rightLeg
+        if (rightLeg) then
+            AnimSprintJumpUp:setTime(0.0)
+        else
+            AnimSprintJumpUp:setTime(0.3)
+        end
+    end
+    if wasSprintJDown ~= isSprintJDown and isSprintJDown then
+        AnimSprintJumpDown:setTime(AnimSprintJumpUp:getTime())
+    end
+
+    wasSprintJup = isSprintJup
+    wasSprintJDown = isSprintJDown
+
+    -- Player States ------------------------------------------------------------
     local crouching = player:getPose() == "CROUCHING"
     local swimming = player:isVisuallySwimming()
     local floating = player:isInWater()
