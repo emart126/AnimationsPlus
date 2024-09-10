@@ -341,44 +341,21 @@ function NumInArray(num, arr)
 end
 
 -- Given what animations that need to play, check which one to play under certain conditions on a left click
-function CheckAnimToPlayLeftClick(r1, r2, l2, swing1, swing2, swingCombo, secondSpell, thirdSpell)
-    if (l2:isPlaying() and not secondSpell:isPlaying()) then        -- R1, L2, s2
-        StopAllSpell()
-        secondSpell:play()
-    elseif (r2:isPlaying() and not thirdSpell:isPlaying()) then    -- R1, R2, s3
-        StopAllSpell()
-        thirdSpell:play()
-    elseif (r1:isPlaying() and not l2:isPlaying()) then             -- R1, L2
-        l2:play()
-    elseif (swing2 ~= nil and swingCombo ~= nil) then
+local function CheckAnimToPlayLeftClick(swing1, swing2, swing3)
+    if (swing2 ~= nil and swing3 ~= nil) then
         -- Three swing combo attack
-        if (swing2:isPlaying() and not swingCombo:isPlaying()) then
+        if (swing2:isPlaying() and not swing3:isPlaying()) then
             swing2:stop()
-            swingCombo:play()
-        elseif (swing1:isPlaying() and not swing2:isPlaying() and not swingCombo:isPlaying()) then
+            swing3:play()
+        elseif (swing1:isPlaying() and not swing2:isPlaying() and not swing3:isPlaying()) then
             swing1:stop()
             swing2:play()
-        elseif (not swing1:isPlaying() and not swing2:isPlaying() and not swingCombo:isPlaying()) then
+        elseif (not swing1:isPlaying() and not swing2:isPlaying() and not swing3:isPlaying()) then
             swing1:play()
         end
     else
         -- One swing attack
-        swing1:restart()
-    end
-end
-
--- Given what animations that need to play, check which one to play under certain conditions on a right click
-function CheckAnimToPlayRightClick(r1, r2, l2, firstSpell, movement)
-    if (l2:isPlaying() and not r2:isPlaying()) then                                         -- R1, L2, s1
-        StopAllSpell()
-        firstSpell:play()
-    elseif (r2:isPlaying() and not movement:isPlaying()) then                               -- R1, R2, Movement
-        StopAllSpell()
-        movement:play()
-    elseif (r1:isPlaying() and not r2:isPlaying()) then                                     -- R1, R2
-        r2:play()
-    elseif (not r1:isPlaying() and not r2:isPlaying() and not movement:isPlaying()) then    -- R1
-        r1:play()
+        swing1:play()
     end
 end
 
@@ -389,25 +366,6 @@ function GetRandIdleTick()
         num = math.random(400, 600)
     end
     return(num)
-end
-
-function events.render(delta)
-    -- Is Action Wheel Open
-    wheelCheck = action_wheel:isEnabled()
-    if (wheelCheck ~= oldWheelCheck) then
-        pings.syncAcitonWheel(wheelCheck)
-    end
-    oldWheelCheck = wheelCheck
-
-    -- Held Item Wynncraft Class
-    local currItem = player:getHeldItem()
-    local currItemStack = currItem:toStackString()
-    local class = CheckClassItem(currItemStack)
-    if (class ~= oldWeaponClass) then
-        pings.syncHeldItemIsWeapon(class)
-    end
-    oldWeaponClass = class
-
 end
 
 -- right-clicking detection =============================================================================
@@ -429,6 +387,39 @@ function events.tick() --=======================================================
         pModel:setPos(0,2,0)
     else
         pModel:setPos(0,0,0)
+    end
+
+    -- Handle Helmet/Hat visibility ---------------------------------------------
+    if (string.find(player:getItem(6).id, "helmet") ~= nil) then
+        vanilla_model.ARMOR:setVisible(false)
+    else
+        vanilla_model.ARMOR:setVisible(true)
+    end
+
+    -- Handle Custom Attacking --------------------------------------------------
+    if (WarriorSwung:isPlaying() or WarriorMine:isPlaying()) then
+        WarriorSwung:stop()
+        WarriorMine:stop()
+        CheckAnimToPlayLeftClick(WarriorSwing1, WarriorSwing2, WarriorSwing3)
+    end
+
+    if (MageSwung:isPlaying() or MageMine:isPlaying()) then
+        MageSwung:stop()
+        MageMine:stop()
+        CheckAnimToPlayLeftClick(MageSwing1, MageSwing2, MageSwing3)
+    end
+
+    if (AssassinSwung:isPlaying() or AssassinMine:isPlaying() or AnimSwordSwing:isPlaying()) then
+        AssassinSwung:stop()
+        AssassinMine:stop()
+        AnimSwordSwing:stop()
+        CheckAnimToPlayLeftClick(AssassinSwing1, AssassinSwing2, AssassinSwing3)
+    end
+
+    if (ShamanSwung:isPlaying() or ShamanMine:isPlaying()) then
+        ShamanSwung:stop()
+        ShamanMine:stop()
+        CheckAnimToPlayLeftClick(ShamanSwing)
     end
 
     -- Idling -------------------------------------------------------------------
@@ -476,17 +467,27 @@ function events.tick() --=======================================================
     -- Crouch Walking
     AnimCrouchWalk:setSpeed(horizontalVel*10)
 
-    -- Handle Helmet/Hat visibility ---------------------------------------------
-    if (string.find(player:getItem(6).id, "helmet") ~= nil) then
-        vanilla_model.ARMOR:setVisible(false)
-    else
-        vanilla_model.ARMOR:setVisible(true)
-    end
-
 end
 
 -- Render animation condtions using render function
 function events.render(delta, context) --============================================================================================================================
+    
+    -- Is Action Wheel Open
+    wheelCheck = action_wheel:isEnabled()
+    if (wheelCheck ~= oldWheelCheck) then
+        pings.syncAcitonWheel(wheelCheck)
+    end
+    oldWheelCheck = wheelCheck
+
+    -- Held Item Wynncraft Class
+    local currItem = player:getHeldItem()
+    local currItemStack = currItem:toStackString()
+    local class = CheckClassItem(currItemStack)
+    if (class ~= oldWeaponClass) then
+        pings.syncHeldItemIsWeapon(class)
+    end
+    oldWeaponClass = class
+
     local crouching = player:getPose() == "CROUCHING"
     local swimming = player:isVisuallySwimming()
     local floating = player:isInWater()
