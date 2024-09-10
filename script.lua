@@ -8,6 +8,18 @@
 
 local squapi = require("SquAPI")
 local squassets = require("SquAssets")
+local GSBlend = require("GSAnimBlend")
+
+local anims = require('JimmyAnims')
+anims.excluBlendTime = 2
+anims.incluBlendTime = 2
+anims.autoBlend = true
+anims.dismiss = false
+anims.oneJump(true)
+anims.addExcluAnimsController(animations.model["freeFall"])
+anims.addIncluAnimsController()
+anims.addAllAnimsController()
+anims(animations.model)
 
 -- Hide vanilla model
 vanilla_model.PLAYER:setVisible(false)
@@ -66,78 +78,124 @@ local modelLeftArm = pModel.Upper.body.Arms.Arm_L
 pModel:setPrimaryTexture("SKIN")
 
 -- Basic Action Animations ==============================================================================
-AnimIdle = animations.model["Idle_0"]
+AnimIdle = animations.model["idle"]
 AnimIdling1 = animations.model["Idle_1"]
+AnimIdling1:blendTime(2, 4)
 AnimIdling2 = animations.model["Idle_2"]
+AnimIdling2:blendTime(2, 4)
 AnimIdling3 = animations.model["Idle_3"]
+AnimIdling3:blendTime(2, 4)
 
-AnimWalk = animations.model["Walking"]
-AnimCrouching = animations.model["Crouch_0"]
-AnimCrouch = animations.model["Crouch_1"]
-AnimUnCrouch = animations.model["Crouch_2"]
-AnimCrouchWalk = animations.model["Sneaking"]
+AnimWalk = animations.model["walk"]
+AnimCrouching = animations.model["crouch"]
+AnimCrouching:blendTime(4)
+AnimUnCrouchJUp = animations.model["crouchjumpup"]
+AnimUnCrouchJUp:blendTime(4)
+AnimCrouchJDown = animations.model["crouchjumpdown"]
+AnimCrouchJDown:blendTime(5)
+AnimCrouchWalk = animations.model["crouchwalk"]
+AnimCrouchWalk:blendTime(4)
 
-AnimCrawl = animations.model["Crawl_Still"]
-AnimCrawling = animations.model["Crawling"]
+AnimCrawl = animations.model["crawlstill"]
+AnimCrawling = animations.model["crawl"]
 
-AnimFloat = animations.model["Float"]
-AnimSwim = animations.model["Swim_0"]
+AnimFloat = animations.model["water"]
+AnimFloat:blendTime(4)
+AnimSwim = animations.model["swim"]
+AnimSwim:blendTime(4)
 
-AnimClimb = animations.model["Climbing"]
-AnimClimbHold = animations.model["Climb_Hold"]
+AnimClimb = animations.model["climb"]
+AnimClimb:blendTime(4)
+AnimClimbCrouch = animations.model["climbcrouch"]
+AnimClimbCrouch:blendTime(4)
+AnimClimbCrouchWalk = animations.model["climbcrouchwalk"]
+AnimClimbCrouchWalk:blendTime(4)
 
-AnimJumping = animations.model["Jump_0"]
-AnimJump = animations.model["Jump_1"]
-AnimJumpLand = animations.model["Jump_2"]
-AnimJumpMove1 = animations.model["Sprint_Jump_1"]
-AnimJumpMoveStop1 = animations.model["Sprint_Jump_2"]
-AnimJumpMove2 = animations.model["Sprint_Jump_3"]
-AnimJumpMoveStop2 = animations.model["Sprint_Jump_4"]
-AnimCrouchJumping = animations.model["Crouch_3"]
+AnimJumpingUp = animations.model["jumpup"]
+AnimJumpingUp:blendTime(4, 5)
+AnimJumpingUp:onBlend("easeOutQuad")
+AnimJumpingDown = animations.model["jumpdown"]
+AnimJumpingDown:blendTime(4, 5)
+AnimJumpingDown:onBlend("easeOutQuad")
+AnimSprintJumpUp = animations.model["sprintjumpup"]
+AnimSprintJumpUp:blendTime(4.5)
+AnimSprintJumpDown = animations.model["sprintjumpdown"]
+AnimSprintJumpDown:blendTime(4.5, 2)
 
 AnimShortFalling = animations.model["Fall_0"]
-AnimFall = animations.model["Fall_1"]
-AnimShortLand = animations.model["Fall_2"]
-AnimFalling = animations.model["Falling"]
-AnimFallLand = animations.model["Land"]
+AnimShortFalling:blendTime(2)
+-- AnimFalling = animations.model["fall"]
+-- AnimFalling:blendTime(4, 0.25)
+AnimFreeFalling = animations.model["freeFall"]
+AnimFreeFalling:blendTime(4, 1)
+AnimLand = animations.model["land"]
+AnimLand:blendTime(1)
 
-AnimSprint = animations.model["Sprinting"]
+AnimSprint = animations.model["sprint"]
 
-AnimSit = animations.model["Sit"]
-AnimHorseSit = animations.model["Horse_Sitting"]
-AnimHorseRiding = animations.model["Horse_Riding"]
+AnimSit = animations.model["sitpass"]
+AnimHorseSit = animations.model["sit"]
+AnimHorseRiding = animations.model["sitmove"]
 
 AnimTaunt1 = animations.model["Taunt_1"]
 AnimTaunt2a = animations.model["Taunt_2"]
 AnimTaunt2b = animations.model["Taunt_3"]
 AnimTaunt3 = animations.model["Taunt_4"]
 AnimTaunt4 = animations.model["Taunt_5"]
+AnimTaunt1:blendTime(3, 4)
+AnimTaunt2a:blendTime(2, 4)
+AnimTaunt2b:blendTime(2, 4)
+AnimTaunt3:blendTime(2, 4)
+AnimTaunt4:blendTime(2, 4)
 
 -- Attacks ----------------------------------------------------------
 
-AnimPunch = animations.model["Punch"]
+AnimPunch = animations.model["attackR"]
+AnimPunch:blendTime(1)
+AnimSwordSwing = animations.model["ID_sword_attackR"]
+AnimBowShootHold = animations.model["bowR"]
+AnimCrossBowLoad = animations.model["loadR"]
+AnimCrossBowHold = animations.model["crossbowR"]
 
 -- Warrior ------
+WarriorSwung = animations.model["Name_Warrior/Knight_attackR"]
+WarriorMine = animations.model["Name_Warrior/Knight_mineR"]
 WarriorSwing1 = animations.model["Spear_Swing_1"]
 WarriorSwing2 = animations.model["Spear_Swing_2"]
 WarriorSwing3 = animations.model["Spear_Swing_3"]
+WarriorSwing1:blendTime(1)
+WarriorSwing2:blendTime(1)
+WarriorSwing3:blendTime(1)
 
 -- Mage ---------
+MageSwung = animations.model["Name_Mage/Dark Wizard_attackR"]
+MageMine = animations.model["Name_Mage/Dark Wizard_mineR"]
 MageSwing1 = animations.model["Wand_Wave_1"]
 MageSwing2 = animations.model["Wand_Wave_2"]
 MageSwing3 = animations.model["Wand_Wave_3"]
+MageSwing1:blendTime(1)
+MageSwing2:blendTime(1)
+MageSwing3:blendTime(1)
 
 -- Assassin -----
+AssassinSwung = animations.model["Name_Assassin/Ninja_attackR"]
+AssassinMine = animations.model["Name_Assassin/Ninja_mineR"]
 AssassinSwing1 = animations.model["Sword_Swing_1"]
 AssassinSwing2 = animations.model["Sword_Swing_2"]
 AssassinSwing3 = animations.model["Sword_Swing_3"]
+AssassinSwing1:blendTime(1)
+AssassinSwing2:blendTime(1)
+AssassinSwing3:blendTime(0)
 
 -- Shaman -------
+ShamanSwung = animations.model["Name_Shaman/Skyseer_attackR"]
+ShamanMine = animations.model["Name_Shaman/Skyseer_mineR"]
 ShamanSwing = animations.model["Relik_Strike"]
+ShamanSwing:blendTime(1)
 
 -- Archer -------
 ArcherShoot = animations.model["Bow_Shoot"]
-ArcherShootHold = animations.model["Bow_Shoot_Hold"]
+ArcherShoot:blendTime(1)
 
 -- Wynncraft Spells -------------------------------------------------
 -- R1, L2, R3 = s1
@@ -604,79 +662,79 @@ squapi.smoothHead:new({modelHead, modelMainBody}, {0.6, 0.25}, 0.1, 1.75, false)
 -- Render animation conditions by in game ticks
 function events.tick() --============================================================================================================================
     -- Attack animation priorities ----------------------------------------------
-    local p = getAnimPriority()
+    -- local p = getAnimPriority()
 
-    AnimPunch:setPriority(p)
+    -- AnimPunch:setPriority(p)
 
-    WarriorSwing1:setPriority(p)
-    WarriorSwing2:setPriority(p)
-    WarriorSwing3:setPriority(p)
+    -- WarriorSwing1:setPriority(p)
+    -- WarriorSwing2:setPriority(p)
+    -- WarriorSwing3:setPriority(p)
 
-    MageSwing1:setPriority(p)
-    MageSwing2:setPriority(p)
-    MageSwing3:setPriority(p)
+    -- MageSwing1:setPriority(p)
+    -- MageSwing2:setPriority(p)
+    -- MageSwing3:setPriority(p)
 
-    AssassinSwing1:setPriority(p)
-    AssassinSwing2:setPriority(p)
-    AssassinSwing3:setPriority(p)
+    -- AssassinSwing1:setPriority(p)
+    -- AssassinSwing2:setPriority(p)
+    -- AssassinSwing3:setPriority(p)
 
-    ArcherShoot:setPriority(p)
-    ArcherShootHold:setPriority(p)
+    -- ArcherShoot:setPriority(p)
+    -- ArcherShootHold:setPriority(p)
 
-    ShamanSwing:setPriority(p)
+    -- ShamanSwing:setPriority(p)
 
-    -- AnimMovement:setPriority(4)
-    -- AnimFirstSpell:setPriority(4)
-    -- AnimSecondSpell:setPriority(4)
-    -- AnimThirdSpell:setPriority(4)
+    -- -- AnimMovement:setPriority(4)
+    -- -- AnimFirstSpell:setPriority(4)
+    -- -- AnimSecondSpell:setPriority(4)
+    -- -- AnimThirdSpell:setPriority(4)
 
-    -- Basic action animation prioirites ----------------------------------------
-    AnimIdle:setPriority(1)
-    AnimIdling1:setPriority(2)
-    AnimIdling2:setPriority(2)
-    AnimIdling3:setPriority(2)
+    -- -- Basic action animation prioirites ----------------------------------------
+    -- AnimIdle:setPriority(1)
+    -- AnimIdling1:setPriority(2)
+    -- AnimIdling2:setPriority(2)
+    -- AnimIdling3:setPriority(2)
 
-    AnimCrouching:setPriority(1)
-    AnimCrouchWalk:setPriority(1)
-    AnimCrouch:setPriority(2)
-    AnimUnCrouch:setPriority(2)
+    -- AnimCrouching:setPriority(1)
+    -- AnimCrouchWalk:setPriority(1)
+    -- AnimCrouch:setPriority(2)
+    -- AnimUnCrouch:setPriority(2)
 
-    AnimWalk:setPriority(2)
-    AnimSprint:setPriority(2)
+    -- AnimWalk:setPriority(2)
+    -- AnimSprint:setPriority(2)
 
-    AnimCrawl:setPriority(2)
-    AnimCrawling:setPriority(2)
+    -- AnimCrawl:setPriority(2)
+    -- AnimCrawling:setPriority(2)
 
-    AnimJumping:setPriority(1)
-    AnimJump:setPriority(2)
-    AnimJumpLand:setPriority(2)
-    AnimJumpMove1:setPriority(2)
-    AnimJumpMove2:setPriority(2)
-    AnimJumpMoveStop1:setPriority(2)
-    AnimJumpMoveStop2:setPriority(2)
-    AnimCrouchJumping:setPriority(2)
+    -- AnimJumping:setPriority(1)
+    -- AnimJump:setPriority(2)
+    -- AnimJumpLand:setPriority(2)
+    -- AnimJumpMove1:setPriority(2)
+    -- AnimJumpMove2:setPriority(2)
+    -- AnimJumpMoveStop1:setPriority(2)
+    -- AnimJumpMoveStop2:setPriority(2)
+    -- AnimCrouchJumping:setPriority(2)
 
-    AnimShortFalling:setPriority(1)
-    AnimFall:setPriority(2)
-    AnimShortLand:setPriority(2)
-    AnimFalling:setPriority(2)
-    AnimFallLand:setPriority(2)
+    -- AnimShortFalling:setPriority(1)
+    -- AnimFall:setPriority(2)
+    -- AnimShortLand:setPriority(2)
+    -- AnimFalling:setPriority(2)
+    -- AnimFallLand:setPriority(2)
 
-    AnimSwim:setPriority(1)
-    AnimFloat:setPriority(1)
+    -- AnimSwim:setPriority(1)
+    -- AnimFloat:setPriority(1)
 
-    AnimClimb:setPriority(1)
-    AnimClimbHold:setPriority(1)
+    -- AnimClimb:setPriority(1)
+    -- AnimClimbHold:setPriority(1)
 
-    AnimSit:setPriority(1)
-    AnimHorseSit:setPriority(1)
-    AnimHorseRiding:setPriority(1)
+    -- AnimSit:setPriority(1)
+    -- AnimHorseSit:setPriority(1)
+    -- AnimHorseRiding:setPriority(1)
 
-    AnimTaunt1:setPriority(4)
-    AnimTaunt2a:setPriority(p)
-    AnimTaunt2b:setPriority(p)
-    AnimTaunt3:setPriority(4)
-    AnimTaunt4:setPriority(4)
+    -- AnimTaunt1:setPriority(4)
+    -- AnimTaunt2a:setPriority(p)
+    -- AnimTaunt2b:setPriority(p)
+    -- AnimTaunt3:setPriority(4)
+    -- AnimTaunt4:setPriority(4)
 
     -- Handle crouch model position ---------------------------------------------
     if (player:getPose() == "CROUCHING") then
@@ -713,14 +771,14 @@ function events.tick() --=======================================================
     end
 
     -- Bow Shooting -------------------------------------------------------------
-    if (weaponClass ~= "Archer/Hunter" and string.find(player:getHeldItem():toStackString(), "bow") ~= nil) then
-        ShootingAction = player:getActiveItem():getUseAction() == "BOW" or player:getActiveItem():getUseAction() == "CROSSBOW"
-    end
-    if (ShootingAction) then
-        ArcherShootHold:play()
-    else
-        ArcherShootHold:stop()
-    end
+    -- if (weaponClass ~= "Archer/Hunter" and string.find(player:getHeldItem():toStackString(), "bow") ~= nil) then
+    --     ShootingAction = player:getActiveItem():getUseAction() == "BOW" or player:getActiveItem():getUseAction() == "CROSSBOW"
+    -- end
+    -- if (ShootingAction) then
+    --     ArcherShootHold:play()
+    -- else
+    --     ArcherShootHold:stop()
+    -- end
 
     -- Dedect right click use arm swing -----------------------------------------
     if (useKey:isPressed()) then
@@ -782,33 +840,33 @@ function events.render(delta, context) --=======================================
             if (crouching) then
                 if (walking) then
                     state = "crouch walking"
-                    stopBasicAnims({AnimCrouchWalk})
-                    AnimCrouchWalk:play()
+                    -- stopBasicAnims({AnimCrouchWalk})
+                    -- AnimCrouchWalk:play()
                 else
                     state = "crouching"
-                    stopBasicAnims({AnimCrouching, AnimIdle})
-                    AnimIdle:play()
-                    AnimCrouching:play()
+                    -- stopBasicAnims({AnimCrouching, AnimIdle})
+                    -- AnimIdle:play()
+                    -- AnimCrouching:play()
                 end
             elseif (not crouching) then
                 if (walking and not crouching and not sprinting) then
                     state = "walking"
-                    stopBasicAnims({AnimWalk, AnimJumping})
-                    AnimWalk:play()
+                    -- stopBasicAnims({AnimWalk, AnimJumping})
+                    -- AnimWalk:play()
                 else
                     state = "idle"
-                    stopBasicAnims({AnimIdle, AnimJumping})
-                    AnimIdle:play()
+                    -- stopBasicAnims({AnimIdle, AnimJumping})
+                    -- AnimIdle:play()
                 end
             end
         elseif (floating and not swimming and not isGrounded) then
             state = "floatingAir"
-            stopBasicAnims({AnimFloat})
-            AnimFloat:play()
+            -- stopBasicAnims({AnimFloat})
+            -- AnimFloat:play()
         elseif (swimming) then
             state = "swimming"
-            stopBasicAnims({AnimSwim})
-            AnimSwim:play()
+            -- stopBasicAnims({AnimSwim})
+            -- AnimSwim:play()
         end
     else
         -- Outside of water
@@ -817,37 +875,37 @@ function events.render(delta, context) --=======================================
             if (crouching) then
                 if (walking) then
                     state = "crouch walking"
-                    stopBasicAnims({AnimCrouchWalk, AnimCrouchJumping})
-                    AnimCrouchWalk:play()
+                    -- stopBasicAnims({AnimCrouchWalk, AnimCrouchJumping})
+                    -- AnimCrouchWalk:play()
                 else
                     state = "crouching"
-                    stopBasicAnims({AnimCrouching, AnimIdle})
-                    AnimIdle:play()
-                    AnimCrouching:play()
+                    -- stopBasicAnims({AnimCrouching, AnimIdle})
+                    -- AnimIdle:play()
+                    -- AnimCrouching:play()
                 end
             elseif (not crouching) then
                 if (player:isVisuallySwimming()) then
                     if (not walking) then
                         state = "crawling"
-                        stopBasicAnims({AnimCrawl})
-                        AnimCrawl:play()
+                        -- stopBasicAnims({AnimCrawl})
+                        -- AnimCrawl:play()
                     elseif (walking) then
                         state = "crawl walking"
-                        stopBasicAnims({AnimCrawling})
-                        AnimCrawling:play()
+                        -- stopBasicAnims({AnimCrawling})
+                        -- AnimCrawling:play()
                     end
                 elseif (walking and not crouching and not sprinting) then
                     state = "walking"
-                    stopBasicAnims({AnimWalk, AnimJumping})
-                    AnimWalk:play()
+                    -- stopBasicAnims({AnimWalk, AnimJumping})
+                    -- AnimWalk:play()
                 elseif (sprinting) then
                     state = "sprinting"
-                    stopBasicAnims({AnimSprint})
-                    AnimSprint:play()
+                    -- stopBasicAnims({AnimSprint})
+                    -- AnimSprint:play()
                 else
                     state = "idle"
-                    stopBasicAnims({AnimIdle, AnimJumping, AnimShortFalling})
-                    AnimIdle:play()
+                    -- stopBasicAnims({AnimIdle, AnimJumping, AnimShortFalling})
+                    -- AnimIdle:play()
                 end
             end
         else
@@ -864,31 +922,31 @@ function events.render(delta, context) --=======================================
                 if (ridingMount and walking) then
                     if (horseSitting) then
                         state = "ridingHorse"
-                        stopBasicAnims({AnimHorseRiding})
-                        AnimHorseRiding:play()
+                        -- stopBasicAnims({AnimHorseRiding})
+                        -- AnimHorseRiding:play()
                     else
                         state = "sitting"
-                        stopBasicAnims({AnimSit})
-                        AnimSit:play()
+                        -- stopBasicAnims({AnimSit})
+                        -- AnimSit:play()
                     end
                 elseif (ridingSeat and walking) then
                     state = "sitting"
-                    stopBasicAnims({AnimSit})
-                    AnimSit:play()
+                    -- stopBasicAnims({AnimSit})
+                    -- AnimSit:play()
                 elseif (not walking and (sitting or ridingMount or ridingSeat)) then
                     if (horseSitting) then
                         state = "horseSitting"
-                        stopBasicAnims({AnimHorseSit})
-                        AnimHorseSit:play()
+                        -- stopBasicAnims({AnimHorseSit})
+                        -- AnimHorseSit:play()
                     else
                         state = "sitting"
-                        stopBasicAnims({AnimSit})
-                        AnimSit:play()
+                        -- stopBasicAnims({AnimSit})
+                        -- AnimSit:play()
                     end
                 end
             else
                 state = "inAir"
-                stopBasicAnims({AnimJumping, AnimShortFalling, AnimCrouching, AnimCrouchWalk, AnimCrouchJumping})
+                -- stopBasicAnims({AnimJumping, AnimShortFalling, AnimCrouching, AnimCrouchWalk, AnimCrouchJumping})
             end
         end
     end
@@ -909,86 +967,86 @@ function events.render(delta, context) --=======================================
         startedFall = false
     end
 
-    -- Crouching conditions
-    if (state ~= oldState) then
-        if (state == "crouching" and (oldState == "idle" or oldState == "inAir")) then
-            AnimCrouch:play()
-        elseif (oldState == "crouching" and state == "idle") then
-            AnimUnCrouch:play()
-        elseif (state == "crouch walking" and oldState == "walking") then
-            AnimCrouch:play()
-        elseif (oldState == "crouch walking" and state == "walking") then
-            AnimUnCrouch:play()
-        end
-    end
+    -- -- Crouching conditions
+    -- if (state ~= oldState) then
+    --     if (state == "crouching" and (oldState == "idle" or oldState == "inAir")) then
+    --         AnimCrouch:play()
+    --     elseif (oldState == "crouching" and state == "idle") then
+    --         AnimUnCrouch:play()
+    --     elseif (state == "crouch walking" and oldState == "walking") then
+    --         AnimCrouch:play()
+    --     elseif (oldState == "crouch walking" and state == "walking") then
+    --         AnimUnCrouch:play()
+    --     end
+    -- end
 
-    -- Jumping/InAir conditions
-    if (state ~= oldState) then
-        -- Stop Jump Sprinting
-        if (AnimJumpMove1:isPlaying()) then
-            AnimJumpMove1:stop()
-            AnimJumpMoveStop1:play()
-        elseif (AnimJumpMove2:isPlaying()) then
-            AnimJumpMove2:stop()
-            AnimJumpMoveStop2:play()
-        end
+    -- -- Jumping/InAir conditions
+    -- if (state ~= oldState) then
+    --     -- Stop Jump Sprinting
+    --     if (AnimJumpMove1:isPlaying()) then
+    --         AnimJumpMove1:stop()
+    --         AnimJumpMoveStop1:play()
+    --     elseif (AnimJumpMove2:isPlaying()) then
+    --         AnimJumpMove2:stop()
+    --         AnimJumpMoveStop2:play()
+    --     end
 
-        if (oldState == "sprinting" and state == "inAir" and player:getVelocity()[2] > 0) then
-            -- Jump sprinting
-            WhichJump(AnimJumpMove1, AnimJumpMove2)
-        elseif (oldState == "inAir" and state == "falling") then
-            -- Going into Long falling
-            AnimJumping:stop()
-            AnimShortFalling:stop()
-            AnimFalling:play()
-        elseif (AnimFalling:isPlaying()) then
-            -- Stop long Falling
-            AnimFalling:stop()
-            AnimFallLand:play()
-        elseif ((oldState == "idle" or oldState == "walking") and state == "inAir" and player:getVelocity()[2] > 0) then
-            -- Going into Jumping
-            AnimJump:play()
-            AnimJumping:play()
-        elseif ((oldState == "crouching" or oldState == "crouch walking") and state == "inAir" and player:getVelocity()[2] > 0) then
-            -- Going into Crouch Jump
-            AnimUnCrouch:play()
-            AnimCrouchJumping:play()
-        elseif (AnimCrouchJumping:isPlaying() and isGrounded) then
-            -- Stop Crouch Jumping
-            AnimCrouchJumping:stop()
-            if (state == "crouching" or state == "crouch walking") then
-                AnimCrouch:play()
-            end
-        elseif (AnimJumping:isPlaying() and isGrounded) then
-            -- Stop Jumping
-            AnimJumping:stop()
-            AnimJumpLand:play()
-        elseif ((oldState == "idle" or oldState == "walking" or oldState == "sprinting") and state == "inAir") then
-            -- Going into short Falling
-            AnimFall:play()
-            AnimShortFalling:play()
-        elseif (AnimShortFalling:isPlaying()) then
-            -- Stop short Falling
-            AnimShortFalling:stop()
-            AnimShortLand:play()
-        end
-    end
+    --     if (oldState == "sprinting" and state == "inAir" and player:getVelocity()[2] > 0) then
+    --         -- Jump sprinting
+    --         WhichJump(AnimJumpMove1, AnimJumpMove2)
+    --     elseif (oldState == "inAir" and state == "falling") then
+    --         -- Going into Long falling
+    --         AnimJumping:stop()
+    --         AnimShortFalling:stop()
+    --         AnimFalling:play()
+    --     elseif (AnimFalling:isPlaying()) then
+    --         -- Stop long Falling
+    --         AnimFalling:stop()
+    --         AnimFallLand:play()
+    --     elseif ((oldState == "idle" or oldState == "walking") and state == "inAir" and player:getVelocity()[2] > 0) then
+    --         -- Going into Jumping
+    --         AnimJump:play()
+    --         AnimJumping:play()
+    --     elseif ((oldState == "crouching" or oldState == "crouch walking") and state == "inAir" and player:getVelocity()[2] > 0) then
+    --         -- Going into Crouch Jump
+    --         AnimUnCrouch:play()
+    --         AnimCrouchJumping:play()
+    --     elseif (AnimCrouchJumping:isPlaying() and isGrounded) then
+    --         -- Stop Crouch Jumping
+    --         AnimCrouchJumping:stop()
+    --         if (state == "crouching" or state == "crouch walking") then
+    --             AnimCrouch:play()
+    --         end
+    --     elseif (AnimJumping:isPlaying() and isGrounded) then
+    --         -- Stop Jumping
+    --         AnimJumping:stop()
+    --         AnimJumpLand:play()
+    --     elseif ((oldState == "idle" or oldState == "walking" or oldState == "sprinting") and state == "inAir") then
+    --         -- Going into short Falling
+    --         AnimFall:play()
+    --         AnimShortFalling:play()
+    --     elseif (AnimShortFalling:isPlaying()) then
+    --         -- Stop short Falling
+    --         AnimShortFalling:stop()
+    --         AnimShortLand:play()
+    --     end
+    -- end
 
     -- Climbing conditions
     local facing = world.getBlockState(player:getPos()):getProperties()["facing"]
-    if (oldState ~= state) then
-        -- play respective animation
-        if (state == "climbing") then
-            stopBasicAnims({AnimClimb})
-            AnimClimb:play()
-        elseif (state == "holdingLadder") then
-            stopBasicAnims({AnimClimbHold})
-            AnimClimbHold:play()
-        else
-            AnimClimb:stop()
-            AnimClimbHold:stop()
-        end
-    end
+    -- if (oldState ~= state) then
+    --     -- play respective animation
+    --     if (state == "climbing") then
+    --         stopBasicAnims({AnimClimb})
+    --         AnimClimb:play()
+    --     elseif (state == "holdingLadder") then
+    --         stopBasicAnims({AnimClimbHold})
+    --         AnimClimbHold:play()
+    --     else
+    --         AnimClimb:stop()
+    --         AnimClimbHold:stop()
+    --     end
+    -- end
     if (state == "climbing" or state == "holdingLadder") then
         -- rotate player towards ladder
         local rot
