@@ -474,7 +474,7 @@ local function anims()
         
         local sprintjumpdownState = jumpingDown and sprinting and not creativeFlying and not ladder
         local sprintjumpupState = jumpingUp and sprinting and not creativeFlying and not ladder or (not oneJump and (sprintjumpdownState and not path.sprintjumpdown))
-        local jumpdownState = jumpingDown and not sprinting and not crouching and not sitting and not gliding and not creativeFlying and not spin and not inWater or (fallState and not path.fall) or (oneJump and (sprintjumpdownState and not path.sprintjumpdown)) or (oneJump and (crouchjumpdownState and not path.crouchjumpdown))
+        local jumpdownState = jumpingDown and not climbState and not sprinting and not crouching and not sitting and not gliding and not creativeFlying and not spin and not inWater or (fallState and not path.fall) or (oneJump and (sprintjumpdownState and not path.sprintjumpdown)) or (oneJump and (crouchjumpdownState and not path.crouchjumpdown))
         local jumpupState = jumpingUp and not sprinting and not crouching and not sitting and not creativeFlying and not inWater or (jumpdownState and not path.jumpdown) or (tridentState and not path.trident) or (oneJump and (sprintjumpupState and not path.sprintjumpup)) or (oneJump and (crouchjumpupState and not path.crouchjumpup))
 
         local sprintState = sprinting and not isJumping and not creativeFlying and not ladder and not cooldown or (not oneJump and (sprintjumpupState and not path.sprintjumpup))
@@ -578,7 +578,7 @@ local function anims()
                         specialAttack = true
                     end
                 elseif value:getName():find("Name_") then
-                    if rightItem:getName():find(value:getName():gsub("_attackR",""):gsub("Name_","")) then
+                    if rightItem:toStackString():find(value:getName():gsub("_attackR",""):gsub("Name_","")) then
                         JimmyAnims_Swing(value:getName())
                         specialAttack = true
                     end
@@ -612,7 +612,7 @@ local function anims()
                         specialAttack = true
                     end
                 elseif value:getName():find("Name_") then
-                    if rightItem:getName():find(value:getName():gsub("_mineR",""):gsub("Name_","")) then
+                    if rightItem:toStackString():find(value:getName():gsub("_mineR",""):gsub("Name_","")) then
                         JimmyAnims_Swing(value:getName())
                         specialAttack = true
                     end
@@ -645,7 +645,7 @@ local function anims()
         if value:getName():find("ID_") then
             value:setPlaying(rightItem.id:find(value:getName():gsub("_holdR",""):gsub("ID_","")) and incluState and exclude)
         elseif value:getName():find("Name_") then
-            value:setPlaying(rightItem:getName():find(value:getName():gsub("_holdR",""):gsub("Name_","")) and incluState and exclude)
+            value:setPlaying(rightItem:toStackString():find(value:getName():gsub("_holdR",""):gsub("Name_","")) and incluState and exclude)
         end
         if value:isPlaying() then
             for _, path in pairs(bbmodels) do
