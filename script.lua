@@ -535,6 +535,15 @@ function events.render(delta, context) --=======================================
     wasSprintJup = isSprintJup
     wasSprintJDown = isSprintJDown
 
+    -- Short Fall condition -----------------------------------------------------
+    if (player:getVelocity().y < 0 and AnimWalk:isPlaying() and not AnimJumpingUp:isPlaying() and not AnimJumpingDown:isPlaying()
+        and not AnimClimb:isPlaying() and not AnimClimbCrouch:isPlaying() and not AnimClimbCrouchWalk:isPlaying()
+        and not AnimFloat:isPlaying() and not AnimSwim:isPlaying()) then
+        AnimShortFalling:play()
+    else
+        AnimShortFalling:stop()
+    end
+
     -- Player States ------------------------------------------------------------
     local crouching = player:getPose() == "CROUCHING"
     local swimming = player:isVisuallySwimming()
@@ -630,19 +639,31 @@ function events.render(delta, context) --=======================================
         end
     end
 
-    -- Falling conditions
+    -- print("---")
+    -- print(state)
+    -- if (state ~= oldState) then
+    --     print(oldState, "->", state)
+    -- end
+
+    -- Falling condition --------------------------------------------------------
     --print((client:getSystemTime() % 10000) / 1000)
     if (state == "inAir" or state == "falling") then
         if (not startedFall) then
             startFallTime = client:getSystemTime() / 1000
             startedFall = true
         end
+        print(fallTimer)
         fallTimer = (client:getSystemTime() / 1000 - startFallTime)
 
-        if (fallTimer > 0.7) then
+        if (fallTimer > 0.75) then
             state = "falling"
+            AnimFreeFalling:play()
         end
     else
+        if (AnimFreeFalling:isPlaying()) then
+            AnimFreeFalling:stop()
+            AnimLand:play()
+        end
         startedFall = false
     end
 
@@ -744,12 +765,6 @@ function events.render(delta, context) --=======================================
         end
 
     end
-
-    -- print("---")
-    -- print(state)
-    -- if (state ~= oldState) then
-    --     print(oldState, "->", state)
-    -- end
 
     oldState = state
 end
