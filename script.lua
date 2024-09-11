@@ -55,6 +55,18 @@ local fallTimer = 0
 local startFallTime = 0
 local startedFall = false
 
+local facing
+local oldFacing
+
+local blendClimb = true
+local blendClimbDone = false
+local climbBlendInRot
+local climbBlendOutRot
+
+local blendClimbTop = false
+local climbTopBlendInRot
+local climbTopBlendOutRot
+
 -- BlockBench model parts
 local pModel = models.model.Player
 local modelHead = pModel.Upper.head
@@ -634,33 +646,103 @@ function events.render(delta, context) --=======================================
         startedFall = false
     end
 
-    -- Climbing conditions
-    local facing = world.getBlockState(player:getPos()):getProperties()["facing"]
+    -- Climbing conditions ------------------------------------------------------
+    facing = world.getBlockState(player:getPos()):getProperties()["facing"]
+
+    local blockIsClimbable = string.find(world.getBlockState(player:getPos():add(0,0,0)).id, "vine") ~= nil or facing ~= nil
+    local offBlockIsClimbable = string.find(world.getBlockState(player:getPos():add(0,0.33,0)).id, "vine") ~= nil
+                            or string.find(world.getBlockState(player:getPos():add(0,0.33,0)).id, "ladder") ~= nil
 
     if (state == "climbing" or state == "holdingLadder") then
         -- rotate player towards ladder
-        local rot
+        local desiredRot
         if (facing == "south") then
-            rot = player:getBodyYaw(delta)-180
+            desiredRot = player:getBodyYaw(delta)-180
         elseif (facing == "north") then
-            rot = player:getBodyYaw(delta)
+            desiredRot = player:getBodyYaw(delta)
         elseif (facing == "west") then
-            rot = player:getBodyYaw(delta)+90
+            desiredRot = player:getBodyYaw(delta)+90
         elseif (facing == "east") then
-            rot = player:getBodyYaw(delta)-90
+            desiredRot = player:getBodyYaw(delta)-90
+        else
+            desiredRot = 0
         end
-        pModel:setOffsetRot(0,rot,0)
-        --pModel.Upper:setRot(-player:getLookDir()[2]*45,0,0)
 
-        -- rotate more when at top of ladder
-        if (world.getBlockState(player:getPos()).id == "minecraft:ladder" and world.getBlockState(player:getPos():add(0,1,0)).id == "minecraft:air") then
-            pModel.Upper:setRot(-player:getLookDir()[2]*45-35,0,0)
+        if (blendClimb) then
+            climbBlendInRot = 0
+            blendClimb = false
+        end
+
+        climbBlendInRot = math.lerpAngle(climbBlendInRot, desiredRot, 0.075)
+        if (not blendClimbDone) then
+            pModel:setRot(0,climbBlendInRot,0)
+        else
+            pModel:setRot(0,desiredRot,0)
+        end
+
+        if (oldFacing ~= facing) then
+            blendClimbDone = false
+        end
+        if (math.round(climbBlendInRot) == math.round(((desiredRot % 360) + 360) % 360)) then
+            blendClimbDone = true
+        end
+        oldFacing = facing
+
+        -- rotate upper body when at top of ladder
+        -- local lowerBlock = world.getBlockState(player:getPos():add(0,0,0)).id
+        local upperBlock = world.getBlockState(player:getPos():add(0,1,0)).id
+        -- local lowerBlockOff = world.getBlockState(player:getPos():add(0,0.33,0)).id
+        local upperBlockOff = world.getBlockState(player:getPos():add(0,1.33,0)).id
+        local desiredUpperRot = 0
+        if (offBlockIsClimbable and upperBlockOff == "minecraft:air") then
+            if (player:getPos()[2] < 0) then
+                desiredUpperRot = ((math.abs(player:getPos()[2]+0.33) % 1) * 60) - 60
+            else
+                desiredUpperRot = -((math.abs(player:getPos()[2]+0.33) % 1) * 60)
+            end
+        elseif (blockIsClimbable and upperBlock == "minecraft:air") then
+            desiredUpperRot = 300
+        end
+        desiredUpperRot = ((desiredUpperRot % 360) + 360) % 360
+
+        if (blendClimbTop) then
+            climbTopBlendInRot = 0
+            blendClimbTop = false
+        end
+
+        if (climbTopBlendInRot == nil) then
+            climbTopBlendInRot = 0
+        else
+            climbTopBlendInRot = math.lerpAngle(climbTopBlendInRot, desiredUpperRot, 0.075)
+        end
+        pModel.Upper:setRot(climbTopBlendInRot,0,0)
+
+    else
+        -- blend out of rotation toward ladder
+        blendClimbDone = false
+        if (not blendClimb) then
+            climbBlendOutRot = climbBlendInRot
+            blendClimb = true
+        end
+        if (blendClimb and climbBlendOutRot ~= nil) then
+            climbBlendOutRot = math.lerpAngle(climbBlendOutRot, 0, 0.075)
+            pModel:setRot(0,climbBlendOutRot,0)
+        else
+            pModel:setRot(0,0,0)
+        end
+
+        -- blend upper body out of rotation at top of ladder 
+        if (not blendClimbTop) then
+            climbTopBlendOutRot = climbTopBlendInRot
+            blendClimbTop = true
+        end
+        if (blendClimbTop and climbTopBlendOutRot ~= nil) then
+            climbTopBlendOutRot = math.lerpAngle(climbTopBlendOutRot,0,0.075)
+            pModel.Upper:setRot(climbTopBlendOutRot,0,0)
         else
             pModel.Upper:setRot(0,0,0)
         end
-    else
-        pModel:setOffsetRot(0,0,0)
-        pModel.Upper:setRot(0,0,0)
+
     end
 
     -- print("---")
