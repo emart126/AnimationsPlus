@@ -404,6 +404,8 @@ end
 -- right-clicking detection =============================================================================
 local useKey = keybinds:of("Use",keybinds:getVanillaKey("key.use"))
 function pings.onRightClickDo()
+    ResetIdle()
+
     if (not isActionWheelOpen) then
         if (weaponClass == "Archer/Hunter") then
             CheckAnimToPlayLeftClick(ArcherShoot)
