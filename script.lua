@@ -319,6 +319,7 @@ local function isOnGround(entity)
     return false
 end
 
+-- Stop All animations that require idling
 function StopAllIdle()
     AnimIdling1:stop()
     AnimIdling2:stop()
@@ -326,6 +327,14 @@ function StopAllIdle()
     AnimTaunt1:stop()
     AnimTaunt3:stop()
     AnimTaunt4:stop()
+end
+
+-- Is Player Taunting
+function IsTaunting()
+    if (AnimTaunt1:isPlaying() or AnimTaunt3:isPlaying() or AnimTaunt4:isPlaying()) then
+        return true
+    end
+    return false
 end
 
 -- Check if itemStack has a class identified with it
@@ -346,16 +355,6 @@ function CheckClassItem(item)
         return("Archer/Hunter")
     end
     return(nil)
-end
-
--- Check if given number is in array
-function NumInArray(num, arr)
-    for i=1, #arr do
-        if (num == arr[i]) then
-            return true
-        end
-    end
-    return false
 end
 
 -- Given what animations that need to play, check which one to play under certain conditions on a left click
@@ -384,6 +383,22 @@ function GetRandIdleTick()
         num = math.random(400, 600)
     end
     return(num)
+end
+
+-- Check if given number is in array
+function NumInArray(num, arr)
+    for i=1, #arr do
+        if (num == arr[i]) then
+            return true
+        end
+    end
+    return false
+end
+
+-- Reset Idle tick
+function ResetIdle()
+    idleTick = 0
+    StopAllIdle()
 end
 
 -- right-clicking detection =============================================================================
@@ -442,7 +457,7 @@ function events.tick() --=======================================================
 
     -- Idling -------------------------------------------------------------------
     if (idleAnimations) then
-        if (state == "idle") then
+        if (AnimIdle:isPlaying()) then
             idleTick = idleTick + 1
             if (idleTick == randTick) then
                 randAnim = math.random(0, 2)
@@ -457,13 +472,15 @@ function events.tick() --=======================================================
                 randTick = GetRandIdleTick()
             end
         else
-            idleTick = 0
-            StopAllIdle()
+            ResetIdle()
         end
 
         if (player:getSwingTime() ~= 0) then
+            ResetIdle()
+        end
+
+        if (IsTaunting()) then
             idleTick = 0
-            StopAllIdle()
         end
     end
 
@@ -652,7 +669,6 @@ function events.render(delta, context) --=======================================
             startFallTime = client:getSystemTime() / 1000
             startedFall = true
         end
-        print(fallTimer)
         fallTimer = (client:getSystemTime() / 1000 - startFallTime)
 
         if (fallTimer > 0.75) then
@@ -1149,8 +1165,10 @@ end
 pings.actionIdleAnims = IdleAnimation
 
 function pings.taunt1Dance()
-    StopAllIdle()
-    AnimTaunt1:play()
+    if (not AnimTaunt1:isPlaying()) then
+        ResetIdle()
+        AnimTaunt1:play()
+    end
 end
 
 function pings.taunt2Nod()
@@ -1165,28 +1183,38 @@ function pings.taunt2Nod()
 end
 
 function pings.taunt3JumpingJacks()
-    StopAllIdle()
-    AnimTaunt3:play()
+    if (not AnimTaunt3:isPlaying()) then
+        ResetIdle()
+        AnimTaunt3:play()
+    end
 end
 
 function pings.taunt4Inspect()
-    StopAllIdle()
-    AnimTaunt4:play()
+    if (not AnimTaunt4:isPlaying()) then
+        ResetIdle()
+        AnimTaunt4:play()
+    end
 end
 
 function pings.taunt5KickDirt()
-    StopAllIdle()
-    AnimIdling1:play()
+    if (not AnimIdling1:isPlaying()) then
+        ResetIdle()
+        AnimIdling1:play()
+    end
 end
 
 function pings.taunt6Look()
-    StopAllIdle()
-    AnimIdling2:play()
+    if (not AnimIdling2:isPlaying()) then
+        ResetIdle()
+        AnimIdling2:play()
+    end
 end
 
 function pings.taunt7Wait()
-    StopAllIdle()
-    AnimIdling3:play()
+    if (not AnimIdling3:isPlaying()) then
+        ResetIdle()
+        AnimIdling3:play()
+    end
 end
 
 local mainPage = action_wheel:newPage("Taunts")
