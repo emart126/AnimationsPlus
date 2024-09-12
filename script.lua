@@ -1228,7 +1228,7 @@ local settingPage = action_wheel:newPage("Settings")
 action_wheel:setPage(mainPage)
 
 local toSettings = mainPage:newAction()
-    :title("Go to settings")
+    :title("Go to Settings")
     :item("minecraft:writable_book")
     :onLeftClick(function()
     action_wheel:setPage(settingPage)
