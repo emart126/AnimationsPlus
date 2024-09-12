@@ -320,7 +320,7 @@ local function isOnGround(entity)
 end
 
 -- Stop All animations that require idling
-function StopAllIdle()
+local function StopAllIdle()
     AnimIdling1:stop()
     AnimIdling2:stop()
     AnimIdling3:stop()
@@ -330,7 +330,7 @@ function StopAllIdle()
 end
 
 -- Is Player Taunting
-function IsTaunting()
+local function IsTaunting()
     if (AnimTaunt1:isPlaying() or AnimTaunt3:isPlaying() or AnimTaunt4:isPlaying()) then
         return true
     end
@@ -338,7 +338,7 @@ function IsTaunting()
 end
 
 -- Check if itemStack has a class identified with it
-function CheckClassItem(item)
+local function CheckClassItem(item)
     if (item == nil) then
         return(nil)
     end
@@ -377,7 +377,7 @@ local function CheckAnimToPlayLeftClick(swing1, swing2, swing3)
 end
 
 -- Get random number between 400 and 600 that is also divisible by 80
-function GetRandIdleTick()
+local function GetRandIdleTick()
     local num = math.random(400, 600)
     while (num % 80 ~= 0) do
         num = math.random(400, 600)
@@ -386,7 +386,7 @@ function GetRandIdleTick()
 end
 
 -- Check if given number is in array
-function NumInArray(num, arr)
+local function NumInArray(num, arr)
     for i=1, #arr do
         if (num == arr[i]) then
             return true
@@ -396,7 +396,7 @@ function NumInArray(num, arr)
 end
 
 -- Reset Idle tick
-function ResetIdle()
+local function ResetIdle()
     idleTick = 0
     StopAllIdle()
 end
