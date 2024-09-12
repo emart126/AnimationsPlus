@@ -815,9 +815,7 @@ function events.render(delta, context) --=======================================
     end
 
     -- Physics handling ---------------------------------------------------------
-    local vel = squassets.forwardVel()
 	local yvel = squassets.verticalVel()
-    local headRot = (modelHead:getOffsetRot()+180)%360-180
     local armTarget
     local headTarget
 
@@ -835,7 +833,7 @@ function events.render(delta, context) --=======================================
     lArm:berp(armTarget, 0.25, 0.01, 0.2)
 
     -- Head physics -------------------------------------------------------------
-    modelHead:setRot(head.pos*1.5, 0, 0)
+    modelHead:setRot(head.pos*2, 0, 0)
     headTarget = -yvel * 20
     if (headTarget > 20) then
         headTarget = 20
@@ -843,8 +841,9 @@ function events.render(delta, context) --=======================================
         headTarget = -10
     end
 
-    if (-yvel*20 > -10) then
-        head:berp(headTarget, 0.25, 0.01, 0.2)
+    -- Ignore stair/slab step
+    if (headTarget > -10) then
+        head:berp(headTarget, 0.25, 0.01, 0.4)
     end
 
 end
