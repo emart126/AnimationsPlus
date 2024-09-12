@@ -415,6 +415,11 @@ useKey.press = pings.onRightClickDo
 -- Render animation conditions by in game ticks
 function events.tick() --============================================================================================================================
 
+    -- Item Use Priority --------------------------------------------------------
+    AnimBowShootHold:setPriority(player:isUsingItem() and 1 or 0)
+    AnimCrossBowLoad:setPriority(player:isUsingItem() and 1 or 0)
+    AnimCrossBowHold:setPriority((player:isUsingItem()) and 1 or 0)
+
     -- Handle crouch model position ---------------------------------------------
     if (player:getPose() == "CROUCHING") then
         pModel:setPos(0,2,0)
