@@ -177,6 +177,8 @@ AnimTaunt4:blendTime(2, 4)
 
 AnimPunch = animations.model["attackR"]
 AnimPunch:blendTime(1)
+AnimMine = animations.model["mineR"]
+AnimMine:blendTime(1)
 AnimSwordSwing = animations.model["ID_sword_attackR"]
 AnimBowShootHold = animations.model["bowR"]
 AnimCrossBowLoad = animations.model["loadR"]
@@ -437,26 +439,34 @@ function events.tick() --=======================================================
     end
 
     -- Handle Custom Attacking --------------------------------------------------
-    if (WarriorSwung:isPlaying() or WarriorMine:isPlaying()) then
+    if (WarriorSwung:isPlaying() or WarriorMine:isPlaying() or (player:getSwingTime() == 1 and weaponClass == "Warrior/Knight")) then
+        AnimPunch:stop()
+        AnimMine:stop()
         WarriorSwung:stop()
         WarriorMine:stop()
         CheckAnimToPlayLeftClick(WarriorSwing1, WarriorSwing2, WarriorSwing3)
     end
 
-    if (MageSwung:isPlaying() or MageMine:isPlaying()) then
+    if (MageSwung:isPlaying() or MageMine:isPlaying() or (player:getSwingTime() == 1 and weaponClass == "Mage/Dark Wizard")) then
+        AnimPunch:stop()
+        AnimMine:stop()
         MageSwung:stop()
         MageMine:stop()
         CheckAnimToPlayLeftClick(MageSwing1, MageSwing2, MageSwing3)
     end
 
-    if (AssassinSwung:isPlaying() or AssassinMine:isPlaying() or AnimSwordSwing:isPlaying()) then
+    if (AssassinSwung:isPlaying() or AssassinMine:isPlaying() or AnimSwordSwing:isPlaying() or (player:getSwingTime() == 1 and weaponClass == "Assassin/Ninja")) then
+        AnimPunch:stop()
+        AnimMine:stop()
         AssassinSwung:stop()
         AssassinMine:stop()
         AnimSwordSwing:stop()
         CheckAnimToPlayLeftClick(AssassinSwing1, AssassinSwing2, AssassinSwing3)
     end
 
-    if (ShamanSwung:isPlaying() or ShamanMine:isPlaying()) then
+    if (ShamanSwung:isPlaying() or ShamanMine:isPlaying() or (player:getSwingTime() == 1 and weaponClass == "Shaman/Skyseer")) then
+        AnimPunch:stop()
+        AnimMine:stop()
         ShamanSwung:stop()
         ShamanMine:stop()
         CheckAnimToPlayLeftClick(ShamanSwing)
@@ -523,7 +533,7 @@ end
 
 -- Render animation condtions using render function
 function events.render(delta, context) --============================================================================================================================
-    
+
     -- Is Action Wheel Open -----------------------------------------------------
     wheelCheck = action_wheel:isEnabled()
     if (wheelCheck ~= oldWheelCheck) then
