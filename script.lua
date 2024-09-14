@@ -54,6 +54,8 @@ local isSprintJDown
 local fallTimer = 0
 local startFallTime = 0
 local startedFall = false
+local airState = false
+local oldAirState = false
 
 local facing
 local oldFacing
@@ -274,6 +276,10 @@ end
 
 function pings.syncAcitonWheel(bool)
     isActionWheelOpen = bool
+end
+
+function pings.syncAirState(bool)
+    airState = bool
 end
 
 -- Helper Functions =====================================================================================
@@ -681,7 +687,12 @@ function events.render(delta, context) --=======================================
 
     -- Falling condition --------------------------------------------------------
     --print((client:getSystemTime() % 10000) / 1000)
-    if (state == "inAir" or state == "falling") then
+    airState = state == "inAir" or state == "falling"
+    if (oldAirState ~= airState) then
+        pings.syncAirState(airState)
+    end
+
+    if (airState) then
         if (not startedFall) then
             startFallTime = client:getSystemTime() / 1000
             startedFall = true
@@ -800,6 +811,7 @@ function events.render(delta, context) --=======================================
     end
 
     oldState = state
+    oldAirState = airState
 end
 
 -- SquAPI Animation Handling ============================================================================
