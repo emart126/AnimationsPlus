@@ -876,7 +876,7 @@ local task
 local syncedItemID
 local oldItemID
 
-local syncedPlayerSlot
+local syncedPlayerSlot = 0
 local oldSlot
 
 local currWeapon
