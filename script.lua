@@ -579,12 +579,12 @@ function events.render(delta, context) --=======================================
     wasSprintJDown = isSprintJDown
 
     -- Short Fall condition -----------------------------------------------------
-    if (player:getVelocity().y < 0 and AnimWalk:isPlaying() and not AnimJumpingUp:isPlaying() and not AnimJumpingDown:isPlaying()
-        and not AnimClimb:isPlaying() and not AnimClimbCrouch:isPlaying() and not AnimClimbCrouchWalk:isPlaying()
-        and not AnimFloat:isPlaying() and not AnimSwim:isPlaying()) then
-        AnimShortFalling:play()
-    else
-        AnimShortFalling:stop()
+    if (host:isHost()) then
+        if (player:getVelocity().y < 0 and AnimWalk:isPlaying()) then
+            AnimShortFalling:play()
+        else
+            AnimShortFalling:stop()
+        end
     end
 
     -- Player States ------------------------------------------------------------
