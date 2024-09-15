@@ -57,6 +57,9 @@ local startedFall = false
 local airState = false
 local oldAirState = false
 
+local yVel = 0
+local oldYVel = 0
+
 local facing
 local oldFacing
 
@@ -154,7 +157,7 @@ AnimShortFalling:blendTime(2)
 -- AnimFalling = animations.model["fall"]
 -- AnimFalling:blendTime(4, 0.25)
 AnimFreeFalling = animations.model["freeFall"]
-AnimFreeFalling:blendTime(4, 1)
+AnimFreeFalling:blendTime(4, 0.25)
 AnimLand = animations.model["land"]
 AnimLand:blendTime(1)
 
@@ -687,9 +690,11 @@ function events.render(delta, context) --=======================================
 
     -- Falling condition --------------------------------------------------------
     --print((client:getSystemTime() % 10000) / 1000)
-    airState = state == "inAir" or state == "falling"
-    if (oldAirState ~= airState) then
-        pings.syncAirState(airState)
+    airState = not isGrounded
+    yVel = player:getVelocity().y
+    if (yVel > 0 and oldYVel < 0) then
+        startedFall = false
+        airState = false
     end
 
     if (airState) then
@@ -710,6 +715,8 @@ function events.render(delta, context) --=======================================
         end
         startedFall = false
     end
+
+    oldYVel = yVel
 
     -- Climbing conditions ------------------------------------------------------
     facing = world.getBlockState(player:getPos()):getProperties()["facing"]
