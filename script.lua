@@ -54,9 +54,6 @@ local isSprintJDown
 local fallTimer = 0
 local startFallTime = 0
 local startedFall = false
-local airState = false
-local oldAirState = false
-
 local yVel = 0
 local oldYVel = 0
 
@@ -279,10 +276,6 @@ end
 
 function pings.syncAcitonWheel(bool)
     isActionWheelOpen = bool
-end
-
-function pings.syncAirState(bool)
-    airState = bool
 end
 
 -- Helper Functions =====================================================================================
@@ -689,11 +682,9 @@ function events.render(delta, context) --=======================================
     -- end
 
     -- Falling condition --------------------------------------------------------
-    --print((client:getSystemTime() % 10000) / 1000)
-    airState = not isGrounded
+    local airState = not isGrounded
     yVel = player:getVelocity().y
     if (yVel > 0 and oldYVel < 0) then
-        startedFall = false
         airState = false
     end
 
