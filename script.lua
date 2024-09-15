@@ -17,7 +17,7 @@ anims.autoBlend = true
 anims.dismiss = false
 anims.oneJump(true)
 anims.addExcluAnimsController(animations.model["freeFall"])
-anims.addIncluAnimsController()
+anims.addIncluAnimsController(animations.model["Taunt_2"], animations.model["Taunt_3"])
 anims.addAllAnimsController()
 anims(animations.model)
 
