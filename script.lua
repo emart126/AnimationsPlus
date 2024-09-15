@@ -38,9 +38,6 @@ local sheathOption = true;
 local idleAnimations = true;
 
 -- Animation states/ticks
-local state
-local oldState
-
 local idleTick = 0
 local randTick = 400
 local randAnim
@@ -727,8 +724,6 @@ local rArm = squassets.BERP:new()
 local lArm = squassets.BERP:new()
 local head = squassets.BERP:new()
 
--- "delta" is the percentage between the last and the next tick (as a decimal value, 0.0 to 1.0)
--- "context" is a string that tells from where this render event was called (the paperdoll, gui, player render, first person)
 function events.render(delta, context) --============================================================================================================
 
     -- First person hand model --------------------------------------------------
