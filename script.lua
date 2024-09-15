@@ -536,6 +536,16 @@ end
 -- Render animation condtions using render function
 function events.render(delta, context) --============================================================================================================================
 
+    -- Player Conditions --------------------------------------------------------
+    local swimming = player:isVisuallySwimming()
+    local floating = player:isInWater()
+    local walking = player:getVelocity().xz:length() > .001
+    local climbing = player:isClimbing()
+    local isGrounded = isOnGround(player)
+    local sitting = player:getVehicle()
+    local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
+                                            or player:getVehicle():getType() == "minecraft:boat")
+
     -- Is Action Wheel Open -----------------------------------------------------
     wheelCheck = action_wheel:isEnabled()
     if (wheelCheck ~= oldWheelCheck) then
@@ -580,107 +590,6 @@ function events.render(delta, context) --=======================================
         end
     end
 
-    -- Player States ------------------------------------------------------------
-    local crouching = player:getPose() == "CROUCHING"
-    local swimming = player:isVisuallySwimming()
-    local floating = player:isInWater()
-    local sprinting = player:isSprinting()
-    local walking = player:getVelocity().xz:length() > .001
-    local climbing = player:isClimbing()
-    local isGrounded = isOnGround(player)
-    local sitting = player:getVehicle()
-    local horseSitting = player:getVehicle() and (player:getVehicle():getType() == "minecraft:horse")
-    local ridingMount = player:getVehicle() and (horseSitting or player:getVehicle():getType() == "minecraft:pig")
-    local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
-                                            or player:getVehicle():getType() == "minecraft:boat")
-
-    -- Play animation under certain conditions ----------------------------------
-
-    -- Interacting with water
-    if (floating or (swimming and floating)) then
-        if (floating and not swimming and isGrounded) then
-            -- On the ground, Underwater 
-            if (crouching) then
-                if (walking) then
-                    state = "crouch walking"
-                else
-                    state = "crouching"
-                end
-            elseif (not crouching) then
-                if (walking and not crouching and not sprinting) then
-                    state = "walking"
-                else
-                    state = "idle"
-                end
-            end
-        elseif (floating and not swimming and not isGrounded) then
-            state = "floatingAir"
-        elseif (swimming) then
-            state = "swimming"
-        end
-    else
-        -- Outside of water
-        if (isGrounded and (not ridingSeat and not sitting)) then
-            -- On the ground
-            if (crouching) then
-                if (walking) then
-                    state = "crouch walking"
-                else
-                    state = "crouching"
-                end
-            elseif (not crouching) then
-                if (player:isVisuallySwimming()) then
-                    if (not walking) then
-                        state = "crawling"
-                    elseif (walking) then
-                        state = "crawl walking"
-                    end
-                elseif (walking and not crouching and not sprinting) then
-                    state = "walking"
-                elseif (sprinting) then
-                    state = "sprinting"
-                else
-                    state = "idle"
-                end
-            end
-        else
-            -- Not on the ground
-            if (climbing) then
-                -- Interacting with ladder
-                if (player:getVelocity()[2] ~= 0) then
-                    state = "climbing"
-                else
-                    state = "holdingLadder"
-                end
-            elseif (sitting ~= nil) then
-                -- Sitting/Riding
-                if (ridingMount and walking) then
-                    if (horseSitting) then
-                        state = "ridingHorse"
-                    else
-                        state = "sitting"
-                    end
-                elseif (ridingSeat and walking) then
-                    state = "sitting"
-                elseif (not walking and (sitting or ridingMount or ridingSeat)) then
-                    if (horseSitting) then
-                        state = "horseSitting"
-                    else
-                        state = "sitting"
-                    end
-                end
-            else
-                state = "inAir"
-            end
-        end
-    end
-
-    -- print("---")
-    -- print(state)
-    -- if (state ~= oldState) then
-    --     print(oldState, "->", state)
-    -- end
-
     -- Falling condition --------------------------------------------------------
     local airState = not (floating or (swimming and floating)) and not (isGrounded and (not ridingSeat and not sitting)) and not (climbing) and not (ridingSeat and walking)
     yVel = player:getVelocity().y
@@ -716,7 +625,7 @@ function events.render(delta, context) --=======================================
     local offBlockIsClimbable = string.find(world.getBlockState(player:getPos():add(0,0.33,0)).id, "vine") ~= nil
                             or string.find(world.getBlockState(player:getPos():add(0,0.33,0)).id, "ladder") ~= nil
 
-    if (state == "climbing" or state == "holdingLadder") then
+    if (AnimClimb:isPlaying() or AnimClimbCrouch:isPlaying() or AnimClimbCrouchWalk:isPlaying()) then
         -- rotate player towards ladder
         local desiredRot
         if (facing == "south") then
@@ -807,9 +716,6 @@ function events.render(delta, context) --=======================================
         end
 
     end
-
-    oldState = state
-    oldAirState = airState
 end
 
 -- SquAPI Animation Handling ============================================================================
