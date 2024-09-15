@@ -151,7 +151,7 @@ AnimShortFalling:blendTime(2)
 -- AnimFalling = animations.model["fall"]
 -- AnimFalling:blendTime(4, 0.25)
 AnimFreeFalling = animations.model["freeFall"]
-AnimFreeFalling:blendTime(4, 0.25)
+AnimFreeFalling:blendTime(4, 3)
 AnimLand = animations.model["land"]
 AnimLand:blendTime(1)
 
