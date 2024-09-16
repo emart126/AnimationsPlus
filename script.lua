@@ -588,7 +588,7 @@ function events.render(delta, context) --=======================================
     end
 
     -- Falling condition --------------------------------------------------------
-    local airState = not (floating or (swimming and floating)) and not (isGrounded and (not ridingSeat and not sitting)) and not (climbing) and not (ridingSeat and walking)
+    local airState = not (floating or (swimming and floating)) and not isGrounded and not ridingSeat and not sitting and not climbing and not (ridingSeat and walking)
     yVel = player:getVelocity().y
     if (yVel > 0 and oldYVel < 0) then
         airState = false
