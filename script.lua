@@ -66,6 +66,11 @@ local blendClimbTop = false
 local climbTopBlendInRot
 local climbTopBlendOutRot
 
+local readyTimer = 0
+local readyStartTime = 0
+local readyState = false
+local readyStarted = false
+
 -- BlockBench model parts
 local pModel = models.model.Player
 local modelHead = pModel.Upper.head
@@ -438,6 +443,25 @@ function events.tick() --=======================================================
     end
 
     -- Handle Custom Attacking --------------------------------------------------
+
+    if (player:getSwingTime() == 1 and weaponClass ~= nil) then
+        readyStarted = false
+        readyState = true
+    end
+
+    if (readyState) then
+        if (not readyStarted) then
+            readyStartTime = client:getSystemTime() / 1000
+            readyStarted = true
+        end
+        readyTimer = (client:getSystemTime() / 1000 - readyStartTime)
+
+        if (readyTimer > 2) then
+            readyState = false
+            readyStarted = false
+        end
+    end
+
     if (WarriorSwung:isPlaying() or WarriorMine:isPlaying() or (player:getSwingTime() == 1 and weaponClass == "Warrior/Knight")) then
         AnimPunch:stop()
         AnimMine:stop()
@@ -540,8 +564,7 @@ function events.render(delta, context) --=======================================
     local climbing = player:isClimbing()
     local isGrounded = isOnGround(player)
     local sitting = player:getVehicle()
-    local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart"
-                                            or player:getVehicle():getType() == "minecraft:boat")
+    local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart" or player:getVehicle():getType() == "minecraft:boat")
 
     -- Is Action Wheel Open -----------------------------------------------------
     wheelCheck = action_wheel:isEnabled()
@@ -602,7 +625,6 @@ function events.render(delta, context) --=======================================
         fallTimer = (client:getSystemTime() / 1000 - startFallTime)
 
         if (fallTimer > 0.75) then
-            state = "falling"
             AnimFreeFalling:play()
         end
     else
