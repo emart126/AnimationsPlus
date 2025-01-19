@@ -8,7 +8,7 @@
 
 local squapi = require("SquAPI")
 local squassets = require("SquAssets")
--- local GSBlend = require("GSAnimBlend")
+local GSBlend = require("GSAnimBlend")
 
 -- local anims = require('JimmyAnims')
 -- anims.excluBlendTime = 2
@@ -24,6 +24,7 @@ local squassets = require("SquAssets")
 local anims = require("EZAnims")
 anims:setOneJump(true)
 local animModel = anims:addBBModel(animations.model)
+animModel:setBlendTimes(2,2)
 animModel:addExcluOverrider(animations.model["freeFall"])
 animModel:addIncluOverrider(animations.model["Taunt_2"], animations.model["Taunt_3"])
 
@@ -115,56 +116,56 @@ pModel:setPrimaryTexture("SKIN")
 -- Basic Action Animations ==============================================================================
 AnimIdle = animations.model["idling"]
 AnimIdling1 = animations.model["Idle_1"]
--- AnimIdling1:blendTime(2, 4)
+AnimIdling1:setBlendTime(2, 4)
 AnimIdling2 = animations.model["Idle_2"]
--- AnimIdling2:blendTime(2, 4)
+AnimIdling2:setBlendTime(2, 4)
 AnimIdling3 = animations.model["Idle_3"]
--- AnimIdling3:blendTime(2, 4)
+AnimIdling3:setBlendTime(2, 4)
 
 AnimWalk = animations.model["walking"]
 AnimCrouching = animations.model["crouching"]
--- AnimCrouching:blendTime(4)
+AnimCrouching:setBlendTime(4)
 AnimUnCrouchJUp = animations.model["crouchjumpup"]
--- AnimUnCrouchJUp:blendTime(4)
+AnimUnCrouchJUp:setBlendTime(4)
 AnimCrouchJDown = animations.model["crouchjumpdown"]
--- AnimCrouchJDown:blendTime(5)
+AnimCrouchJDown:setBlendTime(5)
 AnimCrouchWalk = animations.model["crouchwalk"]
--- AnimCrouchWalk:blendTime(4)
+AnimCrouchWalk:setBlendTime(4)
 
 AnimCrawl = animations.model["crawlstill"]
 AnimCrawling = animations.model["crawling"]
 
 AnimFloat = animations.model["water"]
--- AnimFloat:blendTime(4)
+AnimFloat:setBlendTime(4)
 AnimSwim = animations.model["swimming"]
--- AnimSwim:blendTime(4)
+AnimSwim:setBlendTime(4)
 
 AnimClimb = animations.model["climbing"]
--- AnimClimb:blendTime(4)
+AnimClimb:setBlendTime(4)
 AnimClimbCrouch = animations.model["climbcrouch"]
--- AnimClimbCrouch:blendTime(4)
+AnimClimbCrouch:setBlendTime(4)
 AnimClimbCrouchWalk = animations.model["climbcrouchwalk"]
--- AnimClimbCrouchWalk:blendTime(4)
+AnimClimbCrouchWalk:setBlendTime(4)
 
 AnimJumpingUp = animations.model["jumpingup"]
--- AnimJumpingUp:blendTime(4, 5)
--- AnimJumpingUp:onBlend("easeOutQuad")
+AnimJumpingUp:setBlendTime(4, 5)
+AnimJumpingUp:setBlendCurve("easeOutQuad")
 AnimJumpingDown = animations.model["jumpingdown"]
--- AnimJumpingDown:blendTime(4, 5)
--- AnimJumpingDown:onBlend("easeOutQuad")
+AnimJumpingDown:setBlendTime(4, 5)
+AnimJumpingDown:setBlendCurve("easeOutQuad")
 AnimSprintJumpUp = animations.model["sprintjumpup"]
--- AnimSprintJumpUp:blendTime(4.5)
+AnimSprintJumpUp:setBlendTime(4.5)
 AnimSprintJumpDown = animations.model["sprintjumpdown"]
--- AnimSprintJumpDown:blendTime(4.5, 2)
+AnimSprintJumpDown:setBlendTime(4.5, 2)
 
 AnimShortFalling = animations.model["Fall_0"]
--- AnimShortFalling:blendTime(2)
--- **********already commented out-- AnimFalling = animations.model["fall"]
--- **********already commented out-- AnimFalling:blendTime(4, 0.25)
+AnimShortFalling:setBlendTime(2)
+-- AnimFalling = animations.model["fall"]
+-- AnimFalling:setBlendTime(4, 0.25)
 AnimFreeFalling = animations.model["freeFall"]
--- AnimFreeFalling:blendTime(4, 3)
+AnimFreeFalling:setBlendTime(4, 3)
 AnimLand = animations.model["land"]
--- AnimLand:blendTime(1)
+AnimLand:setBlendTime(1)
 
 AnimSprint = animations.model["sprinting"]
 
@@ -177,18 +178,18 @@ AnimTaunt2a = animations.model["Taunt_2"]
 AnimTaunt2b = animations.model["Taunt_3"]
 AnimTaunt3 = animations.model["Taunt_4"]
 AnimTaunt4 = animations.model["Taunt_5"]
--- AnimTaunt1:blendTime(3, 4)
--- AnimTaunt2a:blendTime(2, 4)
--- AnimTaunt2b:blendTime(2, 4)
--- AnimTaunt3:blendTime(2, 4)
--- AnimTaunt4:blendTime(2, 4)
+AnimTaunt1:setBlendTime(3, 4)
+AnimTaunt2a:setBlendTime(2, 4)
+AnimTaunt2b:setBlendTime(2, 4)
+AnimTaunt3:setBlendTime(2, 4)
+AnimTaunt4:setBlendTime(2, 4)
 
 -- Attacks ----------------------------------------------------------
 
 AnimPunch = animations.model["attackR"]
--- AnimPunch:blendTime(1)
+AnimPunch:setBlendTime(1)
 AnimMine = animations.model["mineR"]
--- AnimMine:blendTime(1)
+AnimMine:setBlendTime(1)
 AnimSwordSwing = animations.model["ID_sword_attackR"]
 AnimBowShootHold = animations.model["bowR"]
 AnimCrossBowLoad = animations.model["loadR"]
@@ -200,9 +201,9 @@ WarriorMine = animations.model["Name_Warrior/Knight_mineR"]
 WarriorSwing1 = animations.model["Spear_Swing_1"]
 WarriorSwing2 = animations.model["Spear_Swing_2"]
 WarriorSwing3 = animations.model["Spear_Swing_3"]
--- WarriorSwing1:blendTime(1)
--- WarriorSwing2:blendTime(1)
--- WarriorSwing3:blendTime(1)
+WarriorSwing1:setBlendTime(1)
+WarriorSwing2:setBlendTime(1)
+WarriorSwing3:setBlendTime(1)
 
 -- Mage ---------
 MageSwung = animations.model["Name_Mage/Dark Wizard_attackR"]
@@ -210,9 +211,9 @@ MageMine = animations.model["Name_Mage/Dark Wizard_mineR"]
 MageSwing1 = animations.model["Wand_Wave_1"]
 MageSwing2 = animations.model["Wand_Wave_2"]
 MageSwing3 = animations.model["Wand_Wave_3"]
--- MageSwing1:blendTime(1)
--- MageSwing2:blendTime(1)
--- MageSwing3:blendTime(1)
+MageSwing1:setBlendTime(1)
+MageSwing2:setBlendTime(1)
+MageSwing3:setBlendTime(1)
 
 -- Assassin -----
 AssassinSwung = animations.model["Name_Assassin/Ninja_attackR"]
@@ -220,19 +221,19 @@ AssassinMine = animations.model["Name_Assassin/Ninja_mineR"]
 AssassinSwing1 = animations.model["Sword_Swing_1"]
 AssassinSwing2 = animations.model["Sword_Swing_2"]
 AssassinSwing3 = animations.model["Sword_Swing_3"]
--- AssassinSwing1:blendTime(1)
--- AssassinSwing2:blendTime(1)
--- AssassinSwing3:blendTime(0)
+AssassinSwing1:setBlendTime(1)
+AssassinSwing2:setBlendTime(1)
+AssassinSwing3:setBlendTime(0)
 
 -- Shaman -------
 ShamanSwung = animations.model["Name_Shaman/Skyseer_attackR"]
 ShamanMine = animations.model["Name_Shaman/Skyseer_mineR"]
 ShamanSwing = animations.model["Relik_Strike"]
--- ShamanSwing:blendTime(1)
+ShamanSwing:setBlendTime(1)
 
 -- Archer -------
 ArcherShoot = animations.model["Bow_Shoot"]
--- ArcherShoot:blendTime(1)
+ArcherShoot:setBlendTime(1)
 
 -- Wynncraft Spells -------------------------------------------------
 -- R1, L2, R3 = s1
