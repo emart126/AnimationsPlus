@@ -10,17 +10,6 @@ local squapi = require("SquAPI")
 local squassets = require("SquAssets")
 local GSBlend = require("GSAnimBlend")
 
--- local anims = require('JimmyAnims')
--- anims.excluBlendTime = 2
--- anims.incluBlendTime = 2
--- anims.autoBlend = true
--- anims.dismiss = false
--- anims.oneJump(true)
--- anims.addExcluAnimsController(animations.model["freeFall"])
--- anims.addIncluAnimsController(animations.model["Taunt_2"], animations.model["Taunt_3"])
--- anims.addAllAnimsController()
--- anims(animations.model)
-
 local anims = require("EZAnims")
 anims:setOneJump(true)
 local animModel = anims:addBBModel(animations.model)
@@ -160,8 +149,6 @@ AnimSprintJumpDown:setBlendTime(4.5, 2)
 
 AnimShortFalling = animations.model["Fall_0"]
 AnimShortFalling:setBlendTime(2)
--- AnimFalling = animations.model["fall"]
--- AnimFalling:setBlendTime(4, 0.25)
 AnimFreeFalling = animations.model["freeFall"]
 AnimFreeFalling:setBlendTime(4, 3)
 AnimLand = animations.model["land"]
@@ -187,17 +174,14 @@ AnimTaunt4:setBlendTime(2, 4)
 -- Attacks ----------------------------------------------------------
 
 AnimPunch = animations.model["attackR"]
-AnimPunch:setBlendTime(1)
+AnimPunch:setBlendTime(1, 2.5)
 AnimMine = animations.model["mineR"]
 AnimMine:setBlendTime(1)
-AnimSwordSwing = animations.model["ID_sword_attackR"]
 AnimBowShootHold = animations.model["bowR"]
 AnimCrossBowLoad = animations.model["loadR"]
 AnimCrossBowHold = animations.model["crossbowR"]
 
 -- Warrior ------
-WarriorSwung = animations.model["Name_Warrior/Knight_attackR"]
-WarriorMine = animations.model["Name_Warrior/Knight_mineR"]
 WarriorSwing1 = animations.model["Spear_Swing_1"]
 WarriorSwing2 = animations.model["Spear_Swing_2"]
 WarriorSwing3 = animations.model["Spear_Swing_3"]
@@ -206,8 +190,6 @@ WarriorSwing2:setBlendTime(1)
 WarriorSwing3:setBlendTime(1)
 
 -- Mage ---------
-MageSwung = animations.model["Name_Mage/Dark Wizard_attackR"]
-MageMine = animations.model["Name_Mage/Dark Wizard_mineR"]
 MageSwing1 = animations.model["Wand_Wave_1"]
 MageSwing2 = animations.model["Wand_Wave_2"]
 MageSwing3 = animations.model["Wand_Wave_3"]
@@ -216,8 +198,6 @@ MageSwing2:setBlendTime(1)
 MageSwing3:setBlendTime(1)
 
 -- Assassin -----
-AssassinSwung = animations.model["Name_Assassin/Ninja_attackR"]
-AssassinMine = animations.model["Name_Assassin/Ninja_mineR"]
 AssassinSwing1 = animations.model["Sword_Swing_1"]
 AssassinSwing2 = animations.model["Sword_Swing_2"]
 AssassinSwing3 = animations.model["Sword_Swing_3"]
@@ -226,8 +206,6 @@ AssassinSwing2:setBlendTime(1)
 AssassinSwing3:setBlendTime(0)
 
 -- Shaman -------
-ShamanSwung = animations.model["Name_Shaman/Skyseer_attackR"]
-ShamanMine = animations.model["Name_Shaman/Skyseer_mineR"]
 ShamanSwing = animations.model["Relik_Strike"]
 ShamanSwing:setBlendTime(1)
 
@@ -332,16 +310,6 @@ local function isOnGround(entity)
     return false
 end
 
--- Stop All animations that require idling
-local function StopAllIdle()
-    AnimIdling1:stop()
-    AnimIdling2:stop()
-    AnimIdling3:stop()
-    AnimTaunt1:stop()
-    AnimTaunt3:stop()
-    AnimTaunt4:stop()
-end
-
 -- Is Player Taunting
 local function IsTaunting()
     if (AnimTaunt1:isPlaying() or AnimTaunt3:isPlaying() or AnimTaunt4:isPlaying()) then
@@ -411,7 +379,12 @@ end
 -- Reset Idle tick
 local function ResetIdle()
     idleTick = 0
-    StopAllIdle()
+    AnimIdling1:stop()
+    AnimIdling2:stop()
+    AnimIdling3:stop()
+    AnimTaunt1:stop()
+    AnimTaunt3:stop()
+    AnimTaunt4:stop()
 end
 
 -- right-clicking detection =============================================================================
@@ -451,10 +424,36 @@ function events.tick() --=======================================================
 
     -- Handle Custom Attacking --------------------------------------------------
 
+    if (player:getSwingTime() == 1 and weaponClass == "Warrior/Knight") then
+        AnimPunch:stop()
+        AnimMine:stop()
+        CheckAnimToPlayLeftClick(WarriorSwing1, WarriorSwing2, WarriorSwing3)
+    end
+
+    if (player:getSwingTime() == 1 and weaponClass == "Mage/Dark Wizard") then
+        AnimPunch:stop()
+        AnimMine:stop()
+        CheckAnimToPlayLeftClick(MageSwing1, MageSwing2, MageSwing3)
+    end
+
+    if (player:getSwingTime() == 1 and (weaponClass == "Assassin/Ninja" or string.find(player:getHeldItem().id, "sword"))) then
+        AnimPunch:stop()
+        AnimMine:stop()
+        CheckAnimToPlayLeftClick(AssassinSwing1, AssassinSwing2, AssassinSwing3)
+    end
+
+    if (player:getSwingTime() == 1 and weaponClass == "Shaman/Skyseer") then
+        AnimPunch:stop()
+        AnimMine:stop()
+        CheckAnimToPlayLeftClick(ShamanSwing)
+    end
+
     if (player:getSwingTime() == 1 and weaponClass ~= nil) then
         readyStarted = false
         readyState = true
     end
+
+    -- Combat Ready Idle --------------------------------------------------------
 
     if (readyState) then
         if (not readyStarted) then
@@ -467,39 +466,6 @@ function events.tick() --=======================================================
             readyState = false
             readyStarted = false
         end
-    end
-
-    if (WarriorSwung:isPlaying() or WarriorMine:isPlaying() or (player:getSwingTime() == 1 and weaponClass == "Warrior/Knight")) then
-        AnimPunch:stop()
-        AnimMine:stop()
-        WarriorSwung:stop()
-        WarriorMine:stop()
-        CheckAnimToPlayLeftClick(WarriorSwing1, WarriorSwing2, WarriorSwing3)
-    end
-
-    if (MageSwung:isPlaying() or MageMine:isPlaying() or (player:getSwingTime() == 1 and weaponClass == "Mage/Dark Wizard")) then
-        AnimPunch:stop()
-        AnimMine:stop()
-        MageSwung:stop()
-        MageMine:stop()
-        CheckAnimToPlayLeftClick(MageSwing1, MageSwing2, MageSwing3)
-    end
-
-    if (AssassinSwung:isPlaying() or AssassinMine:isPlaying() or AnimSwordSwing:isPlaying() or (player:getSwingTime() == 1 and weaponClass == "Assassin/Ninja")) then
-        AnimPunch:stop()
-        AnimMine:stop()
-        AssassinSwung:stop()
-        AssassinMine:stop()
-        AnimSwordSwing:stop()
-        CheckAnimToPlayLeftClick(AssassinSwing1, AssassinSwing2, AssassinSwing3)
-    end
-
-    if (ShamanSwung:isPlaying() or ShamanMine:isPlaying() or (player:getSwingTime() == 1 and weaponClass == "Shaman/Skyseer")) then
-        AnimPunch:stop()
-        AnimMine:stop()
-        ShamanSwung:stop()
-        ShamanMine:stop()
-        CheckAnimToPlayLeftClick(ShamanSwing)
     end
 
     -- Idling -------------------------------------------------------------------
