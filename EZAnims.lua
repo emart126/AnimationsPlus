@@ -498,7 +498,7 @@ local function getInfo()
         
         ob.sprintjumpdown.active = jumpingDown and sprinting and not creativeFlying and not ladder or false
         ob.sprintjumpup.active = jumpingUp and sprinting and not creativeFlying and not ladder or (not oneJump and (ob.sprintjumpdown.active and next(ob.sprintjumpdown.list)==nil)) or false
-        ob.jumpingdown.active = jumpingDown and not sprinting and not crouching and not sitting and not sleeping and not gliding and not creativeFlying and not spin and not inWater or (ob.falling.active and next(ob.falling.list)==nil) or (oneJump and (ob.sprintjumpdown.active and next(ob.sprintjumpdown.list)==nil)) or (oneJump and (ob.crouchjumpdown.active and next(ob.crouchjumpdown.list)==nil))
+        ob.jumpingdown.active = jumpingDown and not ladder and not sprinting and not crouching and not sitting and not sleeping and not gliding and not creativeFlying and not spin and not inWater or (ob.falling.active and next(ob.falling.list)==nil) or (oneJump and (ob.sprintjumpdown.active and next(ob.sprintjumpdown.list)==nil)) or (oneJump and (ob.crouchjumpdown.active and next(ob.crouchjumpdown.list)==nil))
         ob.jumpingup.active = jumpingUp and not sprinting and not crouching and not sitting and not creativeFlying and not inWater or (ob.jumpingdown.active and next(ob.jumpingdown.list)==nil) or (ob.trident.active and next(ob.trident.list)==nil) or (oneJump and (ob.sprintjumpup.active and next(ob.sprintjumpup.list)==nil)) or (oneJump and (ob.crouchjumpup.active and next(ob.crouchjumpup.list)==nil))
 
         ob.sprinting.active = sprinting and not isJumping and not creativeFlying and not ladder and not cooldown and not inWater or (not oneJump and (ob.sprintjumpup.active and next(ob.sprintjumpup.list)==nil)) or false
