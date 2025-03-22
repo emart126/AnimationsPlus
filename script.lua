@@ -104,6 +104,8 @@ pModel:setPrimaryTexture("SKIN")
 
 -- Basic Action Animations ==============================================================================
 AnimIdle = animations.model["idling"]
+AnimReady = animations.model["toggleidling"]
+AnimReady:setBlendTime(2, 3.5)
 AnimIdling1 = animations.model["Idle_1"]
 AnimIdling1:setBlendTime(2, 4)
 AnimIdling2 = animations.model["Idle_2"]
@@ -143,9 +145,9 @@ AnimJumpingDown = animations.model["jumpingdown"]
 AnimJumpingDown:setBlendTime(4, 5)
 AnimJumpingDown:setBlendCurve("easeOutQuad")
 AnimSprintJumpUp = animations.model["sprintjumpup"]
-AnimSprintJumpUp:setBlendTime(4.5)
+AnimSprintJumpUp:setBlendTime(6.5)
 AnimSprintJumpDown = animations.model["sprintjumpdown"]
-AnimSprintJumpDown:setBlendTime(4.5, 2)
+AnimSprintJumpDown:setBlendTime(6.5, 3)
 
 AnimShortFalling = animations.model["Fall_0"]
 AnimShortFalling:setBlendTime(2)
@@ -201,9 +203,11 @@ MageSwing3:setBlendTime(1)
 AssassinSwing1 = animations.model["Sword_Swing_1"]
 AssassinSwing2 = animations.model["Sword_Swing_2"]
 AssassinSwing3 = animations.model["Sword_Swing_3"]
-AssassinSwing1:setBlendTime(1)
-AssassinSwing2:setBlendTime(1)
-AssassinSwing3:setBlendTime(0)
+AssassinSwing4 = animations.model["Sword_Swing_4"]
+AssassinSwing1:setBlendTime(2, 3)
+AssassinSwing2:setBlendTime(2, 3)
+AssassinSwing3:setBlendTime(2, 3)
+-- AssassinSwing4:setBlendTime(2, 3)
 
 -- Shaman -------
 ShamanSwing = animations.model["Relik_Strike"]
@@ -339,10 +343,14 @@ local function CheckClassItem(item)
 end
 
 -- Given what animations that need to play, check which one to play under certain conditions on a left click
-local function CheckAnimToPlayLeftClick(swing1, swing2, swing3)
+local function CheckAnimToPlayLeftClick(swing1, swing2, swing3, swing4)
     if (swing2 ~= nil and swing3 ~= nil) then
+        -- Forth swing
+        if (swing4 ~= nil and swing3:isPlaying() and not swing4:isPlaying()) then
+            swing3:stop()
+            swing4:play()
         -- Three swing combo attack
-        if (swing2:isPlaying() and not swing3:isPlaying()) then
+        elseif (swing2:isPlaying() and not swing3:isPlaying()) then
             swing2:stop()
             swing3:play()
         elseif (swing1:isPlaying() and not swing2:isPlaying() and not swing3:isPlaying()) then
@@ -439,7 +447,7 @@ function events.tick() --=======================================================
     if (player:getSwingTime() == 1 and (weaponClass == "Assassin/Ninja" or string.find(player:getHeldItem().id, "sword"))) then
         AnimPunch:stop()
         AnimMine:stop()
-        CheckAnimToPlayLeftClick(AssassinSwing1, AssassinSwing2, AssassinSwing3)
+        CheckAnimToPlayLeftClick(AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4)
     end
 
     if (player:getSwingTime() == 1 and weaponClass == "Shaman/Skyseer") then
@@ -448,25 +456,28 @@ function events.tick() --=======================================================
         CheckAnimToPlayLeftClick(ShamanSwing)
     end
 
-    if (player:getSwingTime() == 1 and weaponClass ~= nil) then
+    if (player:getSwingTime() == 1 and (weaponClass ~= nil or string.find(player:getHeldItem().id, "sword"))) then
         readyStarted = false
         readyState = true
     end
 
     -- Combat Ready Idle --------------------------------------------------------
 
-    if (readyState) then
-        if (not readyStarted) then
-            readyStartTime = client:getSystemTime() / 1000
-            readyStarted = true
-        end
-        readyTimer = (client:getSystemTime() / 1000 - readyStartTime)
+    -- if (readyState) then
+    --     if (not readyStarted) then
+    --         readyStartTime = client:getSystemTime() / 1000
+    --         readyStarted = true
+    --         -- animModel:setState("toggle")
+    --     end
+    --     readyTimer = (client:getSystemTime() / 1000 - readyStartTime)
 
-        if (readyTimer > 2) then
-            readyState = false
-            readyStarted = false
-        end
-    end
+    --     if (readyTimer > 5) then
+    --         readyState = false
+    --         readyStarted = false
+    --         readyTimer = 0
+    --         -- animModel:setState()
+    --     end
+    -- end
 
     -- Idling -------------------------------------------------------------------
     if (idleAnimations) then
@@ -732,6 +743,7 @@ function events.render(delta, context) --=======================================
 
     -- Physics handling ---------------------------------------------------------
 	local yvel = squassets.verticalVel()
+    local xvel = squassets.forwardVel()
     local armTarget
     local headTarget
 
@@ -745,8 +757,13 @@ function events.render(delta, context) --=======================================
         armTarget = -3
     end
 
-    rArm:berp(armTarget, 0.25, 0.01, 0.2)
-    lArm:berp(armTarget, 0.25, 0.01, 0.2)
+    if ((xvel >= -0.22 and xvel <= 0.22) or AnimFreeFalling:isPlaying()) then
+        rArm:berp(armTarget, 0.25, 0.01, 0.2)
+        lArm:berp(armTarget, 0.25, 0.01, 0.2)
+    else
+        rArm:berp(0, 0.25, 0.01, 0.2)
+        lArm:berp(0, 0.25, 0.01, 0.2)
+    end
 
     -- Head physics -------------------------------------------------------------
     modelHead:setRot(head.pos*2, 0, 0)
