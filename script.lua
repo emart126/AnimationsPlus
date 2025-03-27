@@ -223,13 +223,13 @@ ArcherShoot:setBlendTime(1)
 -- R1, R2, L3 = s3
 -- R1, R2, R3 = Move
 
-AnimR1 = animations.model["R1"]
-AnimR2 = animations.model["R2"]
-AnimL2 = animations.model["L2"]
+-- AnimR1 = animations.model["R1"]
+-- AnimR2 = animations.model["R2"]
+-- AnimL2 = animations.model["L2"]
 
 -- AnimMovement = animations.model["animation.model.movement"]
-AnimThirdSpell = animations.model["spell3"]
-AnimSecondSpell = animations.model["spell2"]
+-- AnimThirdSpell = animations.model["spell3"]
+-- AnimSecondSpell = animations.model["spell2"]
 -- AnimFirstSpell = animations.model["animation.model.FirstSpell"]
 
 -- Katt Armor Handling ==================================================================================
@@ -837,8 +837,9 @@ if (host:isHost()) then
             local itemID
             local customModelData = itemInFirst["tag"]["CustomModelData"]
 
-            if (customModelData ~= nil) then
-                itemID = itemInFirst.id.."{CustomModelData:"..customModelData.."}"
+            if (customModelData ~= nil and customModelData.floats ~= nil) then
+                customModelData = customModelData.floats[1]
+                itemID = itemInFirst.id.."[custom_model_data={floats:["..customModelData.."]}]"
                 local classItem = CheckClassItem(itemInFirstStack)
 
                 -- Edit scale and rotation depending on its customModelData value
