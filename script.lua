@@ -1004,7 +1004,6 @@ if (host:isHost()) then
 
             -- ping only when item has changed
             if (oldItemInFirst ~= itemInFirst or (changedToEmpty == false and itemInFirst.id == 'minecraft:air')) then
-                print('changed')
                 changedToEmpty = true
                 if (oldItemInFirst ~= itemInFirst) then
                     changedToEmpty = false
