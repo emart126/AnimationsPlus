@@ -785,6 +785,7 @@ end
 local task
 
 local oldItemInFirst
+local changedToEmpty = false
 
 local syncedItemID
 local oldItemID
@@ -1002,20 +1003,26 @@ if (host:isHost()) then
             end
 
             -- ping only when item has changed
-            if (oldItemInFirst == itemInFirst and itemInFirst.id ~= 'minecraft:air') then
-                return
+            if (oldItemInFirst ~= itemInFirst or (changedToEmpty == false and itemInFirst.id == 'minecraft:air')) then
+                print('changed')
+                changedToEmpty = true
+                if (oldItemInFirst ~= itemInFirst) then
+                    changedToEmpty = false
+                end
+
+                oldItemInFirst = itemInFirst
+
+                -- Sync item identifier
+                pings.updateItemID(itemID)
+
+                -- Sync bool check if itemstack is weapon
+                local hasClassStr = CheckClassItem(itemInFirstStack)
+                pings.updateWeaponClass(hasClassStr)
+
+                -- Sync item task vectors
+                pings.updateWeaponTask(task:getRot()[1], task:getRot()[2], task:getRot()[3], task:getPos()[1], task:getPos()[2], task:getPos()[3])
             end
-            oldItemInFirst = itemInFirst
 
-            -- Sync item identifier
-            pings.updateItemID(itemID)
-
-            -- Sync bool check if itemstack is weapon
-            local hasClassStr = CheckClassItem(itemInFirstStack)
-            pings.updateWeaponClass(hasClassStr)
-
-            -- Sync item task vectors
-            pings.updateWeaponTask(task:getRot()[1], task:getRot()[2], task:getRot()[3], task:getPos()[1], task:getPos()[2], task:getPos()[3])
         end
     end
 
