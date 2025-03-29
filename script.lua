@@ -784,6 +784,8 @@ end
 -- Sheathing weapon
 local task
 
+local oldItemInFirst
+
 local syncedItemID
 local oldItemID
 
@@ -827,14 +829,14 @@ function events.entity_init() --================================================
 end
 
 if (host:isHost()) then
-    local eventOldItemId
     function events.render()
+
         if (sheathOption) then
             -- Sync item id and damage value
             local itemInFirst = host:getSlot(0)
             local itemInFirstStack = itemInFirst:toStackString()
 
-            local itemID
+            local itemID = itemInFirst.id
             local customModelData = itemInFirst["tag"]["CustomModelData"]
 
             if (customModelData ~= nil and customModelData.floats ~= nil) then
@@ -1000,10 +1002,10 @@ if (host:isHost()) then
             end
 
             -- ping only when item has changed
-            if (eventOldItemId == itemInFirst) then
+            if (oldItemInFirst == itemInFirst and itemInFirst.id ~= 'minecraft:air') then
                 return
             end
-            eventOldItemId = itemInFirst
+            oldItemInFirst = itemInFirst
 
             -- Sync item identifier
             pings.updateItemID(itemID)
