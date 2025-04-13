@@ -67,6 +67,8 @@ local readyStartTime = 0
 local readyState = false
 local readyStarted = false
 
+local currSwing = 1
+
 -- BlockBench model parts
 local pModel = models.model.Player
 local modelHead = pModel.Upper.head
@@ -181,7 +183,11 @@ AnimMine = animations.model["mineR"]
 AnimMine:setBlendTime(1)
 AnimBowShootHold = animations.model["bowR"]
 AnimCrossBowLoad = animations.model["loadR"]
-AnimCrossBowHold = animations.model["crossbowR"]
+AnimCrossBowHold = animations.model["crossR"]
+AnimShieldR = animations.model["blockR"]
+AnimShieldR:setBlendCurve("easeInOutSine")
+AnimShieldL = animations.model["blockL"]
+AnimShieldL:setBlendCurve("easeInOutSine")
 
 -- Warrior ------
 WarriorSwing1 = animations.model["Spear_Swing_1"]
@@ -204,10 +210,13 @@ AssassinSwing1 = animations.model["Sword_Swing_1"]
 AssassinSwing2 = animations.model["Sword_Swing_2"]
 AssassinSwing3 = animations.model["Sword_Swing_3"]
 AssassinSwing4 = animations.model["Sword_Swing_4"]
-AssassinSwing1:setBlendTime(2, 3)
-AssassinSwing2:setBlendTime(2, 3)
-AssassinSwing3:setBlendTime(2, 3)
--- AssassinSwing4:setBlendTime(2, 3)
+AssassinSwing1:setBlendTime(3, 5.5)
+AssassinSwing1:setBlendCurve("easeInOutSine")
+AssassinSwing2:setBlendTime(3, 5.5)
+AssassinSwing2:setBlendCurve("easeInOutSine")
+AssassinSwing3:setBlendTime(3, 5.5)
+AssassinSwing3:setBlendCurve("easeInOutSine")
+-- AssassinSwing4:setBlendTime(3, 5.5)
 
 -- Shaman -------
 ShamanSwing = animations.model["Relik_Strike"]
@@ -343,25 +352,34 @@ local function CheckClassItem(item)
 end
 
 -- Given what animations that need to play, check which one to play under certain conditions on a left click
-local function CheckAnimToPlayLeftClick(swing1, swing2, swing3, swing4)
-    if (swing2 ~= nil and swing3 ~= nil) then
-        -- Forth swing
-        if (swing4 ~= nil and swing3:isPlaying() and not swing4:isPlaying()) then
-            swing3:stop()
-            swing4:play()
-        -- Three swing combo attack
-        elseif (swing2:isPlaying() and not swing3:isPlaying()) then
-            swing2:stop()
-            swing3:play()
-        elseif (swing1:isPlaying() and not swing2:isPlaying() and not swing3:isPlaying()) then
-            swing1:stop()
-            swing2:play()
-        elseif (not swing1:isPlaying() and not swing2:isPlaying() and not swing3:isPlaying()) then
+local function CheckAnimToPlayLeftClick(swing1, swing2, swing3, swing4, next)
+    local swingAnimations = {swing1, swing2, swing3, swing4}
+    if (next ~= nil) then
+        swing1:stop()
+        swing2:stop()
+        swing3:stop()
+        swing4:stop()
+        swingAnimations[next]:play()
+    else
+        if (swing2 ~= nil and swing3 ~= nil) then
+            -- Forth swing
+            if (swing4 ~= nil and swing3:isPlaying() and not swing4:isPlaying()) then
+                swing3:stop()
+                swing4:play()
+            -- Three swing combo attack
+            elseif (swing2:isPlaying() and not swing3:isPlaying()) then
+                swing2:stop()
+                swing3:play()
+            elseif (swing1:isPlaying() and not swing2:isPlaying() and not swing3:isPlaying()) then
+                swing1:stop()
+                swing2:play()
+            elseif (not swing1:isPlaying() and not swing2:isPlaying() and not swing3:isPlaying()) then
+                swing1:play()
+            end
+        else
+            -- One swing attack
             swing1:play()
         end
-    else
-        -- One swing attack
-        swing1:play()
     end
 end
 
@@ -415,6 +433,8 @@ function events.tick() --=======================================================
     AnimBowShootHold:setPriority(player:isUsingItem() and 1 or 0)
     AnimCrossBowLoad:setPriority(player:isUsingItem() and 1 or 0)
     AnimCrossBowHold:setPriority((player:isUsingItem()) and 1 or 0)
+    AnimShieldL:setPriority((player:isUsingItem()) and 1 or 0)
+    AnimShieldR:setPriority((player:isUsingItem()) and 1 or 0)
 
     -- Handle crouch model position ---------------------------------------------
     if (player:getPose() == "CROUCHING") then
@@ -447,7 +467,11 @@ function events.tick() --=======================================================
     if (player:getSwingTime() == 1 and (weaponClass == "Assassin/Ninja" or string.find(player:getHeldItem().id, "sword"))) then
         AnimPunch:stop()
         AnimMine:stop()
-        CheckAnimToPlayLeftClick(AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4)
+        CheckAnimToPlayLeftClick(AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4, currSwing)
+        currSwing = currSwing + 1
+        if (currSwing > 3) then
+            currSwing = 1
+        end
     end
 
     if (player:getSwingTime() == 1 and weaponClass == "Shaman/Skyseer") then
