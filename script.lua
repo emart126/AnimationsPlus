@@ -188,6 +188,7 @@ AnimShieldR = animations.model["blockR"]
 AnimShieldR:setBlendCurve("easeInOutSine")
 AnimShieldL = animations.model["blockL"]
 AnimShieldL:setBlendCurve("easeInOutSine")
+AnimCombatReady = animations.model["combatReady"]
 
 -- Warrior ------
 WarriorSwing1 = animations.model["Spear_Swing_1"]
@@ -214,9 +215,9 @@ AssassinSwing1:setBlendTime(3, 5.5)
 AssassinSwing1:setBlendCurve("easeInOutSine")
 AssassinSwing2:setBlendTime(3, 5.5)
 AssassinSwing2:setBlendCurve("easeInOutSine")
-AssassinSwing3:setBlendTime(3, 5.5)
+AssassinSwing3:setBlendTime(4, 5.5)
 AssassinSwing3:setBlendCurve("easeInOutSine")
--- AssassinSwing4:setBlendTime(3, 5.5)
+AssassinSwing4:setBlendTime(3, 5.5)
 
 -- Shaman -------
 ShamanSwing = animations.model["Relik_Strike"]
@@ -272,6 +273,7 @@ kattArmor.Armor.Boots
 -- Pings ================================================================================================
 function pings.syncHeldItemIsWeapon(strClass)
     weaponClass = strClass
+    currSwing = 1
 end
 
 function pings.syncAcitonWheel(bool)
@@ -351,36 +353,46 @@ local function CheckClassItem(item)
     return(nil)
 end
 
--- Given what animations that need to play, check which one to play under certain conditions on a left click
-local function CheckAnimToPlayLeftClick(swing1, swing2, swing3, swing4, next)
-    local swingAnimations = {swing1, swing2, swing3, swing4}
-    if (next ~= nil) then
-        swing1:stop()
-        swing2:stop()
-        swing3:stop()
-        swing4:stop()
-        swingAnimations[next]:play()
-    else
-        if (swing2 ~= nil and swing3 ~= nil) then
-            -- Forth swing
-            if (swing4 ~= nil and swing3:isPlaying() and not swing4:isPlaying()) then
-                swing3:stop()
-                swing4:play()
-            -- Three swing combo attack
-            elseif (swing2:isPlaying() and not swing3:isPlaying()) then
-                swing2:stop()
-                swing3:play()
-            elseif (swing1:isPlaying() and not swing2:isPlaying() and not swing3:isPlaying()) then
-                swing1:stop()
-                swing2:play()
-            elseif (not swing1:isPlaying() and not swing2:isPlaying() and not swing3:isPlaying()) then
-                swing1:play()
-            end
-        else
-            -- One swing attack
-            swing1:play()
+-- Check if swinging animation is playing 
+local function isCustomSwinging()
+    local swingAnimations = {
+        AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4,
+        WarriorSwing1, WarriorSwing2, WarriorSwing3,
+        MageSwing1, MageSwing2, MageSwing3,
+        ArcherShoot,
+        ShamanSwing
+    }
+    for i = 1, #swingAnimations do
+        if (swingAnimations[i]:isPlaying()) then
+            return true
         end
     end
+    return false
+end
+
+-- Given what animations that need to play, check which one to play under certain conditions on a left click
+local function CheckAnimToPlayLeftClick(swingAnimations, numOfSwings, nextIndx)
+    -- Get previous swing index
+    local prevIndx = nil
+    if (nextIndx > 1) then
+        prevIndx = nextIndx - 1
+    end
+
+    if (not swingAnimations[numOfSwings]:isPlaying()) then
+        if (prevIndx ~= nil) then
+            swingAnimations[prevIndx]:stop()
+        end
+        swingAnimations[nextIndx]:play()
+
+        -- Return next swing index
+        local nextSwing = nextIndx + 1
+        if (nextSwing > numOfSwings) then
+            nextSwing = 1
+        end
+        return nextSwing
+    end
+
+    return nextIndx
 end
 
 -- Get random number between 400 and 600 that is also divisible by 80
@@ -420,7 +432,7 @@ function pings.onRightClickDo()
 
     if (not isActionWheelOpen) then
         if (weaponClass == "Archer/Hunter") then
-            CheckAnimToPlayLeftClick(ArcherShoot)
+            ArcherShoot:play()
         end
     end
 end
@@ -452,56 +464,40 @@ function events.tick() --=======================================================
 
     -- Handle Custom Attacking --------------------------------------------------
 
-    if (player:getSwingTime() == 1 and weaponClass == "Warrior/Knight") then
-        AnimPunch:stop()
-        AnimMine:stop()
-        CheckAnimToPlayLeftClick(WarriorSwing1, WarriorSwing2, WarriorSwing3)
-    end
+    local heldItemIsSword = string.find(player:getHeldItem().id, "sword")
 
-    if (player:getSwingTime() == 1 and weaponClass == "Mage/Dark Wizard") then
-        AnimPunch:stop()
-        AnimMine:stop()
-        CheckAnimToPlayLeftClick(MageSwing1, MageSwing2, MageSwing3)
-    end
+    if (player:getSwingTime() == 1) then
+        -- Dont punch while holding a weapon
+        if (weaponClass ~= nil or heldItemIsSword) then
+            AnimPunch:stop()
+            AnimMine:stop()
+        end
 
-    if (player:getSwingTime() == 1 and (weaponClass == "Assassin/Ninja" or string.find(player:getHeldItem().id, "sword"))) then
-        AnimPunch:stop()
-        AnimMine:stop()
-        CheckAnimToPlayLeftClick(AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4, currSwing)
-        currSwing = currSwing + 1
-        if (currSwing > 3) then
-            currSwing = 1
+        if ((AnimCombatReady:isPlaying() or currSwing == 1) and
+            weaponClass == "Warrior/Knight") then
+            currSwing = CheckAnimToPlayLeftClick({WarriorSwing1, WarriorSwing2, WarriorSwing3}, 3, currSwing)
+        end
+
+        if ((AnimCombatReady:isPlaying() or currSwing == 1) and
+            weaponClass == "Mage/Dark Wizard") then
+            currSwing = CheckAnimToPlayLeftClick({MageSwing1, MageSwing2, MageSwing3}, 3, currSwing)
+        end
+
+        if ((AnimCombatReady:isPlaying() or currSwing == 1) and
+            (weaponClass == "Assassin/Ninja" or heldItemIsSword)) then
+            currSwing = CheckAnimToPlayLeftClick({AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4}, 4, currSwing)
+        end
+
+        if ((AnimCombatReady:isPlaying() or currSwing == 1) and
+            weaponClass == "Shaman/Skyseer") then
+            currSwing = CheckAnimToPlayLeftClick({ShamanSwing}, 1, currSwing)
         end
     end
 
-    if (player:getSwingTime() == 1 and weaponClass == "Shaman/Skyseer") then
-        AnimPunch:stop()
-        AnimMine:stop()
-        CheckAnimToPlayLeftClick(ShamanSwing)
+    -- Reset attack combo when not swinging
+    if (not AnimCombatReady:isPlaying() and not isCustomSwinging()) then
+        currSwing = 1
     end
-
-    if (player:getSwingTime() == 1 and (weaponClass ~= nil or string.find(player:getHeldItem().id, "sword"))) then
-        readyStarted = false
-        readyState = true
-    end
-
-    -- Combat Ready Idle --------------------------------------------------------
-
-    -- if (readyState) then
-    --     if (not readyStarted) then
-    --         readyStartTime = client:getSystemTime() / 1000
-    --         readyStarted = true
-    --         -- animModel:setState("toggle")
-    --     end
-    --     readyTimer = (client:getSystemTime() / 1000 - readyStartTime)
-
-    --     if (readyTimer > 5) then
-    --         readyState = false
-    --         readyStarted = false
-    --         readyTimer = 0
-    --         -- animModel:setState()
-    --     end
-    -- end
 
     -- Idling -------------------------------------------------------------------
     if (idleAnimations) then
