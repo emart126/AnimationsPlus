@@ -202,9 +202,9 @@ WarriorSwing3:setBlendTime(1)
 MageSwing1 = animations.model["Wand_Wave_1"]
 MageSwing2 = animations.model["Wand_Wave_2"]
 MageSwing3 = animations.model["Wand_Wave_3"]
-MageSwing1:setBlendTime(1)
-MageSwing2:setBlendTime(1)
-MageSwing3:setBlendTime(1)
+MageSwing1:setBlendTime(3, 7)
+MageSwing2:setBlendTime(3, 6.5)
+MageSwing3:setBlendTime(3, 6.5)
 
 -- Assassin -----
 AssassinSwing1 = animations.model["Sword_Swing_1"]
