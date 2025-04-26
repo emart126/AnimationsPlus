@@ -15,7 +15,7 @@ anims:setOneJump(true)
 local animModel = anims:addBBModel(animations.model)
 animModel:setBlendTimes(2,2)
 animModel:addExcluOverrider(animations.model["freeFall"])
-animModel:addIncluOverrider(animations.model["Taunt_2"], animations.model["Taunt_3"])
+animModel:addIncluOverrider(animations.model["Bow_Shoot"], animations.model["Cross_Shoot"], animations.model["Taunt_2"], animations.model["Taunt_3"])
 
 -- Hide vanilla model
 vanilla_model.PLAYER:setVisible(false)
@@ -61,6 +61,11 @@ local climbBlendOutRot
 local blendClimbTop = false
 local climbTopBlendInRot
 local climbTopBlendOutRot
+
+local holdingBow
+local oldHoldingBow
+local isHoldingLoadedCross
+local oldIsHoldingLoadedCross
 
 local currSwing = 1
 
@@ -176,9 +181,6 @@ AnimPunch = animations.model["attackR"]
 AnimPunch:setBlendTime(1, 2.5)
 AnimMine = animations.model["mineR"]
 AnimMine:setBlendTime(1)
-AnimBowShootHold = animations.model["bowR"]
-AnimCrossBowLoad = animations.model["loadR"]
-AnimCrossBowHold = animations.model["crossR"]
 AnimShieldR = animations.model["blockR"]
 AnimShieldR:setBlendCurve("easeInOutSine")
 AnimShieldL = animations.model["blockL"]
@@ -232,7 +234,21 @@ ShamanSwing:setBlendTime(1)
 
 -- Archer -------
 ArcherShoot = animations.model["Bow_Shoot"]
-ArcherShoot:setBlendTime(1)
+ArcherShoot:setBlendTime(1, 4.5)
+ArcherShoot:setBlendCurve("easeOutSine")
+AnimBowShootHold = animations.model["bowR"]
+AnimBowShootHold:setBlendTime(3,1)
+AnimBowShootHold:setBlendCurve("easeInSine")
+
+AnimCrossBowLoad = animations.model["loadR"]
+AnimCrossBowLoad:setBlendTime(10,3)
+AnimCrossBowLoad:setBlendCurve("easeInOutSine")
+AnimCrossBowHold = animations.model["crossR"]
+AnimCrossBowHold:setBlendTime(3,0)
+AnimCrossBowHold:setBlendCurve("easeInSine")
+AnimCrossBowShoot = animations.model["Cross_Shoot"]
+AnimCrossBowShoot:setBlendTime(0, 4.5)
+AnimCrossBowShoot:setBlendCurve("easeOutSine")
 
 -- Wynncraft Spells -------------------------------------------------
 -- R1, L2, R3 = s1
@@ -505,6 +521,19 @@ function events.tick() --=======================================================
     if (not AnimCombatReady:isPlaying() and not isCustomSwinging()) then
         currSwing = 1
     end
+
+    -- Bow Shooting -------------------------------------------------------------
+    holdingBow = player:getActiveItem():getUseAction() == "BOW"
+    if (oldHoldingBow ~= nil and holdingBow == false and holdingBow ~= oldHoldingBow) then
+        ArcherShoot:play()
+    end
+    oldHoldingBow = holdingBow
+
+    isHoldingLoadedCross = AnimCrossBowHold:isPlaying()
+    if (oldIsHoldingLoadedCross ~= nil and isHoldingLoadedCross == false and isHoldingLoadedCross ~= oldIsHoldingLoadedCross) then
+        AnimCrossBowShoot:play()
+    end
+    oldIsHoldingLoadedCross = isHoldingLoadedCross
 
     -- Idling -------------------------------------------------------------------
     if (idleAnimations) then
