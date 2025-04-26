@@ -1,7 +1,7 @@
 -- ///////////////////////////////////////////////////////////////// --
 --                          Wynn Extra Bends
 --                              Vance568
---                               v1.2-dev
+--                               v1.3-dev
 --
 --   Helper Library Authors: Jimmy H., GrandpaScout, Squishy, Katt962
 -- ///////////////////////////////////////////////////////////////// --
@@ -61,11 +61,6 @@ local climbBlendOutRot
 local blendClimbTop = false
 local climbTopBlendInRot
 local climbTopBlendOutRot
-
-local readyTimer = 0
-local readyStartTime = 0
-local readyState = false
-local readyStarted = false
 
 local currSwing = 1
 
@@ -194,17 +189,29 @@ AnimCombatReady = animations.model["combatReady"]
 WarriorSwing1 = animations.model["Spear_Swing_1"]
 WarriorSwing2 = animations.model["Spear_Swing_2"]
 WarriorSwing3 = animations.model["Spear_Swing_3"]
-WarriorSwing1:setBlendTime(1)
-WarriorSwing2:setBlendTime(1)
-WarriorSwing3:setBlendTime(1)
+WarriorSwing1:setBlendTime(3,7)
+WarriorSwing1:setBlendCurve("easeInOutSine")
+WarriorSwing2:setBlendTime(4,7)
+WarriorSwing2:setBlendCurve("easeInOutSine")
+WarriorSwing3:setBlendTime(3,7)
+WarriorSwing3:setBlendCurve("easeOutSine")
+
+-- UNUSED Version
+-- WarriorSwing2:setBlendTime(4,5.5)
+-- -- WarriorSwing2:setBlendCurve("easeInOutSine")
+-- WarriorSwing3:setBlendTime(3,5)
+-- -- WarriorSwing3:setBlendCurve("easeOutSine")
 
 -- Mage ---------
 MageSwing1 = animations.model["Wand_Wave_1"]
 MageSwing2 = animations.model["Wand_Wave_2"]
 MageSwing3 = animations.model["Wand_Wave_3"]
 MageSwing1:setBlendTime(3, 7)
+MageSwing1:setBlendCurve("easeInOutSine")
 MageSwing2:setBlendTime(3, 6.5)
+MageSwing2:setBlendCurve("easeInOutSine")
 MageSwing3:setBlendTime(3, 6.5)
+MageSwing3:setBlendCurve("easeInOutSine")
 
 -- Assassin -----
 AssassinSwing1 = animations.model["Sword_Swing_1"]
