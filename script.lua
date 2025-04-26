@@ -234,7 +234,7 @@ ShamanSwing:setBlendTime(1)
 
 -- Archer -------
 ArcherShoot = animations.model["Bow_Shoot"]
-ArcherShoot:setBlendTime(1, 4.5)
+ArcherShoot:setBlendTime(2, 4.5)
 ArcherShoot:setBlendCurve("easeOutSine")
 AnimBowShootHold = animations.model["bowR"]
 AnimBowShootHold:setBlendTime(3,1)
