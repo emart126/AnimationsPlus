@@ -178,9 +178,11 @@ AnimTaunt4:setBlendTime(2, 4)
 -- Attacks ----------------------------------------------------------
 
 AnimPunch = animations.model["attackR"]
-AnimPunch:setBlendTime(1, 2.5)
+AnimPunch:setBlendTime(1, 4)
+AnimPunch:setBlendCurve("easeInOutSine")
 AnimMine = animations.model["mineR"]
 AnimMine:setBlendTime(1)
+AnimMine:setBlendCurve("easeInOutSine")
 AnimShieldR = animations.model["blockR"]
 AnimShieldR:setBlendCurve("easeInOutSine")
 AnimShieldL = animations.model["blockL"]
@@ -541,6 +543,22 @@ function events.tick() --=======================================================
         AnimCrossBowShoot:play()
     end
     oldIsHoldingLoadedCross = isHoldingLoadedCross
+
+    -- Mining Tools -------------------------------------------------------------
+    local heldItemIsPickaxe = string.find(player:getHeldItem().id, "_pickaxe") ~= nil
+    local heldItemIsAxe = string.find(player:getHeldItem().id, "_axe") ~= nil
+    local heldItemIsShovel = string.find(player:getHeldItem().id, "_shovel") ~= nil
+    local heldItemIsHoe = string.find(player:getHeldItem().id, "_hoe") ~= nil
+    local heldItemIsFishingRod = string.find(player:getHeldItem().id, "fishing_rod") ~= nil
+    local isFishing = player:isFishing()
+
+    if (player:getSwingTime() == 1) then
+        -- print(heldItemIsPickaxe, heldItemIsAxe, heldItemIsShovel, heldItemIsHoe, heldItemIsFishingRod)
+        if (heldItemIsPickaxe or heldItemIsAxe or heldItemIsShovel or heldItemIsHoe or heldItemIsFishingRod) then
+            AnimPunch:stop()
+            AnimMine:stop()
+        end
+    end
 
     -- Idling -------------------------------------------------------------------
     if (idleAnimations) then
