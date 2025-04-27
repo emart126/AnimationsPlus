@@ -229,8 +229,15 @@ AssassinSwing3:setBlendCurve("easeInOutSine")
 AssassinSwing4:setBlendTime(3, 5.5)
 
 -- Shaman -------
-ShamanSwing = animations.model["Relik_Strike"]
-ShamanSwing:setBlendTime(1)
+ShamanSwing1 = animations.model["Relik_Strike_1"]
+ShamanSwing2 = animations.model["Relik_Strike_2"]
+ShamanSwing3 = animations.model["Relik_Strike_3"]
+ShamanSwing1:setBlendTime(1, 7)
+ShamanSwing1:setBlendCurve("easeInOutSine")
+ShamanSwing2:setBlendTime(3, 6.5)
+ShamanSwing2:setBlendCurve("easeInOutSine")
+ShamanSwing3:setBlendTime(3, 6.5)
+ShamanSwing3:setBlendCurve("easeInOutSine")
 
 -- Archer -------
 ArcherShoot = animations.model["Bow_Shoot"]
@@ -382,8 +389,8 @@ local function isCustomSwinging()
         AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4,
         WarriorSwing1, WarriorSwing2, WarriorSwing3,
         MageSwing1, MageSwing2, MageSwing3,
-        ArcherShoot,
-        ShamanSwing
+        ShamanSwing1, ShamanSwing2, ShamanSwing3,
+        ArcherShoot
     }
     for i = 1, #swingAnimations do
         if (swingAnimations[i]:isPlaying()) then
@@ -513,7 +520,7 @@ function events.tick() --=======================================================
 
         if ((AnimCombatReady:isPlaying() or currSwing == 1) and
             weaponClass == "Shaman/Skyseer") then
-            currSwing = CheckAnimToPlayLeftClick({ShamanSwing}, 1, currSwing)
+            currSwing = CheckAnimToPlayLeftClick({ShamanSwing1, ShamanSwing2, ShamanSwing3}, 3, currSwing)
         end
     end
 
