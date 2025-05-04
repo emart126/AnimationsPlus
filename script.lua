@@ -14,8 +14,6 @@ local anims = require("EZAnims")
 anims:setOneJump(true)
 local animModel = anims:addBBModel(animations.model)
 animModel:setBlendTimes(2,2)
-animModel:addExcluOverrider(animations.model["freeFall"])
-animModel:addIncluOverrider(animations.model["Bow_Shoot"], animations.model["Cross_Shoot"], animations.model["Taunt_2"], animations.model["Taunt_3"])
 
 -- Hide vanilla model
 vanilla_model.PLAYER:setVisible(false)
@@ -107,24 +105,31 @@ pModel:setPrimaryTexture("SKIN")
 
 -- Basic Action Animations ==============================================================================
 AnimIdle = animations.model["idling"]
-AnimReady = animations.model["toggleidling"]
-AnimReady:setBlendTime(2, 3.5)
+AnimIdle:setBlendCurve("easeInOutSine")
 AnimIdling1 = animations.model["Idle_1"]
 AnimIdling1:setBlendTime(2, 4)
+AnimIdling1:setBlendCurve("easeInOutSine")
 AnimIdling2 = animations.model["Idle_2"]
 AnimIdling2:setBlendTime(2, 4)
+AnimIdling2:setBlendCurve("easeInOutSine")
 AnimIdling3 = animations.model["Idle_3"]
 AnimIdling3:setBlendTime(2, 4)
+AnimIdling3:setBlendCurve("easeInOutSine")
 
 AnimWalk = animations.model["walking"]
+AnimWalk:setBlendCurve("easeInOutSine")
 AnimCrouching = animations.model["crouching"]
 AnimCrouching:setBlendTime(4)
+AnimCrouching:setBlendCurve("easeInOutSine")
 AnimUnCrouchJUp = animations.model["crouchjumpup"]
 AnimUnCrouchJUp:setBlendTime(4)
+AnimUnCrouchJUp:setBlendCurve("easeInOutSine")
 AnimCrouchJDown = animations.model["crouchjumpdown"]
 AnimCrouchJDown:setBlendTime(5)
+AnimCrouchJDown:setBlendCurve("easeInOutSine")
 AnimCrouchWalk = animations.model["crouchwalk"]
 AnimCrouchWalk:setBlendTime(4)
+AnimCrouchWalk:setBlendCurve("easeInOutSine")
 
 AnimCrawl = animations.model["crawlstill"]
 AnimCrawling = animations.model["crawling"]
@@ -153,7 +158,8 @@ AnimSprintJumpDown = animations.model["sprintjumpdown"]
 AnimSprintJumpDown:setBlendTime(6.5, 3)
 
 AnimShortFalling = animations.model["Fall_0"]
-AnimShortFalling:setBlendTime(2)
+AnimShortFalling:setBlendTime(5, 2)
+AnimShortFalling:setBlendCurve("easeInOutSine")
 AnimFreeFalling = animations.model["freeFall"]
 AnimFreeFalling:setBlendTime(4, 3)
 AnimLand = animations.model["land"]
@@ -259,6 +265,18 @@ AnimCrossBowHold:setBlendCurve("easeInSine")
 AnimCrossBowShoot = animations.model["Cross_Shoot"]
 AnimCrossBowShoot:setBlendTime(0, 4.5)
 AnimCrossBowShoot:setBlendCurve("easeOutSine")
+
+-- Animation overrides ----------------------------------------------
+animModel:addExcluOverrider(
+    AnimFreeFalling,
+    AnimShortFalling
+)
+animModel:addIncluOverrider(
+    -- animations.model["Bow_Shoot"],
+    -- animations.model["Cross_Shoot"]
+    -- animations.model["Taunt_2"],
+    -- animations.model["Taunt_3"]
+)
 
 -- Wynncraft Spells -------------------------------------------------
 -- R1, L2, R3 = s1
@@ -670,7 +688,7 @@ function events.render(delta, context) --=======================================
 
     -- Short Fall condition -----------------------------------------------------
     if (host:isHost()) then
-        if (player:getVelocity().y < 0 and AnimWalk:isPlaying()) then
+        if (player:getVelocity().y < 0 and (AnimWalk:isPlaying() or AnimShortFalling:isPlaying())) then
             AnimShortFalling:play()
         else
             AnimShortFalling:stop()
