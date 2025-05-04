@@ -4,8 +4,8 @@ This figura avatar makes any normal Minecraft player avatar have\
 arm and leg limbs and adds numerous animations that replace\
 the normal Minecraft animations. The avatar applies limbs to any\
 skin and works for slim variants. This avatar was made using\
-Figura versions 0.1.4, 0.1.5\
-Now works with Minecraft version 1.20 and 1.21
+Figura versions 0.1.5b\
+Now works with Minecraft version 1.21.4
 
 ![MovementAnimationDemo](https://github.com/user-attachments/assets/db5ce548-367c-4188-acb3-4aa0462b2acc)
 ![LadderAnimationDemo](https://github.com/user-attachments/assets/8e72db40-01ff-431d-a1f5-9468fbbac533)
@@ -56,7 +56,7 @@ such as enabling/disabling weapon holstering and idle animations
 
 ### Credits
 Main Programming: Vance568\
-Animations: Kazarov\
+Animations: Kazarov, Vance568\
 Helper Library Help:\
 Jimmy H. ("JimmyAnims" Library for Animation Handling)\
 GrandpaScout ("GSAnimBlend" Library for Animation Blending)\
