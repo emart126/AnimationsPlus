@@ -64,6 +64,7 @@ local climbTopBlendOutRot
 
 local holdingBow
 local oldHoldingBow
+local isHoldingCrossBow
 local isHoldingLoadedCross
 local oldIsHoldingLoadedCross
 
@@ -253,7 +254,7 @@ AnimCrossBowLoad = animations.model["loadR"]
 AnimCrossBowLoad:setBlendTime(10,3)
 AnimCrossBowLoad:setBlendCurve("easeInOutSine")
 AnimCrossBowHold = animations.model["crossR"]
-AnimCrossBowHold:setBlendTime(3,0)
+AnimCrossBowHold:setBlendTime(4,0)
 AnimCrossBowHold:setBlendCurve("easeInSine")
 AnimCrossBowShoot = animations.model["Cross_Shoot"]
 AnimCrossBowShoot:setBlendTime(0, 4.5)
@@ -539,7 +540,8 @@ function events.tick() --=======================================================
     oldHoldingBow = holdingBow
 
     isHoldingLoadedCross = AnimCrossBowHold:isPlaying()
-    if (oldIsHoldingLoadedCross ~= nil and isHoldingLoadedCross == false and isHoldingLoadedCross ~= oldIsHoldingLoadedCross) then
+    isHoldingCrossBow = string.find(player:getHeldItem().id, "crossbow") ~= nil
+    if (oldIsHoldingLoadedCross ~= nil and isHoldingCrossBow and isHoldingLoadedCross == false and isHoldingLoadedCross ~= oldIsHoldingLoadedCross) then
         AnimCrossBowShoot:play()
     end
     oldIsHoldingLoadedCross = isHoldingLoadedCross
