@@ -245,7 +245,7 @@ ShamanSwing1:setBlendTime(1, 7)
 ShamanSwing1:setBlendCurve("easeInOutSine")
 ShamanSwing2:setBlendTime(3, 6.5)
 ShamanSwing2:setBlendCurve("easeInOutSine")
-ShamanSwing3:setBlendTime(3, 6.5)
+ShamanSwing3:setBlendTime(3, 8)
 ShamanSwing3:setBlendCurve("easeInOutSine")
 
 -- Archer -------
@@ -515,6 +515,7 @@ function events.tick() --=======================================================
     -- Handle Custom Attacking --------------------------------------------------
 
     local heldItemIsSword = string.find(player:getHeldItem().id, "sword")
+    local readyToSwing = AnimCombatReady:isPlaying() or currSwing == 1
 
     if (player:getSwingTime() == 1) then
         -- Dont punch while holding a weapon
@@ -523,22 +524,22 @@ function events.tick() --=======================================================
             AnimMine:stop()
         end
 
-        if ((AnimCombatReady:isPlaying() or currSwing == 1) and
+        if ((readyToSwing) and
             weaponClass == "Warrior/Knight") then
             currSwing = CheckAnimToPlayLeftClick({WarriorSwing1, WarriorSwing2, WarriorSwing3}, 3, currSwing)
         end
 
-        if ((AnimCombatReady:isPlaying() or currSwing == 1) and
+        if ((readyToSwing) and
             weaponClass == "Mage/Dark Wizard") then
             currSwing = CheckAnimToPlayLeftClick({MageSwing1, MageSwing2, MageSwing3}, 3, currSwing)
         end
 
-        if ((AnimCombatReady:isPlaying() or currSwing == 1) and
+        if ((readyToSwing) and
             (weaponClass == "Assassin/Ninja" or heldItemIsSword)) then
             currSwing = CheckAnimToPlayLeftClick({AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4}, 4, currSwing)
         end
 
-        if ((AnimCombatReady:isPlaying() or currSwing == 1) and
+        if ((readyToSwing) and
             weaponClass == "Shaman/Skyseer") then
             currSwing = CheckAnimToPlayLeftClick({ShamanSwing1, ShamanSwing2, ShamanSwing3}, 3, currSwing)
         end
@@ -548,6 +549,13 @@ function events.tick() --=======================================================
     if (not AnimCombatReady:isPlaying() and not isCustomSwinging()) then
         currSwing = 1
     end
+
+    local isSwinging = isCustomSwinging()
+    -- print(isSwinging and 1 or 0)
+    -- AssassinSwing1:setPriority(isSwinging and 1 or 0)
+    -- AssassinSwing2:setPriority(isSwinging and 1 or 0)
+    -- AssassinSwing3:setPriority(isSwinging and 1 or 0)
+    -- AssassinSwing4:setPriority(isSwinging and 1 or 0)
 
     -- Bow Shooting -------------------------------------------------------------
     holdingBow = player:getActiveItem():getUseAction() == "BOW"
