@@ -495,7 +495,6 @@ function events.tick() --=======================================================
     -- Item Use Priority --------------------------------------------------------
     AnimBowShootHold:setPriority(player:isUsingItem() and 1 or 0)
     AnimCrossBowLoad:setPriority(player:isUsingItem() and 1 or 0)
-    AnimCrossBowHold:setPriority((player:isUsingItem()) and 1 or 0)
     AnimShieldL:setPriority((player:isUsingItem()) and 1 or 0)
     AnimShieldR:setPriority((player:isUsingItem()) and 1 or 0)
 
@@ -559,6 +558,7 @@ function events.tick() --=======================================================
 
     isHoldingLoadedCross = AnimCrossBowHold:isPlaying()
     isHoldingCrossBow = string.find(player:getHeldItem().id, "crossbow") ~= nil
+    AnimCrossBowHold:setPriority(isHoldingLoadedCross and 1 or 0)
     if (oldIsHoldingLoadedCross ~= nil and isHoldingCrossBow and isHoldingLoadedCross == false and isHoldingLoadedCross ~= oldIsHoldingLoadedCross) then
         AnimCrossBowShoot:play()
     end
