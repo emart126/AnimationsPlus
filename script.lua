@@ -494,7 +494,7 @@ function events.tick() --=======================================================
 
     -- Item Use Priority --------------------------------------------------------
     AnimBowShootHold:setPriority(player:isUsingItem() and 1 or 0)
-    AnimCrossBowLoad:setPriority(player:isUsingItem() and 1 or 0)
+    AnimCrossBowLoad:setPriority(player:isUsingItem() and 2 or 1)
     AnimShieldL:setPriority((player:isUsingItem()) and 1 or 0)
     AnimShieldR:setPriority((player:isUsingItem()) and 1 or 0)
 
