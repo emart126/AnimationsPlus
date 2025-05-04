@@ -166,6 +166,8 @@ AnimLand = animations.model["land"]
 AnimLand:setBlendTime(1)
 
 AnimSprint = animations.model["sprinting"]
+AnimSprint:setBlendTime(2, 2)
+AnimSprint:setBlendCurve("easeInOutSine")
 
 AnimSit = animations.model["sitpass"]
 AnimHorseSit = animations.model["sitting"]
@@ -182,17 +184,28 @@ AnimTaunt2b:setBlendTime(2, 4)
 AnimTaunt3:setBlendTime(2, 4)
 AnimTaunt4:setBlendTime(2, 4)
 
+-- Tools ------------------------------------------------------------
+
+AnimPickaxe1 = animations.model["pickaxe_1"]
+AnimPickaxe1:setBlendTime(2, 7)
+AnimPickaxe1:setBlendCurve("easeInOutSine")
+AnimPickaxe2 = animations.model["pickaxe_2"]
+AnimPickaxe2:setBlendTime(2, 7)
+AnimPickaxe2:setBlendCurve("easeInOutSine")
+
 -- Attacks ----------------------------------------------------------
 
 AnimPunch = animations.model["attackR"]
 AnimPunch:setBlendTime(1, 4)
 AnimPunch:setBlendCurve("easeInOutSine")
 AnimMine = animations.model["mineR"]
-AnimMine:setBlendTime(1)
+AnimMine:setBlendTime(1, 5)
 AnimMine:setBlendCurve("easeInOutSine")
 AnimShieldR = animations.model["blockR"]
+AnimShieldR:setBlendTime(2, 3)
 AnimShieldR:setBlendCurve("easeInOutSine")
 AnimShieldL = animations.model["blockL"]
+AnimShieldL:setBlendTime(2, 3)
 AnimShieldL:setBlendCurve("easeInOutSine")
 AnimCombatReady = animations.model["combatReady"]
 
@@ -411,7 +424,8 @@ local function isCustomSwinging()
         WarriorSwing1, WarriorSwing2, WarriorSwing3,
         MageSwing1, MageSwing2, MageSwing3,
         ShamanSwing1, ShamanSwing2, ShamanSwing3,
-        ArcherShoot
+        ArcherShoot,
+        AnimPickaxe1, AnimPickaxe2
     }
     for i = 1, #swingAnimations do
         if (swingAnimations[i]:isPlaying()) then
@@ -581,10 +595,20 @@ function events.tick() --=======================================================
     local isFishing = player:isFishing()
 
     if (player:getSwingTime() == 1) then
-        -- print(heldItemIsPickaxe, heldItemIsAxe, heldItemIsShovel, heldItemIsHoe, heldItemIsFishingRod)
         if (heldItemIsPickaxe or heldItemIsAxe or heldItemIsShovel or heldItemIsHoe or heldItemIsFishingRod) then
             AnimPunch:stop()
             AnimMine:stop()
+        end
+
+        if (readyToSwing and heldItemIsPickaxe) then
+            if (not AnimPickaxe1:isPlaying()) then
+                AnimPickaxe1:play()
+                AnimPickaxe2:stop()
+                currSwing = 2
+            else
+                AnimPickaxe1:stop()
+                AnimPickaxe2:play()
+            end
         end
     end
 
