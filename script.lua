@@ -200,6 +200,13 @@ AnimAxe2 = animations.model["axe_2"]
 AnimAxe2:setBlendTime(3, 5)
 AnimAxe2:setBlendCurve("easeInOutSine")
 
+AnimHoe1 = animations.model["hoe_1"]
+AnimHoe1:setBlendTime(2, 5)
+AnimHoe1:setBlendCurve("easeInOutSine")
+AnimHoe2 = animations.model["hoe_2"]
+AnimHoe2:setBlendTime(2, 5)
+AnimHoe2:setBlendCurve("easeInOutSine")
+
 -- Attacks ----------------------------------------------------------
 
 AnimPunch = animations.model["attackR"]
@@ -433,7 +440,8 @@ local function isCustomSwinging()
         ShamanSwing1, ShamanSwing2, ShamanSwing3,
         ArcherShoot,
         AnimPickaxe1, AnimPickaxe2,
-        AnimAxe1, AnimAxe2
+        AnimAxe1, AnimAxe2,
+        AnimHoe1, AnimHoe2
     }
     for i = 1, #swingAnimations do
         if (swingAnimations[i]:isPlaying()) then
@@ -628,6 +636,17 @@ function events.tick() --=======================================================
             else
                 AnimAxe1:stop()
                 AnimAxe2:play()
+            end
+        end
+
+        if (readyToSwing and heldItemIsHoe) then
+            if (not AnimHoe1:isPlaying()) then
+                AnimHoe1:play()
+                AnimHoe2:stop()
+                currSwing = 2
+            else
+                AnimHoe1:stop()
+                AnimHoe2:play()
             end
         end
     end
