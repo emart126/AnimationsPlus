@@ -193,6 +193,13 @@ AnimPickaxe2 = animations.model["pickaxe_2"]
 AnimPickaxe2:setBlendTime(2, 7)
 AnimPickaxe2:setBlendCurve("easeInOutSine")
 
+AnimAxe1 = animations.model["axe_1"]
+AnimAxe1:setBlendTime(3, 5)
+AnimAxe1:setBlendCurve("easeInOutSine")
+AnimAxe2 = animations.model["axe_2"]
+AnimAxe2:setBlendTime(3, 5)
+AnimAxe2:setBlendCurve("easeInOutSine")
+
 -- Attacks ----------------------------------------------------------
 
 AnimPunch = animations.model["attackR"]
@@ -425,7 +432,8 @@ local function isCustomSwinging()
         MageSwing1, MageSwing2, MageSwing3,
         ShamanSwing1, ShamanSwing2, ShamanSwing3,
         ArcherShoot,
-        AnimPickaxe1, AnimPickaxe2
+        AnimPickaxe1, AnimPickaxe2,
+        AnimAxe1, AnimAxe2
     }
     for i = 1, #swingAnimations do
         if (swingAnimations[i]:isPlaying()) then
@@ -565,6 +573,7 @@ function events.tick() --=======================================================
     end
 
     local isSwinging = isCustomSwinging()
+    -- print(AnimShieldR:getPriority())
     -- print(isSwinging and 1 or 0)
     -- AssassinSwing1:setPriority(isSwinging and 1 or 0)
     -- AssassinSwing2:setPriority(isSwinging and 1 or 0)
@@ -608,6 +617,17 @@ function events.tick() --=======================================================
             else
                 AnimPickaxe1:stop()
                 AnimPickaxe2:play()
+            end
+        end
+
+        if (readyToSwing and heldItemIsAxe) then
+            if (not AnimAxe1:isPlaying()) then
+                AnimAxe1:play()
+                AnimAxe2:stop()
+                currSwing = 2
+            else
+                AnimAxe1:stop()
+                AnimAxe2:play()
             end
         end
     end
