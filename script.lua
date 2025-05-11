@@ -17,6 +17,7 @@ animModel:setBlendTimes(2,2)
 
 -- Hide vanilla model
 vanilla_model.PLAYER:setVisible(false)
+vanilla_model.CAPE:setVisible(false)
 
 -- Global Variables =====================================================================================
 
@@ -80,6 +81,7 @@ local modelHead = pModel.Upper.head
 local modelMainBody = pModel.Upper
 local modelRightArm = pModel.Upper.body.Arms.Arm_R
 local modelLeftArm = pModel.Upper.body.Arms.Arm_L
+local modelCape = pModel.Upper.body.Cape
 
 -- Get model type
 function events.entity_init() --=====================================================================================================================
@@ -108,6 +110,7 @@ end
 
 -- Set players skin to their own skin
 pModel:setPrimaryTexture("SKIN")
+modelCape:setPrimaryTexture("Cape")
 
 -- Basic Action Animations ==============================================================================
 AnimIdle = animations.model["idling"]
