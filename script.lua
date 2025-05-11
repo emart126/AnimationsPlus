@@ -214,6 +214,16 @@ AnimHoe2 = animations.model["hoe_2"]
 AnimHoe2:setBlendTime(2, 5)
 AnimHoe2:setBlendCurve("easeInOutSine")
 
+AnimFishing1 = animations.model["fishing_1"]
+AnimFishing1:setBlendTime(2, 5)
+AnimFishing1:setBlendCurve("easeInOutSine")
+AnimFishing2 = animations.model["fishing_2"]
+AnimFishing2:setBlendTime(2, 5)
+AnimFishing2:setBlendCurve("easeInOutSine")
+AnimIsFishing = animations.model["is_fishing"]
+AnimIsFishing:setBlendTime(2, 2)
+AnimIsFishing:setBlendCurve("easeInOutSine")
+
 -- Attacks ----------------------------------------------------------
 
 AnimPunch = animations.model["attackR"]
@@ -449,7 +459,8 @@ local function isCustomSwinging()
         AnimPickaxe1, AnimPickaxe2,
         AnimAxe1, AnimAxe2,
         AnimHoe1, AnimHoe2,
-        AnimShovel1, AnimShovel2
+        AnimShovel1, AnimShovel2,
+        AnimFishing1, AnimFishing2, AnimIsFishing
     }
     for i = 1, #swingAnimations do
         if (swingAnimations[i]:isPlaying()) then
@@ -535,6 +546,7 @@ function events.tick() --=======================================================
     AnimCrossBowLoad:setPriority(player:isUsingItem() and 2 or 1)
     AnimShieldL:setPriority((player:isUsingItem()) and 1 or 0)
     AnimShieldR:setPriority((player:isUsingItem()) and 1 or 0)
+    -- AnimIsFishing:setPriority((player:isFishing()) and 1 or 0)
 
     -- Handle crouch model position ---------------------------------------------
     if (player:getPose() == "CROUCHING") then
@@ -666,6 +678,17 @@ function events.tick() --=======================================================
             else
                 AnimHoe1:stop()
                 AnimHoe2:play()
+            end
+        end
+
+        if (readyToSwing and heldItemIsFishingRod) then
+            if (not AnimFishing1:isPlaying()) then
+                AnimFishing1:play()
+                AnimFishing2:stop()
+                currSwing = 2
+            else
+                AnimFishing1:stop()
+                AnimFishing2:play()
             end
         end
     end
