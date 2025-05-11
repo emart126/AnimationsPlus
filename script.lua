@@ -66,6 +66,9 @@ local isHoldingCrossBow
 local isHoldingLoadedCross
 local oldIsHoldingLoadedCross
 
+local isFishing
+local oldIsFishing
+
 local currSwing = 1
 
 -- BlockBench model parts
@@ -215,13 +218,13 @@ AnimHoe2:setBlendTime(2, 5)
 AnimHoe2:setBlendCurve("easeInOutSine")
 
 AnimFishing1 = animations.model["fishing_1"]
-AnimFishing1:setBlendTime(2, 5)
+AnimFishing1:setBlendTime(3, 6)
 AnimFishing1:setBlendCurve("easeInOutSine")
 AnimFishing2 = animations.model["fishing_2"]
-AnimFishing2:setBlendTime(2, 5)
+AnimFishing2:setBlendTime(3, 6)
 AnimFishing2:setBlendCurve("easeInOutSine")
 AnimIsFishing = animations.model["is_fishing"]
-AnimIsFishing:setBlendTime(2, 2)
+AnimIsFishing:setBlendTime(6, 2)
 AnimIsFishing:setBlendCurve("easeInOutSine")
 
 -- Attacks ----------------------------------------------------------
@@ -629,7 +632,6 @@ function events.tick() --=======================================================
     local heldItemIsShovel = string.find(player:getHeldItem().id, "_shovel") ~= nil
     local heldItemIsHoe = string.find(player:getHeldItem().id, "_hoe") ~= nil
     local heldItemIsFishingRod = string.find(player:getHeldItem().id, "fishing_rod") ~= nil
-    local isFishing = player:isFishing()
 
     if (player:getSwingTime() == 1 and weaponClass == nil) then
         if (heldItemIsPickaxe or heldItemIsAxe or heldItemIsShovel or heldItemIsHoe or heldItemIsFishingRod) then
@@ -680,16 +682,31 @@ function events.tick() --=======================================================
                 AnimHoe2:play()
             end
         end
+    end
 
-        if (readyToSwing and heldItemIsFishingRod) then
-            if (not AnimFishing1:isPlaying()) then
-                AnimFishing1:play()
-                AnimFishing2:stop()
-                currSwing = 2
-            else
-                AnimFishing1:stop()
-                AnimFishing2:play()
-            end
+    -- Fishing ------------------------------------------------------------------
+    isFishing = player:isFishing()
+    if (heldItemIsFishingRod) then
+        if (isFishing and player:getSwingTime() ~= 1 and not AnimFishing1:isPlaying()) then
+            AnimIsFishing:play()
+        end
+    end
+
+    if (not isFishing and isFishing ~= oldIsFishing) then
+        AnimIsFishing:setPriority(0);
+        AnimIsFishing:stop()
+    end
+
+    oldIsFishing = isFishing
+
+    if (player:getSwingTime() == 1 and readyToSwing and heldItemIsFishingRod) then
+        if (isFishing) then
+            AnimFishing1:play()
+            AnimFishing2:stop()
+            currSwing = 2
+        else
+            AnimFishing2:play()
+            AnimFishing1:stop()
         end
     end
 
