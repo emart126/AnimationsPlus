@@ -632,11 +632,17 @@ function events.tick() --=======================================================
     oldIsHoldingLoadedCross = isHoldingLoadedCross
 
     -- Mining Tools -------------------------------------------------------------
-    local heldItemIsPickaxe = string.find(player:getHeldItem().id, "_pickaxe") ~= nil
-    local heldItemIsAxe = string.find(player:getHeldItem().id, "_axe") ~= nil
-    local heldItemIsShovel = string.find(player:getHeldItem().id, "_shovel") ~= nil
-    local heldItemIsHoe = string.find(player:getHeldItem().id, "_hoe") ~= nil
-    local heldItemIsFishingRod = string.find(player:getHeldItem().id, "fishing_rod") ~= nil
+    local heldItem = player:getHeldItem()
+    local heldItemIsMiningTool = (heldItem and string.find(heldItem:toStackString(), "Mining"))
+    local heldItemIsWoodcuttingTool = (heldItem and string.find(heldItem:toStackString(), "Woodcutting"))
+    local heldItemIsFarmingTool = (heldItem and string.find(heldItem:toStackString(), "Farming"))
+    local heldItemIsFishingTool = (heldItem and string.find(heldItem:toStackString(), "Fishing"))
+
+    local heldItemIsPickaxe = (string.find(player:getHeldItem().id, "_pickaxe") ~= nil or heldItemIsMiningTool)
+    local heldItemIsAxe = (string.find(player:getHeldItem().id, "_axe") ~= nil or heldItemIsWoodcuttingTool)
+    local heldItemIsShovel = (string.find(player:getHeldItem().id, "_shovel") ~= nil)
+    local heldItemIsHoe = (string.find(player:getHeldItem().id, "_hoe") ~= nil or heldItemIsFarmingTool)
+    local heldItemIsFishingRod = (string.find(player:getHeldItem().id, "fishing_rod") ~= nil or heldItemIsFishingTool)
 
     if (player:getSwingTime() == 1 and weaponClass == nil) then
         if (heldItemIsPickaxe or heldItemIsAxe or heldItemIsShovel or heldItemIsHoe or heldItemIsFishingRod) then
