@@ -200,6 +200,13 @@ AnimAxe2 = animations.model["axe_2"]
 AnimAxe2:setBlendTime(3, 5)
 AnimAxe2:setBlendCurve("easeInOutSine")
 
+AnimShovel1 = animations.model["shovel_1"]
+AnimShovel1:setBlendTime(3, 6)
+AnimShovel1:setBlendCurve("easeInOutSine")
+AnimShovel2 = animations.model["shovel_2"]
+AnimShovel2:setBlendTime(3, 6)
+AnimShovel2:setBlendCurve("easeInOutSine")
+
 AnimHoe1 = animations.model["hoe_1"]
 AnimHoe1:setBlendTime(2, 5)
 AnimHoe1:setBlendCurve("easeInOutSine")
@@ -441,7 +448,8 @@ local function isCustomSwinging()
         ArcherShoot,
         AnimPickaxe1, AnimPickaxe2,
         AnimAxe1, AnimAxe2,
-        AnimHoe1, AnimHoe2
+        AnimHoe1, AnimHoe2,
+        AnimShovel1, AnimShovel2
     }
     for i = 1, #swingAnimations do
         if (swingAnimations[i]:isPlaying()) then
@@ -636,6 +644,17 @@ function events.tick() --=======================================================
             else
                 AnimAxe1:stop()
                 AnimAxe2:play()
+            end
+        end
+
+        if (readyToSwing and heldItemIsShovel) then
+            if (not AnimShovel1:isPlaying()) then
+                AnimShovel1:play()
+                AnimShovel2:stop()
+                currSwing = 2
+            else
+                AnimShovel1:stop()
+                AnimShovel2:play()
             end
         end
 
