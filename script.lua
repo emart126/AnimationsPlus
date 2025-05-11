@@ -69,6 +69,9 @@ local oldIsHoldingLoadedCross
 local isFishing
 local oldIsFishing
 
+local isBoating
+local oldIsBoating
+
 local currSwing = 1
 
 -- BlockBench model parts
@@ -549,7 +552,6 @@ function events.tick() --=======================================================
     AnimCrossBowLoad:setPriority(player:isUsingItem() and 2 or 1)
     AnimShieldL:setPriority((player:isUsingItem()) and 1 or 0)
     AnimShieldR:setPriority((player:isUsingItem()) and 1 or 0)
-    -- AnimIsFishing:setPriority((player:isFishing()) and 1 or 0)
 
     -- Handle crouch model position ---------------------------------------------
     if (player:getPose() == "CROUCHING") then
@@ -779,7 +781,7 @@ function events.render(delta, context) --=======================================
     local climbing = player:isClimbing()
     local isGrounded = isOnGround(player)
     local sitting = player:getVehicle()
-    local ridingSeat = player:getVehicle() and (player:getVehicle():getType() == "minecraft:minecart" or player:getVehicle():getType() == "minecraft:boat")
+    local ridingSeat = sitting and (sitting:getType() == "minecraft:minecart" or string.find(sitting:getType(), "boat"))
 
     -- Is Action Wheel Open -----------------------------------------------------
     wheelCheck = action_wheel:isEnabled()
@@ -796,6 +798,18 @@ function events.render(delta, context) --=======================================
         pings.syncHeldItemIsWeapon(class)
     end
     oldWeaponClass = class
+
+    -- Boating ------------------------------------------------------------------
+    isBoating = sitting and string.find(sitting:getType(), "boat")
+    if (isBoating) then
+        AnimHorseSit:stop()
+        AnimHorseRiding:stop()
+        AnimSit:play()
+    elseif (not isBoating and isBoating ~= oldIsBoating) then
+        AnimSit:stop()
+    end
+
+    oldIsBoating = isBoating
 
     -- Spirnt Jumping -----------------------------------------------------------
     isSprintJup = AnimSprintJumpUp:isPlaying()
