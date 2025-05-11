@@ -631,7 +631,7 @@ function events.tick() --=======================================================
     local heldItemIsFishingRod = string.find(player:getHeldItem().id, "fishing_rod") ~= nil
     local isFishing = player:isFishing()
 
-    if (player:getSwingTime() == 1) then
+    if (player:getSwingTime() == 1 and weaponClass == nil) then
         if (heldItemIsPickaxe or heldItemIsAxe or heldItemIsShovel or heldItemIsHoe or heldItemIsFishingRod) then
             AnimPunch:stop()
             AnimMine:stop()
