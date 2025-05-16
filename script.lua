@@ -24,6 +24,8 @@ vanilla_model.CAPE:setVisible(false)
 -- Pinged/Synced Values
 local oldWeaponClass
 local weaponClass
+local oldToolItem
+local toolItem
 local isActionWheelOpen
 local wheelCheck
 local oldWheelCheck
@@ -294,7 +296,7 @@ AssassinSwing4:setBlendTime(3, 5.5)
 ShamanSwing1 = animations.model["Relik_Strike_1"]
 ShamanSwing2 = animations.model["Relik_Strike_2"]
 ShamanSwing3 = animations.model["Relik_Strike_3"]
-ShamanSwing1:setBlendTime(1, 7)
+ShamanSwing1:setBlendTime(2, 7)
 ShamanSwing1:setBlendCurve("easeInOutSine")
 ShamanSwing2:setBlendTime(3, 6.5)
 ShamanSwing2:setBlendCurve("easeInOutSine")
@@ -380,6 +382,11 @@ function pings.syncHeldItemIsWeapon(strClass)
     currSwing = 1
 end
 
+function pings.syncHeldItemIsTool(strClass)
+    toolItem = strClass
+    currSwing = 1
+end
+
 function pings.syncAcitonWheel(bool)
     isActionWheelOpen = bool
 end
@@ -453,6 +460,24 @@ local function CheckClassItem(item)
         return("Shaman/Skyseer")
     elseif (string.find(item, "Archer/Hunter") ~= nil) then
         return("Archer/Hunter")
+    end
+    return(nil)
+end
+
+-- Check if itemStack has tool identified with it
+local function CheckToolItem(item)
+    if (item == nil) then
+        return(nil)
+    end
+
+    if (string.find(item, "Mining") ~= nil) then
+        return("Mining")
+    elseif (string.find(item, "Woodcutting") ~= nil) then
+        return("Woodcutting")
+    elseif (string.find(item, "Farming") ~= nil) then
+        return("Farming")
+    elseif (string.find(item, "Fishing") ~= nil) then
+        return("Fishing")
     end
     return(nil)
 end
@@ -633,16 +658,16 @@ function events.tick() --=======================================================
 
     -- Mining Tools -------------------------------------------------------------
     local heldItem = player:getHeldItem()
-    local heldItemIsMiningTool = (heldItem and string.find(heldItem:toStackString(), "Mining"))
-    local heldItemIsWoodcuttingTool = (heldItem and string.find(heldItem:toStackString(), "Woodcutting"))
-    local heldItemIsFarmingTool = (heldItem and string.find(heldItem:toStackString(), "Farming"))
-    local heldItemIsFishingTool = (heldItem and string.find(heldItem:toStackString(), "Fishing"))
+    local heldItemIsMiningTool = (heldItem and toolItem == "Mining")
+    local heldItemIsWoodcuttingTool = (heldItem and toolItem == "Woodcutting")
+    local heldItemIsFarmingTool = (heldItem and toolItem == "Farming")
+    local heldItemIsFishingTool = (heldItem and toolItem == "Fishing")
 
-    local heldItemIsPickaxe = (string.find(player:getHeldItem().id, "_pickaxe") ~= nil or heldItemIsMiningTool)
-    local heldItemIsAxe = (string.find(player:getHeldItem().id, "_axe") ~= nil or heldItemIsWoodcuttingTool)
-    local heldItemIsShovel = (string.find(player:getHeldItem().id, "_shovel") ~= nil)
-    local heldItemIsHoe = (string.find(player:getHeldItem().id, "_hoe") ~= nil or heldItemIsFarmingTool)
-    local heldItemIsFishingRod = (string.find(player:getHeldItem().id, "fishing_rod") ~= nil or heldItemIsFishingTool)
+    local heldItemIsPickaxe = (string.find(heldItem.id, "_pickaxe") ~= nil or heldItemIsMiningTool)
+    local heldItemIsAxe = (string.find(heldItem.id, "_axe") ~= nil or heldItemIsWoodcuttingTool)
+    local heldItemIsShovel = (string.find(heldItem.id, "_shovel") ~= nil)
+    local heldItemIsHoe = (string.find(heldItem.id, "_hoe") ~= nil or heldItemIsFarmingTool)
+    local heldItemIsFishingRod = (string.find(heldItem.id, "fishing_rod") ~= nil or heldItemIsFishingTool)
 
     if (player:getSwingTime() == 1 and weaponClass == nil) then
         if (heldItemIsPickaxe or heldItemIsAxe or heldItemIsShovel or heldItemIsHoe or heldItemIsFishingRod) then
@@ -784,6 +809,8 @@ end
 function events.render(delta, context) --============================================================================================================================
 
     -- Player Conditions --------------------------------------------------------
+    local currItem = player:getHeldItem()
+    local currItemStack = currItem:toStackString()
     local swimming = player:isVisuallySwimming()
     local floating = player:isInWater()
     local walking = player:getVelocity().xz:length() > .001
@@ -800,13 +827,18 @@ function events.render(delta, context) --=======================================
     oldWheelCheck = wheelCheck
 
     -- Held Item Wynncraft Class ------------------------------------------------
-    local currItem = player:getHeldItem()
-    local currItemStack = currItem:toStackString()
     local class = CheckClassItem(currItemStack)
     if (class ~= oldWeaponClass) then
         pings.syncHeldItemIsWeapon(class)
     end
     oldWeaponClass = class
+
+    -- Held Item Wynncraft Tool -------------------------------------------------
+    local tool = CheckToolItem(currItemStack)
+    if (toolItem ~= oldToolItem) then
+        pings.syncHeldItemIsTool(tool)
+    end
+    oldToolItem = tool
 
     -- Boating ------------------------------------------------------------------
     isBoating = sitting and string.find(sitting:getType(), "boat")
