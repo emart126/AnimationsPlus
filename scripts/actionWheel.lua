@@ -1,16 +1,21 @@
+isActionWheelOpen = nil
+local wheelCheck
+local oldWheelCheck
 
-
--- Reset Idle tick
-local function ResetIdle()
-    idleTick = 0
-    AnimIdling1:stop()
-    AnimIdling2:stop()
-    AnimIdling3:stop()
-    AnimTaunt1:stop()
-    AnimTaunt3:stop()
-    AnimTaunt4:stop()
+function pings.syncAcitonWheel(bool)
+    isActionWheelOpen = bool
 end
 
+function events.render(delta, context)
+    -- Is Action Wheel Open ---------------------------------------------------
+    wheelCheck = action_wheel:isEnabled()
+    if (wheelCheck ~= oldWheelCheck) then
+        pings.syncAcitonWheel(wheelCheck)
+    end
+    oldWheelCheck = wheelCheck
+end
+
+-- Action Wheel Setting actions -----------------------------------------------
 function SheathWeapon(bool)
     sheathOption = bool
 end
@@ -21,6 +26,7 @@ function IdleAnimation(bool)
 end
 pings.actionIdleAnims = IdleAnimation
 
+-- Action Wheel Taunt actions
 function pings.taunt1Dance()
     if (not AnimTaunt1:isPlaying()) then
         ResetIdle()
@@ -74,6 +80,7 @@ function pings.taunt7Wait()
     end
 end
 
+-- Action Wheel Page Elements -------------------------------------------------
 local mainPage = action_wheel:newPage("Taunts")
 local settingPage = action_wheel:newPage("Settings")
 action_wheel:setPage(mainPage)

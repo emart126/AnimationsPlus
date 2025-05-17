@@ -22,7 +22,7 @@ local function GetRandIdleTick()
 end
 
 -- Reset Idle tick
-local function ResetIdle()
+function ResetIdle()
     idleTick = 0
     AnimIdling1:stop()
     AnimIdling2:stop()

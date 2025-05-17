@@ -1,7 +1,7 @@
 currSwing = 1
 
 oldWeaponClass = nil
-weaponClass = nil
+local weaponClass = nil
 oldToolItem = nil
 toolItem = nil
 
@@ -13,6 +13,44 @@ oldIsHoldingLoadedCross = nil
 
 isFishing = nil
 oldIsFishing = nil
+
+-- Check if itemStack has a class identified with it
+local function CheckClassItem(item)
+    if (item == nil) then
+        return(nil)
+    end
+
+    if (string.find(item, "Warrior/Knight") ~= nil) then
+        return("Warrior/Knight")
+    elseif (string.find(item, "Mage/Dark Wizard") ~= nil) then
+        return("Mage/Dark Wizard")
+    elseif (string.find(item, "Assassin/Ninja") ~= nil) then
+        return("Assassin/Ninja")
+    elseif (string.find(item, "Shaman/Skyseer") ~= nil) then
+        return("Shaman/Skyseer")
+    elseif (string.find(item, "Archer/Hunter") ~= nil) then
+        return("Archer/Hunter")
+    end
+    return(nil)
+end
+
+-- Check if itemStack has tool identified with it
+local function CheckToolItem(item)
+    if (item == nil) then
+        return(nil)
+    end
+
+    if (string.find(item, "Mining") ~= nil) then
+        return("Mining")
+    elseif (string.find(item, "Woodcutting") ~= nil) then
+        return("Woodcutting")
+    elseif (string.find(item, "Farming") ~= nil) then
+        return("Farming")
+    elseif (string.find(item, "Fishing") ~= nil) then
+        return("Fishing")
+    end
+    return(nil)
+end
 
 -- Check if swinging animation is playing 
 local function isCustomSwinging()
@@ -61,7 +99,37 @@ local function CheckAnimToPlayLeftClick(swingAnimations, numOfSwings, nextIndx)
     return nextIndx
 end
 
+function pings.syncHeldItemIsWeapon(strClass)
+    weaponClass = strClass
+    currSwing = 1
+end
+
+function pings.syncHeldItemIsTool(strClass)
+    toolItem = strClass
+    currSwing = 1
+end
+
+-- right-clicking detection =============================================================================
+local useKey = keybinds:of("Use",keybinds:getVanillaKey("key.use"))
+function pings.onRightClickDo()
+    ResetIdle()
+
+    if (not isActionWheelOpen) then
+        if (weaponClass == "Archer/Hunter") then
+            ArcherShoot:play()
+        end
+    end
+end
+useKey.press = pings.onRightClickDo
+
 function events.tick()
+
+    -- Item Use Priority --------------------------------------------------------
+    AnimBowShootHold:setPriority(player:isUsingItem() and 1 or 0)
+    AnimCrossBowLoad:setPriority(player:isUsingItem() and 2 or 1)
+    AnimShieldL:setPriority((player:isUsingItem()) and 1 or 0)
+    AnimShieldR:setPriority((player:isUsingItem()) and 1 or 0)
+
     -- Handle Custom Attacking --------------------------------------------------
     local heldItem = player:getHeldItem()
     local heldItemIsSword = string.find(heldItem.id, "sword")
@@ -92,6 +160,11 @@ function events.tick()
         if ((readyToSwing) and
             weaponClass == "Shaman/Skyseer") then
             currSwing = CheckAnimToPlayLeftClick({ShamanSwing1, ShamanSwing2, ShamanSwing3}, 3, currSwing)
+        end
+
+        if ((readyToSwing) and
+            weaponClass == "Archer/Hunter") then
+            AnimPunch:play()
         end
     end
 
@@ -211,4 +284,23 @@ function events.tick()
             AnimFishing1:stop()
         end
     end
+
+end
+
+function events.render(delta, context)
+
+    -- Held Item Wynncraft Class ------------------------------------------------
+    local class = CheckClassItem(player:getHeldItem():toStackString())
+    if (class ~= oldWeaponClass) then
+        pings.syncHeldItemIsWeapon(class)
+    end
+    oldWeaponClass = class
+
+    -- Held Item Wynncraft Tool -------------------------------------------------
+    local tool = CheckToolItem(player:getHeldItem():toStackString())
+    if (toolItem ~= oldToolItem) then
+        pings.syncHeldItemIsTool(tool)
+    end
+    oldToolItem = tool
+
 end
