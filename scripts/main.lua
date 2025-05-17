@@ -60,8 +60,10 @@ function events.tick() --=======================================================
     -- Handle crouch model position ---------------------------------------------
     if (player:getPose() == "CROUCHING") then
         pModel:setPos(0,2,0)
+        modelCape:setPos(0,2,0)
     else
         pModel:setPos(0,0,0)
+        modelCape:setPos(0,0,0)
     end
 
     -- Handle Helmet/Hat visibility ---------------------------------------------
