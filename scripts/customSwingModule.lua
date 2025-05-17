@@ -162,10 +162,6 @@ function events.tick()
             currSwing = CheckAnimToPlayLeftClick({ShamanSwing1, ShamanSwing2, ShamanSwing3}, 3, currSwing)
         end
 
-        if ((readyToSwing) and
-            weaponClass == "Archer/Hunter") then
-            AnimPunch:play()
-        end
     end
 
     -- Reset attack combo when not swinging
