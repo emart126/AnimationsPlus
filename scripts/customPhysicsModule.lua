@@ -2,7 +2,7 @@ require("scripts/blockbenchParts")
 local squapi = require("libraries/SquAPI")
 local squassets = require("libraries/SquAssets")
 
-squapi.smoothHead:new({modelHead, modelMainBody}, {0.6, 0.25}, 0.1, 1.75, false)
+squapi.smoothHead:new({ModelHead, ModelMainBody}, {0.6, 0.25}, 0.1, 1.75, false)
 
 local rArm = squassets.BERP:new()
 local lArm = squassets.BERP:new()
@@ -17,8 +17,8 @@ function events.render(delta, context)
     local headTarget
 
     -- Arm physics --------------------------------------------------------------
-    modelRightArm:setRot(0, 0, rArm.pos*2)
-    modelLeftArm:setRot(0, 0, -lArm.pos*2)
+    ModelRightArm:setRot(0, 0, rArm.pos*2)
+    ModelLeftArm:setRot(0, 0, -lArm.pos*2)
 	armTarget = -yvel * 80
     if (armTarget > 30) then
         armTarget = 30
@@ -35,7 +35,7 @@ function events.render(delta, context)
     end
 
     -- Head physics -------------------------------------------------------------
-    modelHead:setRot(head.pos*2, 0, 0)
+    ModelHead:setRot(head.pos*2, 0, 0)
     headTarget = -yvel * 20
     if (headTarget > 20) then
         headTarget = 20

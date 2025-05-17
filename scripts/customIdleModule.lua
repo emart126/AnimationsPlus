@@ -1,8 +1,8 @@
-idleAnimations = true; -- Idle animation Setting
+IdleAnimationSetting = true; -- Idle animation Setting
 
-idleTick = 0
-randTick = 400
-randAnim = nil
+local idleTick = 0
+local randTick = 400
+local randAnim = nil
 
 -- Is Player Taunting
 local function IsTaunting()
@@ -34,7 +34,7 @@ end
 
 function events.tick()
     -- Idling -------------------------------------------------------------------
-    if (idleAnimations) then
+    if (IdleAnimationSetting) then
         if (AnimIdle:isPlaying()) then
             idleTick = idleTick + 1
             if (idleTick == randTick) then

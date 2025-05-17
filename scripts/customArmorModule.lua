@@ -2,25 +2,25 @@ local kattArmor = require("libraries/KattArmor")()
 
 kattArmor.Armor.Helmet
     :addParts(
-        pModel.Upper.head.Helmet,
-        pModel.Upper.head.HelmetHat
+        PModel.Upper.head.Helmet,
+        PModel.Upper.head.HelmetHat
     )
 kattArmor.Armor.Chestplate
     :addParts(
-      pModel.Upper.body.Chestplate,
-      pModel.Upper.body.Arms.Arm_R.RightArmArmor,
-      pModel.Upper.body.Arms.Arm_L.LeftArmArmor
+      PModel.Upper.body.Chestplate,
+      PModel.Upper.body.Arms.Arm_R.RightArmArmor,
+      PModel.Upper.body.Arms.Arm_L.LeftArmArmor
     )
 kattArmor.Armor.Leggings
     :addParts(
-      pModel.Upper.body.Belt,
-      pModel.Lower.Leg_R.RightLeggingsArmor,
-      pModel.Lower.Leg_R.Knee_R.RightAnkleArmor,
-      pModel.Lower.Leg_L.LeftLeggingsArmor,
-      pModel.Lower.Leg_L.Knee_L.LeftAnkleArmor
+      PModel.Upper.body.Belt,
+      PModel.Lower.Leg_R.RightLeggingsArmor,
+      PModel.Lower.Leg_R.Knee_R.RightAnkleArmor,
+      PModel.Lower.Leg_L.LeftLeggingsArmor,
+      PModel.Lower.Leg_L.Knee_L.LeftAnkleArmor
     )
 kattArmor.Armor.Boots
     :addParts(
-      pModel.Lower.Leg_R.Knee_R.RightBootArmor,
-      pModel.Lower.Leg_L.Knee_L.LeftBootArmor
+      PModel.Lower.Leg_R.Knee_R.RightBootArmor,
+      PModel.Lower.Leg_L.Knee_L.LeftBootArmor
     )

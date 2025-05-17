@@ -1,18 +1,18 @@
-currSwing = 1
+local currSwing = 1
 
-oldWeaponClass = nil
+local oldWeaponClass = nil
 local weaponClass = nil
-oldToolItem = nil
-toolItem = nil
+local oldToolItem = nil
+local toolItem = nil
 
-holdingBow = nil
-oldHoldingBow = nil
-isHoldingCrossBow = nil
-isHoldingLoadedCross = nil
-oldIsHoldingLoadedCross = nil
+local holdingBow = nil
+local oldHoldingBow = nil
+local isHoldingCrossBow = nil
+local isHoldingLoadedCross = nil
+local oldIsHoldingLoadedCross = nil
 
-isFishing = nil
-oldIsFishing = nil
+local isFishing = nil
+local oldIsFishing = nil
 
 -- Check if itemStack has a class identified with it
 local function CheckClassItem(item)

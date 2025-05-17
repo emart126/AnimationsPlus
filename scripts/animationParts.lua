@@ -1,5 +1,6 @@
 local anims = require("libraries/EZAnims")
 anims:setOneJump(true)
+
 local animModel = anims:addBBModel(animations.model)
 animModel:setBlendTimes(2,2)
 
@@ -150,12 +151,6 @@ WarriorSwing2:setBlendTime(4,7)
 WarriorSwing2:setBlendCurve("easeInOutSine")
 WarriorSwing3:setBlendTime(3,7)
 WarriorSwing3:setBlendCurve("easeOutSine")
-
--- UNUSED Version
--- WarriorSwing2:setBlendTime(4,5.5)
--- -- WarriorSwing2:setBlendCurve("easeInOutSine")
--- WarriorSwing3:setBlendTime(3,5)
--- -- WarriorSwing3:setBlendCurve("easeOutSine")
 
 -- Mage ---------
 MageSwing1 = animations.model["Wand_Wave_1"]

@@ -27,30 +27,30 @@ function events.entity_init() --================================================
     vanilla_model.CAPE:setVisible(false)
 
     -- Set player textures
-    pModel:setPrimaryTexture("SKIN")
-    modelCape:setPrimaryTexture("CAPE")
+    PModel:setPrimaryTexture("SKIN")
+    ModelCape:setPrimaryTexture("CAPE")
 
     -- Set arm type
     if (player:getModelType() == "DEFAULT") then
-        modelLeftArm.Bicep_Default_L:setVisible(true)
-        modelLeftArm.Bicep_Slim_L:setVisible(false)
-        modelLeftArm.Elbow_L.Limb_Default_L:setVisible(true)
-        modelLeftArm.Elbow_L.Limb_Slim_L:setVisible(false)
+        ModelLeftArm.Bicep_Default_L:setVisible(true)
+        ModelLeftArm.Bicep_Slim_L:setVisible(false)
+        ModelLeftArm.Elbow_L.Limb_Default_L:setVisible(true)
+        ModelLeftArm.Elbow_L.Limb_Slim_L:setVisible(false)
 
-        modelRightArm.Bicep_Default_R:setVisible(true)
-        modelRightArm.Bicep_Slim_R:setVisible(false)
-        modelRightArm.Elbow_R.Limb_Default_R:setVisible(true)
-        modelRightArm.Elbow_R.Limb_Slim_R:setVisible(false)
+        ModelRightArm.Bicep_Default_R:setVisible(true)
+        ModelRightArm.Bicep_Slim_R:setVisible(false)
+        ModelRightArm.Elbow_R.Limb_Default_R:setVisible(true)
+        ModelRightArm.Elbow_R.Limb_Slim_R:setVisible(false)
     else
-        modelLeftArm.Bicep_Default_L:setVisible(false)
-        modelLeftArm.Bicep_Slim_L:setVisible(true)
-        modelLeftArm.Elbow_L.Limb_Default_L:setVisible(false)
-        modelLeftArm.Elbow_L.Limb_Slim_L:setVisible(true)
+        ModelLeftArm.Bicep_Default_L:setVisible(false)
+        ModelLeftArm.Bicep_Slim_L:setVisible(true)
+        ModelLeftArm.Elbow_L.Limb_Default_L:setVisible(false)
+        ModelLeftArm.Elbow_L.Limb_Slim_L:setVisible(true)
 
-        modelRightArm.Bicep_Default_R:setVisible(false)
-        modelRightArm.Bicep_Slim_R:setVisible(true)
-        modelRightArm.Elbow_R.Limb_Default_R:setVisible(false)
-        modelRightArm.Elbow_R.Limb_Slim_R:setVisible(true)
+        ModelRightArm.Bicep_Default_R:setVisible(false)
+        ModelRightArm.Bicep_Slim_R:setVisible(true)
+        ModelRightArm.Elbow_R.Limb_Default_R:setVisible(false)
+        ModelRightArm.Elbow_R.Limb_Slim_R:setVisible(true)
     end
 end
 
@@ -59,11 +59,11 @@ function events.tick() --=======================================================
 
     -- Handle crouch model position ---------------------------------------------
     if (player:getPose() == "CROUCHING") then
-        pModel:setPos(0,2,0)
-        modelCape:setPos(0,2,0)
+        PModel:setPos(0,2,0)
+        ModelCape:setPos(0,2,0)
     else
-        pModel:setPos(0,0,0)
-        modelCape:setPos(0,0,0)
+        PModel:setPos(0,0,0)
+        ModelCape:setPos(0,0,0)
     end
 
     -- Handle Helmet/Hat visibility ---------------------------------------------

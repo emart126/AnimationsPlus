@@ -200,9 +200,9 @@ function events.render(delta, context)
 
         climbBlendInRot = math.lerpAngle(climbBlendInRot, desiredRot, 0.075)
         if (not blendClimbDone) then
-            pModel:setRot(0,climbBlendInRot,0)
+            PModel:setRot(0,climbBlendInRot,0)
         else
-            pModel:setRot(0,desiredRot,0)
+            PModel:setRot(0,desiredRot,0)
         end
 
         if (oldFacing ~= facing) then
@@ -238,7 +238,7 @@ function events.render(delta, context)
         else
             climbTopBlendInRot = math.lerpAngle(climbTopBlendInRot, desiredUpperRot, 0.075)
         end
-        pModel.Upper:setRot(climbTopBlendInRot,0,0)
+        PModel.Upper:setRot(climbTopBlendInRot,0,0)
 
     else
         -- blend out of rotation toward ladder
@@ -249,9 +249,9 @@ function events.render(delta, context)
         end
         if (blendClimb and climbBlendOutRot ~= nil) then
             climbBlendOutRot = math.lerpAngle(climbBlendOutRot, 0, 0.075)
-            pModel:setRot(0,climbBlendOutRot,0)
+            PModel:setRot(0,climbBlendOutRot,0)
         else
-            pModel:setRot(0,0,0)
+            PModel:setRot(0,0,0)
         end
 
         -- blend upper body out of rotation at top of ladder 
@@ -261,9 +261,9 @@ function events.render(delta, context)
         end
         if (blendClimbTop and climbTopBlendOutRot ~= nil) then
             climbTopBlendOutRot = math.lerpAngle(climbTopBlendOutRot,0,0.075)
-            pModel.Upper:setRot(climbTopBlendOutRot,0,0)
+            PModel.Upper:setRot(climbTopBlendOutRot,0,0)
         else
-            pModel.Upper:setRot(0,0,0)
+            PModel.Upper:setRot(0,0,0)
         end
 
     end

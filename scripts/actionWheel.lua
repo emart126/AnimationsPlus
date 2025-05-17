@@ -17,12 +17,12 @@ end
 
 -- Action Wheel Setting actions -----------------------------------------------
 function SheathWeapon(bool)
-    sheathOption = bool
+    WeaponHolsterSetting = bool
 end
 pings.actionSheath = SheathWeapon
 
 function IdleAnimation(bool)
-    idleAnimations = bool
+    IdleAnimationSetting = bool
 end
 pings.actionIdleAnims = IdleAnimation
 
@@ -147,7 +147,7 @@ local setting1 = settingPage:newAction()
     :item("minecraft:diamond_sword")
     :hoverColor(1, 1, 1)
     :onToggle(pings.actionSheath)
-    :toggled(sheathOption)
+    :toggled(WeaponHolsterSetting)
 
 local setting2 = settingPage:newAction()
     :title("Enable Idle Animations")
@@ -155,7 +155,7 @@ local setting2 = settingPage:newAction()
     :item("minecraft:armor_stand")
     :hoverColor(1, 1, 1)
     :onToggle(pings.actionIdleAnims)
-    :toggled(idleAnimations)
+    :toggled(IdleAnimationSetting)
 
 local setting3 = settingPage:newAction()
 local setting4 = settingPage:newAction()

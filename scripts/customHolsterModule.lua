@@ -1,4 +1,4 @@
-sheathOption = true;
+WeaponHolsterSetting = true;
 
 local task
 
@@ -74,14 +74,14 @@ end
 
 
 function events.entity_init() --=====================================================================================================================
-    task = pModel.Upper.body.SheathedWeapon:newItem("weapon")
+    task = PModel.Upper.body.SheathedWeapon:newItem("weapon")
     task:setDisplayMode("THIRD_PERSON_RIGHT_HAND")
 end
 
 if (host:isHost()) then
     function events.render()
 
-        if (sheathOption) then
+        if (WeaponHolsterSetting) then
             -- Sync item id and damage value
             local itemInFirst = host:getSlot(0)
             local itemInFirstStack = itemInFirst:toStackString()
@@ -250,7 +250,7 @@ if (host:isHost()) then
 end
 
 function events.tick()
-    if (sheathOption) then
+    if (WeaponHolsterSetting) then
         if ((syncedPlayerSlot ~= oldSlot and (syncedPlayerSlot == 0 or oldSlot == 0)) or (currWeapon ~= oldWeapon) or (syncedItemID ~= oldItemID)) then
             if (currWeapon ~= nil) then
                 task:setItem(syncedItemID)
