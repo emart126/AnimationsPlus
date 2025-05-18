@@ -15,7 +15,7 @@ local isFishing = nil
 local oldIsFishing = nil
 
 -- Check if itemStack has a class identified with it
-local function CheckClassItem(item)
+function CheckClassItem(item)
     if (item == nil) then
         return(nil)
     end
@@ -185,7 +185,12 @@ function events.tick()
     oldHoldingBow = holdingBow
 
     isHoldingLoadedCross = AnimCrossBowHold:isPlaying()
-    isHoldingCrossBow = string.find(heldItem.id, "crossbow") ~= nil
+    local mainHandItem = player:getHeldItem(false)
+    local offhandItem = player:getHeldItem(true)
+    local crossbowMainHand = string.find(mainHandItem.id, "crossbow")
+    local crossbowOffHand = string.find(offhandItem.id, "crossbow")
+    isHoldingCrossBow = (crossbowMainHand or crossbowOffHand) and true or false
+
     AnimCrossBowHold:setPriority(isHoldingLoadedCross and 1 or 0)
     if (oldIsHoldingLoadedCross ~= nil and isHoldingCrossBow and isHoldingLoadedCross == false and isHoldingLoadedCross ~= oldIsHoldingLoadedCross) then
         AnimCrossBowShoot:play()

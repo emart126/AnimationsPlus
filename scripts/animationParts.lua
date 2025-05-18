@@ -1,8 +1,12 @@
+local OFFHAND_SLOT = 2
+
 local anims = require("libraries/EZAnims")
 anims:setOneJump(true)
 
 local animModel = anims:addBBModel(animations.model)
 animModel:setBlendTimes(2,2)
+
+local handType = "R"
 
 -- Basic Action Animations ------------------------------------------
 AnimIdle = animations.model["idling"]
@@ -127,83 +131,46 @@ AnimIsFishing:setBlendCurve("easeInOutSine")
 
 -- Attacks ----------------------------------------------------------
 
-AnimPunch = animations.model["attackR"]
-AnimPunch:setBlendTime(1, 4)
-AnimPunch:setBlendCurve("easeInOutSine")
-AnimMine = animations.model["mineR"]
-AnimMine:setBlendTime(1, 5)
-AnimMine:setBlendCurve("easeInOutSine")
+AnimPunch = nil
+AnimMine = nil
+
 AnimShieldR = animations.model["blockR"]
 AnimShieldR:setBlendTime(2, 3)
 AnimShieldR:setBlendCurve("easeInOutSine")
 AnimShieldL = animations.model["blockL"]
 AnimShieldL:setBlendTime(2, 3)
 AnimShieldL:setBlendCurve("easeInOutSine")
+
 AnimCombatReady = animations.model["combatReady"]
 
 -- Warrior ------
-WarriorSwing1 = animations.model["Spear_Swing_1"]
-WarriorSwing2 = animations.model["Spear_Swing_2"]
-WarriorSwing3 = animations.model["Spear_Swing_3"]
-WarriorSwing1:setBlendTime(3,7)
-WarriorSwing1:setBlendCurve("easeInOutSine")
-WarriorSwing2:setBlendTime(4,7)
-WarriorSwing2:setBlendCurve("easeInOutSine")
-WarriorSwing3:setBlendTime(3,7)
-WarriorSwing3:setBlendCurve("easeOutSine")
+WarriorSwing1 = nil
+WarriorSwing2 = nil
+WarriorSwing3 = nil
 
 -- Mage ---------
-MageSwing1 = animations.model["Wand_Wave_1"]
-MageSwing2 = animations.model["Wand_Wave_2"]
-MageSwing3 = animations.model["Wand_Wave_3"]
-MageSwing1:setBlendTime(3, 7)
-MageSwing1:setBlendCurve("easeInOutSine")
-MageSwing2:setBlendTime(3, 6.5)
-MageSwing2:setBlendCurve("easeInOutSine")
-MageSwing3:setBlendTime(3, 6.5)
-MageSwing3:setBlendCurve("easeInOutSine")
+MageSwing1 = nil
+MageSwing2 = nil
+MageSwing3 = nil
 
 -- Assassin -----
-AssassinSwing1 = animations.model["Sword_Swing_1"]
-AssassinSwing2 = animations.model["Sword_Swing_2"]
-AssassinSwing3 = animations.model["Sword_Swing_3"]
-AssassinSwing4 = animations.model["Sword_Swing_4"]
-AssassinSwing1:setBlendTime(3, 5.5)
-AssassinSwing1:setBlendCurve("easeInOutSine")
-AssassinSwing2:setBlendTime(3, 5.5)
-AssassinSwing2:setBlendCurve("easeInOutSine")
-AssassinSwing3:setBlendTime(4, 5.5)
-AssassinSwing3:setBlendCurve("easeInOutSine")
-AssassinSwing4:setBlendTime(3, 5.5)
+AssassinSwing1 = nil
+AssassinSwing2 = nil
+AssassinSwing3 = nil
+AssassinSwing4 = nil
 
 -- Shaman -------
-ShamanSwing1 = animations.model["Relik_Strike_1"]
-ShamanSwing2 = animations.model["Relik_Strike_2"]
-ShamanSwing3 = animations.model["Relik_Strike_3"]
-ShamanSwing1:setBlendTime(2, 7)
-ShamanSwing1:setBlendCurve("easeInOutSine")
-ShamanSwing2:setBlendTime(3, 6.5)
-ShamanSwing2:setBlendCurve("easeInOutSine")
-ShamanSwing3:setBlendTime(3, 8)
-ShamanSwing3:setBlendCurve("easeInOutSine")
+ShamanSwing1 = nil
+ShamanSwing2 = nil
+ShamanSwing3 = nil
 
 -- Archer -------
-ArcherShoot = animations.model["Bow_Shoot"]
-ArcherShoot:setBlendTime(2, 4.5)
-ArcherShoot:setBlendCurve("easeOutSine")
-AnimBowShootHold = animations.model["bowR"]
-AnimBowShootHold:setBlendTime(3,1)
-AnimBowShootHold:setBlendCurve("easeInSine")
+AnimBowShootHold = nil
+ArcherShoot = nil
 
-AnimCrossBowLoad = animations.model["loadR"]
-AnimCrossBowLoad:setBlendTime(10,3)
-AnimCrossBowLoad:setBlendCurve("easeInOutSine")
-AnimCrossBowHold = animations.model["crossR"]
-AnimCrossBowHold:setBlendTime(4,0)
-AnimCrossBowHold:setBlendCurve("easeInSine")
-AnimCrossBowShoot = animations.model["Cross_Shoot"]
-AnimCrossBowShoot:setBlendTime(0, 4.5)
-AnimCrossBowShoot:setBlendCurve("easeOutSine")
+AnimCrossBowLoad = nil
+AnimCrossBowHold = nil
+AnimCrossBowShoot = nil
 
 -- Wynncraft Spells -------------------------------------------------
 -- R1, L2, R3 = s1
@@ -231,3 +198,89 @@ animModel:addIncluOverrider(
     -- animations.model["Taunt_2"],
     -- animations.model["Taunt_3"]
 )
+
+function events.tick()
+
+    -- Set Hand
+    handType = player:isLeftHanded() and "L" or "R"
+    local mainHandItem = player:getHeldItem(false)
+    local offhandItem = player:getHeldItem(true)
+    local bowMainHand = string.find(mainHandItem.id, "bow") or (CheckClassItem(mainHandItem:toStackString()) == "Archer/Hunter")
+    local bowOffHand = string.find(offhandItem.id, "bow") or (CheckClassItem(offhandItem:toStackString()) == "Archer/Hunter")
+    local bowHeldInLeft = ((handType == "L" and bowMainHand) or (handType == "R" and bowOffHand)) and 1 or 0
+    local bowHeldInRight = ((handType == "R" and bowMainHand) or (handType == "L" and bowOffHand)) and 1 or 0
+    local activeBowhandType = ((bowHeldInLeft == 1) and "L") or ((bowHeldInRight == 1) and "R") or "R"
+
+    -- Basic --------
+    AnimPunch = animations.model["attack" .. handType]
+    AnimPunch:setBlendTime(1, 4)
+    AnimPunch:setBlendCurve("easeInOutSine")
+    AnimMine = animations.model["mine" .. handType]
+    AnimMine:setBlendTime(1, 5)
+    AnimMine:setBlendCurve("easeInOutSine")
+
+    -- Warrior ------
+    WarriorSwing1 = animations.model["Spear_Swing_1" .. handType]
+    WarriorSwing1:setBlendTime(3,7)
+    WarriorSwing1:setBlendCurve("easeInOutSine")
+    WarriorSwing2 = animations.model["Spear_Swing_2" .. handType]
+    WarriorSwing2:setBlendTime(4,7)
+    WarriorSwing2:setBlendCurve("easeInOutSine")
+    WarriorSwing3 = animations.model["Spear_Swing_3" .. handType]
+    WarriorSwing3:setBlendTime(3,7)
+    WarriorSwing3:setBlendCurve("easeOutSine")
+
+    -- Mage ---------
+    MageSwing1 = animations.model["Wand_Wave_1" .. handType]
+    MageSwing1:setBlendTime(3, 7)
+    MageSwing1:setBlendCurve("easeInOutSine")
+    MageSwing2 = animations.model["Wand_Wave_2" .. handType]
+    MageSwing2:setBlendTime(3, 6.5)
+    MageSwing2:setBlendCurve("easeInOutSine")
+    MageSwing3 = animations.model["Wand_Wave_3" .. handType]
+    MageSwing3:setBlendTime(3, 6.5)
+    MageSwing3:setBlendCurve("easeInOutSine")
+
+    -- Assassin -----
+    AssassinSwing1 = animations.model["Sword_Swing_1" .. handType]
+    AssassinSwing1:setBlendTime(3, 5.5)
+    AssassinSwing1:setBlendCurve("easeInOutSine")
+    AssassinSwing2 = animations.model["Sword_Swing_2" .. handType]
+    AssassinSwing2:setBlendTime(3, 5.5)
+    AssassinSwing2:setBlendCurve("easeInOutSine")
+    AssassinSwing3 = animations.model["Sword_Swing_3" .. handType]
+    AssassinSwing3:setBlendTime(4, 5.5)
+    AssassinSwing3:setBlendCurve("easeInOutSine")
+    AssassinSwing4 = animations.model["Sword_Swing_4" .. handType]
+    AssassinSwing4:setBlendTime(3, 5.5)
+
+    -- Shaman -------
+    ShamanSwing1 = animations.model["Relik_Strike_1" .. handType]
+    ShamanSwing1:setBlendTime(2, 7)
+    ShamanSwing1:setBlendCurve("easeInOutSine")
+    ShamanSwing2 = animations.model["Relik_Strike_2" .. handType]
+    ShamanSwing2:setBlendTime(3, 6.5)
+    ShamanSwing2:setBlendCurve("easeInOutSine")
+    ShamanSwing3 = animations.model["Relik_Strike_3" .. handType]
+    ShamanSwing3:setBlendTime(3, 8)
+    ShamanSwing3:setBlendCurve("easeInOutSine")
+
+    -- Archer -------
+    AnimBowShootHold = animations.model["bow" .. activeBowhandType]
+    AnimBowShootHold:setBlendTime(3,1)
+    AnimBowShootHold:setBlendCurve("easeInSine")
+    ArcherShoot = animations.model["Bow_Shoot" .. activeBowhandType]
+    ArcherShoot:setBlendTime(2, 4.5)
+    ArcherShoot:setBlendCurve("easeOutSine")
+
+    AnimCrossBowLoad = animations.model["load" .. activeBowhandType]
+    AnimCrossBowLoad:setBlendTime(10,3)
+    AnimCrossBowLoad:setBlendCurve("easeInOutSine")
+    AnimCrossBowHold = animations.model["cross" .. activeBowhandType]
+    AnimCrossBowHold:setBlendTime(4,0)
+    AnimCrossBowHold:setBlendCurve("easeInSine")
+    AnimCrossBowShoot = animations.model["Cross_Shoot" .. activeBowhandType]
+    AnimCrossBowShoot:setBlendTime(0, 4.5)
+    AnimCrossBowShoot:setBlendCurve("easeOutSine")
+
+end
