@@ -7,7 +7,7 @@ animModel:setBlendTimes(2,2)
 local handType = "R"
 
 -- Basic Actions --
-AnimIdle = animations.model["idling"]
+AnimIdle = animations.model["idle"]
 AnimIdle:setBlendCurve("easeInOutSine")
 AnimIdling1 = animations.model["Idle_1"]
 AnimIdling1:setBlendTime(2, 4)
@@ -19,9 +19,9 @@ AnimIdling3 = animations.model["Idle_3"]
 AnimIdling3:setBlendTime(2, 4)
 AnimIdling3:setBlendCurve("easeInOutSine")
 
-AnimWalk = animations.model["walking"]
+AnimWalk = animations.model["walk"]
 AnimWalk:setBlendCurve("easeInOutSine")
-AnimCrouching = animations.model["crouching"]
+AnimCrouching = animations.model["crouch"]
 AnimCrouching:setBlendTime(4)
 AnimCrouching:setBlendCurve("easeInOutSine")
 AnimUnCrouchJUp = animations.model["crouchjumpup"]
@@ -35,24 +35,24 @@ AnimCrouchWalk:setBlendTime(4)
 AnimCrouchWalk:setBlendCurve("easeInOutSine")
 
 AnimCrawl = animations.model["crawlstill"]
-AnimCrawling = animations.model["crawling"]
+AnimCrawling = animations.model["crawl"]
 
 AnimFloat = animations.model["water"]
 AnimFloat:setBlendTime(4)
-AnimSwim = animations.model["swimming"]
+AnimSwim = animations.model["swim"]
 AnimSwim:setBlendTime(4)
 
-AnimClimb = animations.model["climbing"]
+AnimClimb = animations.model["climb"]
 AnimClimb:setBlendTime(4)
 AnimClimbCrouch = animations.model["climbcrouch"]
 AnimClimbCrouch:setBlendTime(4)
 AnimClimbCrouchWalk = animations.model["climbcrouchwalk"]
 AnimClimbCrouchWalk:setBlendTime(4)
 
-AnimJumpingUp = animations.model["jumpingup"]
+AnimJumpingUp = animations.model["jumpup"]
 AnimJumpingUp:setBlendTime(4, 5)
 AnimJumpingUp:setBlendCurve("easeOutQuad")
-AnimJumpingDown = animations.model["jumpingdown"]
+AnimJumpingDown = animations.model["jumpdown"]
 AnimJumpingDown:setBlendTime(4, 5)
 AnimJumpingDown:setBlendCurve("easeOutQuad")
 AnimSprintJumpUp = animations.model["sprintjumpup"]
@@ -68,12 +68,12 @@ AnimFreeFalling:setBlendTime(4, 3)
 AnimLand = animations.model["land"]
 AnimLand:setBlendTime(1)
 
-AnimSprint = animations.model["sprinting"]
+AnimSprint = animations.model["sprint"]
 AnimSprint:setBlendTime(2, 2)
 AnimSprint:setBlendCurve("easeInOutSine")
 
 AnimSit = animations.model["sitpass"]
-AnimHorseSit = animations.model["sitting"]
+AnimHorseSit = animations.model["sit"]
 AnimHorseRiding = animations.model["sitmove"]
 
 -- Taunts --
