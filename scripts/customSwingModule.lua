@@ -35,7 +35,7 @@ function CheckClassItem(item)
 end
 
 -- Check if itemStack has tool identified with it
-local function CheckToolItem(item)
+function CheckToolItem(item)
     if (item == nil) then
         return(nil)
     end
@@ -133,13 +133,17 @@ function events.tick()
     -- Handle Custom Attacking --------------------------------------------------
     local heldItem = player:getHeldItem()
     local heldItemIsSword = string.find(heldItem.id, "sword")
+    local mainHandItem = player:getHeldItem(false)
+    local offhandItem = player:getHeldItem(true)
     local readyToSwing = AnimCombatReady:isPlaying() or currSwing == 1
 
     if (player:getSwingTime() == 1) then
         -- Dont punch while holding a weapon
         if (weaponClass ~= nil or heldItemIsSword) then
-            AnimPunch:stop()
-            AnimMine:stop()
+            AnimPunchR:stop()
+            AnimPunchL:stop()
+            AnimMineR:stop()
+            AnimMineL:stop()
         end
 
         if ((readyToSwing) and
@@ -185,8 +189,6 @@ function events.tick()
     oldHoldingBow = holdingBow
 
     isHoldingLoadedCross = AnimCrossBowHold:isPlaying()
-    local mainHandItem = player:getHeldItem(false)
-    local offhandItem = player:getHeldItem(true)
     local crossbowMainHand = string.find(mainHandItem.id, "crossbow")
     local crossbowOffHand = string.find(offhandItem.id, "crossbow")
     isHoldingCrossBow = (crossbowMainHand or crossbowOffHand) and true or false
@@ -207,12 +209,17 @@ function events.tick()
     local heldItemIsAxe = (string.find(heldItem.id, "_axe") ~= nil or heldItemIsWoodcuttingTool)
     local heldItemIsShovel = (string.find(heldItem.id, "_shovel") ~= nil)
     local heldItemIsHoe = (string.find(heldItem.id, "_hoe") ~= nil or heldItemIsFarmingTool)
-    local heldItemIsFishingRod = (string.find(heldItem.id, "fishing_rod") ~= nil or heldItemIsFishingTool)
+
+    local fishingMainHand = string.find(mainHandItem.id, "fishing_rod")
+    local fishingOffHand = string.find(offhandItem.id, "fishing_rod")
+    local heldItemIsFishingRod = (fishingMainHand or fishingOffHand or heldItemIsFishingTool)
 
     if (player:getSwingTime() == 1 and weaponClass == nil) then
         if (heldItemIsPickaxe or heldItemIsAxe or heldItemIsShovel or heldItemIsHoe or heldItemIsFishingRod) then
-            AnimPunch:stop()
-            AnimMine:stop()
+            AnimPunchR:stop()
+            AnimPunchL:stop()
+            AnimMineR:stop()
+            AnimMineL:stop()
         end
 
         if (readyToSwing and heldItemIsPickaxe) then
@@ -269,13 +276,18 @@ function events.tick()
     end
 
     if (not isFishing and isFishing ~= oldIsFishing) then
-        AnimIsFishing:setPriority(0);
+        AnimIsFishing:setPriority(0)
         AnimIsFishing:stop()
     end
 
     oldIsFishing = isFishing
 
     if (player:getSwingTime() == 1 and readyToSwing and heldItemIsFishingRod) then
+        AnimPunchR:stop()
+        AnimPunchL:stop()
+        AnimMineR:stop()
+        AnimMineL:stop()
+
         if (isFishing) then
             AnimFishing1:play()
             AnimFishing2:stop()

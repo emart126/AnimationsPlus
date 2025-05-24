@@ -91,48 +91,37 @@ AnimTaunt4:setBlendTime(2, 4)
 
 -- Tools ------------------------------------------------------------
 
-AnimPickaxe1 = animations.model["pickaxe_1"]
-AnimPickaxe1:setBlendTime(2, 7)
-AnimPickaxe1:setBlendCurve("easeInOutSine")
-AnimPickaxe2 = animations.model["pickaxe_2"]
-AnimPickaxe2:setBlendTime(2, 7)
-AnimPickaxe2:setBlendCurve("easeInOutSine")
+AnimPickaxe1 = nil
+AnimPickaxe2 = nil
 
-AnimAxe1 = animations.model["axe_1"]
-AnimAxe1:setBlendTime(3, 5)
-AnimAxe1:setBlendCurve("easeInOutSine")
-AnimAxe2 = animations.model["axe_2"]
-AnimAxe2:setBlendTime(3, 5)
-AnimAxe2:setBlendCurve("easeInOutSine")
+AnimAxe1 = nil
+AnimAxe2 = nil
 
-AnimShovel1 = animations.model["shovel_1"]
-AnimShovel1:setBlendTime(3, 6)
-AnimShovel1:setBlendCurve("easeInOutSine")
-AnimShovel2 = animations.model["shovel_2"]
-AnimShovel2:setBlendTime(3, 6)
-AnimShovel2:setBlendCurve("easeInOutSine")
+AnimShovel1 = nil
+AnimShovel2 = nil
 
-AnimHoe1 = animations.model["hoe_1"]
-AnimHoe1:setBlendTime(2, 5)
-AnimHoe1:setBlendCurve("easeInOutSine")
-AnimHoe2 = animations.model["hoe_2"]
-AnimHoe2:setBlendTime(2, 5)
-AnimHoe2:setBlendCurve("easeInOutSine")
+AnimHoe1 = nil
+AnimHoe2 = nil
 
-AnimFishing1 = animations.model["fishing_1"]
-AnimFishing1:setBlendTime(3, 6)
-AnimFishing1:setBlendCurve("easeInOutSine")
-AnimFishing2 = animations.model["fishing_2"]
-AnimFishing2:setBlendTime(3, 6)
-AnimFishing2:setBlendCurve("easeInOutSine")
-AnimIsFishing = animations.model["is_fishing"]
-AnimIsFishing:setBlendTime(6, 2)
-AnimIsFishing:setBlendCurve("easeInOutSine")
+AnimFishing1 = nil
+AnimFishing2 = nil
+AnimIsFishing = nil
 
 -- Attacks ----------------------------------------------------------
 
-AnimPunch = nil
-AnimMine = nil
+AnimPunchR = animations.model["attackR"]
+AnimPunchR:setBlendTime(1, 4)
+AnimPunchR:setBlendCurve("easeInOutSine")
+AnimMineR = animations.model["mineR"]
+AnimMineR:setBlendTime(1, 5)
+AnimMineR:setBlendCurve("easeInOutSine")
+
+AnimPunchL = animations.model["attackL"]
+AnimPunchL:setBlendTime(1, 4)
+AnimPunchL:setBlendCurve("easeInOutSine")
+AnimMineL = animations.model["mineL"]
+AnimMineL:setBlendTime(1, 5)
+AnimMineL:setBlendCurve("easeInOutSine")
 
 AnimShieldR = animations.model["blockR"]
 AnimShieldR:setBlendTime(2, 3)
@@ -205,19 +194,26 @@ function events.tick()
     handType = player:isLeftHanded() and "L" or "R"
     local mainHandItem = player:getHeldItem(false)
     local offhandItem = player:getHeldItem(true)
+
     local bowMainHand = string.find(mainHandItem.id, "bow") or (CheckClassItem(mainHandItem:toStackString()) == "Archer/Hunter")
     local bowOffHand = string.find(offhandItem.id, "bow") or (CheckClassItem(offhandItem:toStackString()) == "Archer/Hunter")
     local bowHeldInLeft = ((handType == "L" and bowMainHand) or (handType == "R" and bowOffHand)) and 1 or 0
     local bowHeldInRight = ((handType == "R" and bowMainHand) or (handType == "L" and bowOffHand)) and 1 or 0
-    local activeBowhandType = ((bowHeldInLeft == 1) and "L") or ((bowHeldInRight == 1) and "R") or "R"
+    local activeBowHandType = ((bowHeldInLeft == 1) and "L") or ((bowHeldInRight == 1) and "R") or "R"
+
+    local fishingRodMainHand = string.find(mainHandItem.id, "fishing_rod") or (CheckToolItem(mainHandItem:toStackString()) == "Fishing")
+    local fishingRodOffHand = string.find(offhandItem.id, "fishing_rod") or (CheckToolItem(offhandItem:toStackString()) == "Fishing")
+    local fishingRodHeldInLeft = ((handType == "L" and fishingRodMainHand) or (handType == "R" and fishingRodOffHand)) and 1 or 0
+    local fishingRodHeldInRight = ((handType == "R" and fishingRodMainHand) or (handType == "L" and fishingRodOffHand)) and 1 or 0
+    local activeFishingHandType = ((fishingRodHeldInLeft == 1) and "L") or ((fishingRodHeldInRight == 1) and "R") or "R"
 
     -- Basic --------
-    AnimPunch = animations.model["attack" .. handType]
-    AnimPunch:setBlendTime(1, 4)
-    AnimPunch:setBlendCurve("easeInOutSine")
-    AnimMine = animations.model["mine" .. handType]
-    AnimMine:setBlendTime(1, 5)
-    AnimMine:setBlendCurve("easeInOutSine")
+    -- AnimPunch = animations.model["attack" .. handType]
+    -- AnimPunch:setBlendTime(1, 4)
+    -- AnimPunch:setBlendCurve("easeInOutSine")
+    -- AnimMine = animations.model["mine" .. handType]
+    -- AnimMine:setBlendTime(1, 5)
+    -- AnimMine:setBlendCurve("easeInOutSine")
 
     -- Warrior ------
     WarriorSwing1 = animations.model["Spear_Swing_1" .. handType]
@@ -266,21 +262,64 @@ function events.tick()
     ShamanSwing3:setBlendCurve("easeInOutSine")
 
     -- Archer -------
-    AnimBowShootHold = animations.model["bow" .. activeBowhandType]
+    AnimBowShootHold = animations.model["bow" .. activeBowHandType]
     AnimBowShootHold:setBlendTime(3,1)
     AnimBowShootHold:setBlendCurve("easeInSine")
-    ArcherShoot = animations.model["Bow_Shoot" .. activeBowhandType]
+    ArcherShoot = animations.model["Bow_Shoot" .. activeBowHandType]
     ArcherShoot:setBlendTime(2, 4.5)
     ArcherShoot:setBlendCurve("easeOutSine")
 
-    AnimCrossBowLoad = animations.model["load" .. activeBowhandType]
+    AnimCrossBowLoad = animations.model["load" .. activeBowHandType]
     AnimCrossBowLoad:setBlendTime(10,3)
     AnimCrossBowLoad:setBlendCurve("easeInOutSine")
-    AnimCrossBowHold = animations.model["cross" .. activeBowhandType]
+    AnimCrossBowHold = animations.model["cross" .. activeBowHandType]
     AnimCrossBowHold:setBlendTime(4,0)
     AnimCrossBowHold:setBlendCurve("easeInSine")
-    AnimCrossBowShoot = animations.model["Cross_Shoot" .. activeBowhandType]
+    AnimCrossBowShoot = animations.model["Cross_Shoot" .. activeBowHandType]
     AnimCrossBowShoot:setBlendTime(0, 4.5)
     AnimCrossBowShoot:setBlendCurve("easeOutSine")
+
+    -- Mining -------
+    AnimPickaxe1 = animations.model["pickaxe_1" .. handType]
+    AnimPickaxe1:setBlendTime(2, 7)
+    AnimPickaxe1:setBlendCurve("easeInOutSine")
+    AnimPickaxe2 = animations.model["pickaxe_2" .. handType]
+    AnimPickaxe2:setBlendTime(2, 7)
+    AnimPickaxe2:setBlendCurve("easeInOutSine")
+
+    -- Woodcutting --
+    AnimAxe1 = animations.model["axe_1" .. handType]
+    AnimAxe1:setBlendTime(3, 5)
+    AnimAxe1:setBlendCurve("easeInOutSine")
+    AnimAxe2 = animations.model["axe_2" .. handType]
+    AnimAxe2:setBlendTime(3, 5)
+    AnimAxe2:setBlendCurve("easeInOutSine")
+
+    -- Shoveling ----
+    AnimShovel1 = animations.model["shovel_1" .. handType]
+    AnimShovel1:setBlendTime(3, 6)
+    AnimShovel1:setBlendCurve("easeInOutSine")
+    AnimShovel2 = animations.model["shovel_2" .. handType]
+    AnimShovel2:setBlendTime(3, 6)
+    AnimShovel2:setBlendCurve("easeInOutSine")
+
+    -- Farming ------
+    AnimHoe1 = animations.model["hoe_1" .. handType]
+    AnimHoe1:setBlendTime(2, 5)
+    AnimHoe1:setBlendCurve("easeInOutSine")
+    AnimHoe2 = animations.model["hoe_2" .. handType]
+    AnimHoe2:setBlendTime(2, 5)
+    AnimHoe2:setBlendCurve("easeInOutSine")
+
+    -- Fishing ------
+    AnimFishing1 = animations.model["fishing_1" .. activeFishingHandType]
+    AnimFishing1:setBlendTime(3, 6)
+    AnimFishing1:setBlendCurve("easeInOutSine")
+    AnimFishing2 = animations.model["fishing_2" .. activeFishingHandType]
+    AnimFishing2:setBlendTime(3, 6)
+    AnimFishing2:setBlendCurve("easeInOutSine")
+    AnimIsFishing = animations.model["is_fishing" .. activeFishingHandType]
+    AnimIsFishing:setBlendTime(6, 2)
+    AnimIsFishing:setBlendCurve("easeInOutSine")
 
 end
