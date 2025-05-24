@@ -14,6 +14,8 @@ local oldIsHoldingLoadedCross = nil
 local isFishing = nil
 local oldIsFishing = nil
 
+IsSwinging = nil
+
 -- Check if itemStack has a class identified with it
 function CheckClassItem(item)
     if (item == nil) then
@@ -66,8 +68,8 @@ local function isCustomSwinging()
         AnimShovel1, AnimShovel2,
         AnimFishing1, AnimFishing2, AnimIsFishing
     }
-    for i = 1, #swingAnimations do
-        if (swingAnimations[i]:isPlaying()) then
+    for i = 1, #AllSwingingAnimations do
+        if (AllSwingingAnimations[i]:isPlaying()) then
             return true
         end
     end
@@ -130,6 +132,14 @@ function events.tick()
     AnimShieldL:setPriority((player:isUsingItem()) and 1 or 0)
     AnimShieldR:setPriority((player:isUsingItem()) and 1 or 0)
 
+    -- Swing Priority -----------------------------------------------------------
+    IsSwinging = isCustomSwinging()
+    AnimIdle:setPriority(IsSwinging and 1 or 0)
+    AnimCrouching:setPriority(IsSwinging and 1 or 0)
+    AnimFreeFalling:setPriority(IsSwinging and 1 or 0)
+    AnimLand:setPriority(IsSwinging and 1 or 0)
+    AnimFloat:setPriority(IsSwinging and 1 or 0)
+
     -- Handle Custom Attacking --------------------------------------------------
     local heldItem = player:getHeldItem()
     local heldItemIsSword = string.find(heldItem.id, "sword")
@@ -172,14 +182,6 @@ function events.tick()
     if (not AnimCombatReady:isPlaying() and not isCustomSwinging()) then
         currSwing = 1
     end
-
-    local isSwinging = isCustomSwinging()
-    -- print(AnimShieldR:getPriority())
-    -- print(isSwinging and 1 or 0)
-    -- AssassinSwing1:setPriority(isSwinging and 1 or 0)
-    -- AssassinSwing2:setPriority(isSwinging and 1 or 0)
-    -- AssassinSwing3:setPriority(isSwinging and 1 or 0)
-    -- AssassinSwing4:setPriority(isSwinging and 1 or 0)
 
     -- Bow Shooting -------------------------------------------------------------
     holdingBow = player:getActiveItem():getUseAction() == "BOW"

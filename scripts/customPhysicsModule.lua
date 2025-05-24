@@ -26,7 +26,7 @@ function events.render(delta, context)
         armTarget = -3
     end
 
-    if ((xvel >= -0.22 and xvel <= 0.22) or AnimFreeFalling:isPlaying()) then
+    if (not IsSwinging and ((xvel >= -0.22 and xvel <= 0.22) or AnimFreeFalling:isPlaying())) then
         rArm:berp(armTarget, 0.25, 0.01, 0.2)
         lArm:berp(armTarget, 0.25, 0.01, 0.2)
     else

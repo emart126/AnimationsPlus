@@ -1,5 +1,3 @@
-local OFFHAND_SLOT = 2
-
 local anims = require("libraries/EZAnims")
 anims:setOneJump(true)
 
@@ -8,7 +6,7 @@ animModel:setBlendTimes(2,2)
 
 local handType = "R"
 
--- Basic Action Animations ------------------------------------------
+-- Basic Actions --
 AnimIdle = animations.model["idling"]
 AnimIdle:setBlendCurve("easeInOutSine")
 AnimIdling1 = animations.model["Idle_1"]
@@ -78,6 +76,7 @@ AnimSit = animations.model["sitpass"]
 AnimHorseSit = animations.model["sitting"]
 AnimHorseRiding = animations.model["sitmove"]
 
+-- Taunts --
 AnimTaunt1 = animations.model["Taunt_1"]
 AnimTaunt2a = animations.model["Taunt_2"]
 AnimTaunt2b = animations.model["Taunt_3"]
@@ -89,26 +88,8 @@ AnimTaunt2b:setBlendTime(2, 4)
 AnimTaunt3:setBlendTime(2, 4)
 AnimTaunt4:setBlendTime(2, 4)
 
--- Tools ------------------------------------------------------------
-
-AnimPickaxe1 = nil
-AnimPickaxe2 = nil
-
-AnimAxe1 = nil
-AnimAxe2 = nil
-
-AnimShovel1 = nil
-AnimShovel2 = nil
-
-AnimHoe1 = nil
-AnimHoe2 = nil
-
-AnimFishing1 = nil
-AnimFishing2 = nil
-AnimIsFishing = nil
-
--- Attacks ----------------------------------------------------------
-
+-- Attack Swinging --
+AnimCombatReady = animations.model["combatReady"]
 AnimPunchR = animations.model["attackR"]
 AnimPunchR:setBlendTime(1, 4)
 AnimPunchR:setBlendCurve("easeInOutSine")
@@ -130,38 +111,46 @@ AnimShieldL = animations.model["blockL"]
 AnimShieldL:setBlendTime(2, 3)
 AnimShieldL:setBlendCurve("easeInOutSine")
 
-AnimCombatReady = animations.model["combatReady"]
+AnimPickaxe1 = nil
+AnimPickaxe2 = nil
 
--- Warrior ------
+AnimAxe1 = nil
+AnimAxe2 = nil
+
+AnimShovel1 = nil
+AnimShovel2 = nil
+
+AnimHoe1 = nil
+AnimHoe2 = nil
+
+AnimFishing1 = nil
+AnimFishing2 = nil
+AnimIsFishing = nil
+
 WarriorSwing1 = nil
 WarriorSwing2 = nil
 WarriorSwing3 = nil
 
--- Mage ---------
 MageSwing1 = nil
 MageSwing2 = nil
 MageSwing3 = nil
 
--- Assassin -----
 AssassinSwing1 = nil
 AssassinSwing2 = nil
 AssassinSwing3 = nil
 AssassinSwing4 = nil
 
--- Shaman -------
 ShamanSwing1 = nil
 ShamanSwing2 = nil
 ShamanSwing3 = nil
 
--- Archer -------
 AnimBowShootHold = nil
 ArcherShoot = nil
-
 AnimCrossBowLoad = nil
 AnimCrossBowHold = nil
 AnimCrossBowShoot = nil
 
--- Wynncraft Spells -------------------------------------------------
+-- Wynncraft Spells --
 -- R1, L2, R3 = s1
 -- R1, L2, L3 = s2
 -- R1, R2, L3 = s3
@@ -176,17 +165,15 @@ AnimCrossBowShoot = nil
 -- AnimSecondSpell = animations.model["spell2"]
 -- AnimFirstSpell = animations.model["animation.model.FirstSpell"]
 
--- Animation overrides ----------------------------------------------
+-- Collections --
+AllSwingingAnimations = nil
+
+-- Animation overrides
 animModel:addExcluOverrider(
     AnimFreeFalling,
     AnimShortFalling
 )
-animModel:addIncluOverrider(
-    -- animations.model["Bow_Shoot"],
-    -- animations.model["Cross_Shoot"]
-    -- animations.model["Taunt_2"],
-    -- animations.model["Taunt_3"]
-)
+animModel:addIncluOverrider()
 
 function events.tick()
 
@@ -206,14 +193,6 @@ function events.tick()
     local fishingRodHeldInLeft = ((handType == "L" and fishingRodMainHand) or (handType == "R" and fishingRodOffHand)) and 1 or 0
     local fishingRodHeldInRight = ((handType == "R" and fishingRodMainHand) or (handType == "L" and fishingRodOffHand)) and 1 or 0
     local activeFishingHandType = ((fishingRodHeldInLeft == 1) and "L") or ((fishingRodHeldInRight == 1) and "R") or "R"
-
-    -- Basic --------
-    -- AnimPunch = animations.model["attack" .. handType]
-    -- AnimPunch:setBlendTime(1, 4)
-    -- AnimPunch:setBlendCurve("easeInOutSine")
-    -- AnimMine = animations.model["mine" .. handType]
-    -- AnimMine:setBlendTime(1, 5)
-    -- AnimMine:setBlendCurve("easeInOutSine")
 
     -- Warrior ------
     WarriorSwing1 = animations.model["Spear_Swing_1" .. handType]
@@ -321,5 +300,25 @@ function events.tick()
     AnimIsFishing = animations.model["is_fishing" .. activeFishingHandType]
     AnimIsFishing:setBlendTime(6, 2)
     AnimIsFishing:setBlendCurve("easeInOutSine")
+
+    -- Collections --
+    AllSwingingAnimations = {
+        AnimPunchR, AnimPunchL,
+        AnimMineR, AnimMineL,
+        AnimPickaxe1, AnimPickaxe2,
+        AnimAxe1, AnimAxe2,
+        AnimHoe1, AnimHoe2,
+        AnimShovel1, AnimShovel2,
+        AnimFishing1, AnimFishing2, AnimIsFishing,
+        WarriorSwing1, WarriorSwing2, WarriorSwing3,
+        MageSwing1, MageSwing2, MageSwing3,
+        AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4,
+        ShamanSwing1, ShamanSwing2, ShamanSwing3,
+        ArcherShoot
+    }
+
+    for i = 1, #AllSwingingAnimations do
+        AllSwingingAnimations[i]:setPriority(1)
+    end
 
 end
