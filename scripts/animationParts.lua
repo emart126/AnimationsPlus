@@ -72,9 +72,18 @@ AnimSprint = animations.model["sprint"]
 AnimSprint:setBlendTime(2, 2)
 AnimSprint:setBlendCurve("easeInOutSine")
 
-AnimSit = animations.model["sitpass"]
-AnimHorseSit = animations.model["sit"]
-AnimHorseRiding = animations.model["sitmove"]
+AnimSit = animations.model["sit"]
+AnimSit:setBlendTime(2, 2)
+AnimSit:setBlendCurve("easeInOutSine")
+AnimSitPassenger = animations.model["sitpass"]
+AnimSitPassenger:setBlendTime(2, 2)
+AnimSitPassenger:setBlendCurve("easeInOutSine")
+AnimHorseSit = animations.model["sitHorse"]
+AnimHorseSit:setBlendTime(2, 2)
+AnimHorseSit:setBlendCurve("easeInOutSine")
+AnimHorseRiding = animations.model["sitmoveHorse"]
+AnimHorseRiding:setBlendTime(2, 2)
+AnimHorseRiding:setBlendCurve("easeInOutSine")
 
 -- Taunts --
 AnimTaunt1 = animations.model["Taunt_1"]

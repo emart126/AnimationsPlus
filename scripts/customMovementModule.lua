@@ -14,6 +14,9 @@ local startedFall = false
 local yVel = 0
 local oldYVel = 0
 
+local isRidingHorse
+local oldIsRidingHorse
+
 local facing
 local oldFacing
 
@@ -170,6 +173,25 @@ function events.render(delta, context)
     end
 
     oldYVel = yVel
+
+    -- Horseback Riding ---------------------------------------------------------
+    isRidingHorse = sitting and string.find(sitting:getType(), "horse")
+    if (isRidingHorse) then
+        AnimSit:stop()
+        AnimSitPassenger:stop()
+        if (walking) then
+            AnimHorseSit:stop()
+            AnimHorseRiding:play()
+        else
+            AnimHorseSit:play()
+            AnimHorseRiding:stop()
+        end
+    elseif (not isRidingHorse and isRidingHorse ~= oldIsRidingHorse) then
+        AnimHorseSit:stop()
+        AnimHorseRiding:stop()
+    end
+
+    oldIsRidingHorse = isRidingHorse
 
     -- Climbing conditions ------------------------------------------------------
     facing = world.getBlockState(player:getPos()):getProperties()["facing"]

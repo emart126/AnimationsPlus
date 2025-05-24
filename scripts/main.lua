@@ -16,12 +16,8 @@ require("scripts/customPhysicsModule")
 require("scripts/customHolsterModule")
 require("scripts/actionWheel")
 
--- Global Variables =================================================================================================================================
-
-local isBoating
-local oldIsBoating
-
-function events.entity_init() --=====================================================================================================================
+-- Initial model conditions
+function events.entity_init()
     -- Hide vanilla model
     vanilla_model.PLAYER:setVisible(false)
     vanilla_model.CAPE:setVisible(false)
@@ -54,10 +50,10 @@ function events.entity_init() --================================================
     end
 end
 
--- Render animation conditions by in game ticks
-function events.tick() --============================================================================================================================
+-- Render model conditions by in game ticks
+function events.tick()
 
-    -- Handle crouch model position ---------------------------------------------
+    -- Handle crouch model position
     if (player:getPose() == "CROUCHING") then
         PModel:setPos(0,2,0)
         ModelCape:setPos(0,2,0)
@@ -66,7 +62,7 @@ function events.tick() --=======================================================
         ModelCape:setPos(0,0,0)
     end
 
-    -- Handle Helmet/Hat visibility ---------------------------------------------
+    -- Handle Helmet/Hat visibility
     if (string.find(player:getItem(6).id, "helmet") ~= nil) then
         vanilla_model.ARMOR:setVisible(false)
     else
@@ -75,13 +71,10 @@ function events.tick() --=======================================================
 
 end
 
--- Render animation condtions using render function
-function events.render(delta, context) --============================================================================================================
+-- Render model condtions using render function
+function events.render(delta, context)
 
-    -- Player Conditions --------------------------------------------------------
-    local sitting = player:getVehicle()
-
-    -- First person hand model --------------------------------------------------
+    -- First person hand model
     if (player:isLeftHanded()) then
         vanilla_model.LEFT_ARM:setVisible(renderer:isFirstPerson() and context == "FIRST_PERSON")
         vanilla_model.RIGHT_ARM:setVisible(false)
@@ -89,17 +82,5 @@ function events.render(delta, context) --=======================================
         vanilla_model.RIGHT_ARM:setVisible(renderer:isFirstPerson() and context == "FIRST_PERSON")
         vanilla_model.LEFT_ARM:setVisible(false)
     end
-
-    -- Boating ------------------------------------------------------------------
-    isBoating = sitting and string.find(sitting:getType(), "boat")
-    if (isBoating) then
-        AnimHorseSit:stop()
-        AnimHorseRiding:stop()
-        AnimSit:play()
-    elseif (not isBoating and isBoating ~= oldIsBoating) then
-        AnimSit:stop()
-    end
-
-    oldIsBoating = isBoating
 
 end
