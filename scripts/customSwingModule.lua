@@ -1,5 +1,3 @@
-local GSBlend = require("libraries/GSAnimBlend")
-
 local currSwing = 1
 
 local oldWeaponClass = nil
@@ -126,7 +124,6 @@ end
 useKey.press = pings.onRightClickDo
 
 function events.tick()
-    -- print(AnimPunchR:isPlaying())
 
     -- Item Use Priority --------------------------------------------------------
     AnimBowShootHold:setPriority(player:isUsingItem() and 1 or 0)
@@ -136,11 +133,13 @@ function events.tick()
 
     -- Swing Priority -----------------------------------------------------------
     IsSwinging = isCustomSwinging()
-    AnimIdle:setPriority(IsSwinging and 1 or 0)
-    AnimCrouching:setPriority(IsSwinging and 1 or 0)
-    AnimFreeFalling:setPriority(IsSwinging and 1 or 0)
-    AnimLand:setPriority(IsSwinging and 1 or 0)
-    AnimFloat:setPriority(IsSwinging and 1 or 0)
+    IsSpellCasting = IsSpellAttacking()
+
+    AnimIdle:setPriority((IsSwinging and 1) or (IsSpellCasting and 2) or 0)
+    AnimCrouching:setPriority((IsSwinging and 1) or (IsSpellCasting and 2) or 0)
+    AnimFreeFalling:setPriority((IsSwinging and 1) or (IsSpellCasting and 2) or 0)
+    AnimLand:setPriority((IsSwinging and 1) or (IsSpellCasting and 2) or 0)
+    AnimFloat:setPriority((IsSwinging and 1) or (IsSpellCasting and 2) or 0)
 
     -- Handle Custom Attacking --------------------------------------------------
     local heldItem = player:getHeldItem()

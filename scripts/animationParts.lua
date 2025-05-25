@@ -1,4 +1,6 @@
 local anims = require("libraries/EZAnims")
+GSBlend = require("libraries/GSAnimBlend")
+
 anims:setOneJump(true)
 
 local animModel = anims:addBBModel(animations.model)
@@ -160,22 +162,11 @@ AnimCrossBowHold = nil
 AnimCrossBowShoot = nil
 
 -- Wynncraft Spells --
--- R1, L2, R3 = s1
--- R1, L2, L3 = s2
--- R1, R2, L3 = s3
--- R1, R2, R3 = Move
-
--- AnimR1 = animations.model["R1"]
--- AnimR2 = animations.model["R2"]
--- AnimL2 = animations.model["L2"]
-
--- AnimMovement = animations.model["animation.model.movement"]
--- AnimThirdSpell = animations.model["spell3"]
--- AnimSecondSpell = animations.model["spell2"]
--- AnimFirstSpell = animations.model["animation.model.FirstSpell"]
+WarriorBash = nil
 
 -- Collections --
 AllSwingingAnimations = nil
+AllSpellAnimations = nil
 
 -- Animation overrides
 animModel:addExcluOverrider(
@@ -213,6 +204,10 @@ function events.tick()
     WarriorSwing3 = animations.model["Spear_Swing_3" .. handType]
     WarriorSwing3:setBlendTime(3,7)
     WarriorSwing3:setBlendCurve("easeOutSine")
+
+    WarriorBash = animations.model["Warrior_bash" .. handType]
+    WarriorBash:setBlendTime(3, 7)
+    WarriorBash:setBlendCurve("easeInOutSine")
 
     -- Mage ---------
     MageSwing1 = animations.model["Wand_Wave_1" .. handType]
@@ -328,6 +323,14 @@ function events.tick()
 
     for i = 1, #AllSwingingAnimations do
         AllSwingingAnimations[i]:setPriority(1)
+    end
+
+    AllSpellAnimations = {
+        WarriorBash
+    }
+
+    for i = 1, #AllSpellAnimations do
+        AllSpellAnimations[i]:setPriority(2)
     end
 
 end
