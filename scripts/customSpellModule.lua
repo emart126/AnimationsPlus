@@ -38,18 +38,24 @@ function events.tick()
     local mainHandItemName = player:getHeldItem(false):getName()
     spell = CheckSpellAction(mainHandItemName)
 
+    -- local actionBar = client:getActionbar()
+    -- local centerHud
+    -- if (actionBar ~= nil) then
+    --     centerHud = string.find(actionBar, "minecraft:hud/default/center")
+    -- end
+
     if (spell ~= nil and spell ~= oldspell) then
         ResetIdle()
 
         if (spell == "Bash") then
             WarriorBash:play()
-            print("Bash")
+            -- print("Bash")
         elseif (spell == "Uppercut") then
-            print("Uppercut")
+            -- print("Uppercut")
         elseif (spell == "Charge") then
-            print("Charge")
+            -- print("Charge")
         elseif (spell == "War Scream") then
-            print("War Scream")
+            -- print("War Scream")
         end
     end
 
