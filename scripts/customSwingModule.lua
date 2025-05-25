@@ -1,3 +1,5 @@
+local GSBlend = require("libraries/GSAnimBlend")
+
 local currSwing = 1
 
 local oldWeaponClass = nil
@@ -56,18 +58,6 @@ end
 
 -- Check if swinging animation is playing 
 local function isCustomSwinging()
-    local swingAnimations = {
-        AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4,
-        WarriorSwing1, WarriorSwing2, WarriorSwing3,
-        MageSwing1, MageSwing2, MageSwing3,
-        ShamanSwing1, ShamanSwing2, ShamanSwing3,
-        ArcherShoot,
-        AnimPickaxe1, AnimPickaxe2,
-        AnimAxe1, AnimAxe2,
-        AnimHoe1, AnimHoe2,
-        AnimShovel1, AnimShovel2,
-        AnimFishing1, AnimFishing2, AnimIsFishing
-    }
     for i = 1, #AllSwingingAnimations do
         if (AllSwingingAnimations[i]:isPlaying()) then
             return true
@@ -101,6 +91,17 @@ local function CheckAnimToPlayLeftClick(swingAnimations, numOfSwings, nextIndx)
     return nextIndx
 end
 
+local function StopHandPunchAnimations()
+    AnimPunchR:stop()
+    GSBlend.stopBlend(AnimPunchR)
+    AnimPunchL:stop()
+    GSBlend.stopBlend(AnimPunchL)
+    AnimMineR:stop()
+    GSBlend.stopBlend(AnimMineR)
+    AnimMineL:stop()
+    GSBlend.stopBlend(AnimMineL)
+end
+
 function pings.syncHeldItemIsWeapon(strClass)
     weaponClass = strClass
     currSwing = 1
@@ -125,6 +126,7 @@ end
 useKey.press = pings.onRightClickDo
 
 function events.tick()
+    -- print(AnimPunchR:isPlaying())
 
     -- Item Use Priority --------------------------------------------------------
     AnimBowShootHold:setPriority(player:isUsingItem() and 1 or 0)
@@ -150,10 +152,7 @@ function events.tick()
     if (player:getSwingTime() == 1) then
         -- Dont punch while holding a weapon
         if (weaponClass ~= nil or heldItemIsSword) then
-            AnimPunchR:stop()
-            AnimPunchL:stop()
-            AnimMineR:stop()
-            AnimMineL:stop()
+            StopHandPunchAnimations()
         end
 
         if ((readyToSwing) and
@@ -218,10 +217,7 @@ function events.tick()
 
     if (player:getSwingTime() == 1 and weaponClass == nil) then
         if (heldItemIsPickaxe or heldItemIsAxe or heldItemIsShovel or heldItemIsHoe or heldItemIsFishingRod) then
-            AnimPunchR:stop()
-            AnimPunchL:stop()
-            AnimMineR:stop()
-            AnimMineL:stop()
+            StopHandPunchAnimations()
         end
 
         if (readyToSwing and heldItemIsPickaxe) then
@@ -285,10 +281,7 @@ function events.tick()
     oldIsFishing = isFishing
 
     if (player:getSwingTime() == 1 and readyToSwing and heldItemIsFishingRod) then
-        AnimPunchR:stop()
-        AnimPunchL:stop()
-        AnimMineR:stop()
-        AnimMineL:stop()
+        StopHandPunchAnimations()
 
         if (isFishing) then
             AnimFishing1:play()
