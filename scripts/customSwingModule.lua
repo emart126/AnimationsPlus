@@ -1,7 +1,7 @@
 local currSwing = 1
 
 local oldWeaponClass = nil
-local weaponClass = nil
+WeaponClass = nil
 local oldToolItem = nil
 local toolItem = nil
 
@@ -15,6 +15,7 @@ local isFishing = nil
 local oldIsFishing = nil
 
 IsSwinging = nil
+IsCastingSpell = nil
 
 -- Check if itemStack has a class identified with it
 function CheckClassItem(item)
@@ -101,7 +102,7 @@ local function StopHandPunchAnimations()
 end
 
 function pings.syncHeldItemIsWeapon(strClass)
-    weaponClass = strClass
+    WeaponClass = strClass
     currSwing = 1
 end
 
@@ -116,7 +117,7 @@ function pings.onRightClickDo()
     ResetIdle()
 
     if (not isActionWheelOpen) then
-        if (weaponClass == "Archer/Hunter") then
+        if (WeaponClass == "Archer/Hunter") then
             ArcherShoot:play()
         end
     end
@@ -133,13 +134,13 @@ function events.tick()
 
     -- Swing Priority -----------------------------------------------------------
     IsSwinging = isCustomSwinging()
-    IsSpellCasting = IsSpellAttacking()
+    IsCastingSpell = IsSpellCasting()
 
-    AnimIdle:setPriority((IsSwinging and 1) or (IsSpellCasting and 2) or 0)
-    AnimCrouching:setPriority((IsSwinging and 1) or (IsSpellCasting and 2) or 0)
-    AnimFreeFalling:setPriority((IsSwinging and 1) or (IsSpellCasting and 2) or 0)
-    AnimLand:setPriority((IsSwinging and 1) or (IsSpellCasting and 2) or 0)
-    AnimFloat:setPriority((IsSwinging and 1) or (IsSpellCasting and 2) or 0)
+    AnimIdle:setPriority((IsSwinging and 1) or (IsCastingSpell and 2) or 0)
+    AnimCrouching:setPriority((IsSwinging and 1) or (IsCastingSpell and 2) or 0)
+    AnimFreeFalling:setPriority((IsSwinging and 1) or (IsCastingSpell and 2) or 0)
+    AnimLand:setPriority((IsSwinging and 1) or (IsCastingSpell and 2) or 0)
+    AnimFloat:setPriority((IsSwinging and 1) or (IsCastingSpell and 2) or 0)
 
     -- Handle Custom Attacking --------------------------------------------------
     local heldItem = player:getHeldItem()
@@ -150,27 +151,27 @@ function events.tick()
 
     if (player:getSwingTime() == 1) then
         -- Dont punch while holding a weapon
-        if (weaponClass ~= nil or heldItemIsSword) then
+        if (WeaponClass ~= nil or heldItemIsSword) then
             StopHandPunchAnimations()
         end
 
         if ((readyToSwing) and
-            weaponClass == "Warrior/Knight") then
+            WeaponClass == "Warrior/Knight") then
             currSwing = CheckAnimToPlayLeftClick({WarriorSwing1, WarriorSwing2, WarriorSwing3}, 3, currSwing)
         end
 
         if ((readyToSwing) and
-            weaponClass == "Mage/Dark Wizard") then
+            WeaponClass == "Mage/Dark Wizard") then
             currSwing = CheckAnimToPlayLeftClick({MageSwing1, MageSwing2, MageSwing3}, 3, currSwing)
         end
 
         if ((readyToSwing) and
-            (weaponClass == "Assassin/Ninja" or heldItemIsSword)) then
+            (WeaponClass == "Assassin/Ninja" or heldItemIsSword)) then
             currSwing = CheckAnimToPlayLeftClick({AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4}, 4, currSwing)
         end
 
         if ((readyToSwing) and
-            weaponClass == "Shaman/Skyseer") then
+            WeaponClass == "Shaman/Skyseer") then
             currSwing = CheckAnimToPlayLeftClick({ShamanSwing1, ShamanSwing2, ShamanSwing3}, 3, currSwing)
         end
 
@@ -214,7 +215,7 @@ function events.tick()
     local fishingOffHand = string.find(offhandItem.id, "fishing_rod")
     local heldItemIsFishingRod = (fishingMainHand or fishingOffHand or heldItemIsFishingTool)
 
-    if (player:getSwingTime() == 1 and weaponClass == nil) then
+    if (player:getSwingTime() == 1 and WeaponClass == nil) then
         if (heldItemIsPickaxe or heldItemIsAxe or heldItemIsShovel or heldItemIsHoe or heldItemIsFishingRod) then
             StopHandPunchAnimations()
         end
