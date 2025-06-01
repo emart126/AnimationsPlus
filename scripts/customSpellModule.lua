@@ -121,14 +121,16 @@ function events.tick()
             ResetIdle()
 
             if (spell == "Bash") then
-                WarriorBash:play()
                 -- print("Bash")
+                WarriorBash:play()
             elseif (spell == "Uppercut") then
                 -- print("Uppercut")
-            elseif (spell == "Charge") then
-                -- print("Charge")
+                WarriorUppercut:play()
             elseif (spell == "War Scream") then
                 -- print("War Scream")
+                WarriorScream:play()
+            elseif (spell == "Charge") then
+                -- print("Charge")
             end
         end
     end

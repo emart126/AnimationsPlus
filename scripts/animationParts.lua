@@ -163,6 +163,8 @@ AnimCrossBowShoot = nil
 
 -- Wynncraft Spells --
 WarriorBash = nil
+WarriorUppercut = nil
+WarriorScream = nil
 
 -- Collections --
 AllSwingingAnimations = nil
@@ -206,8 +208,14 @@ function events.tick()
     WarriorSwing3:setBlendCurve("easeOutSine")
 
     WarriorBash = animations.model["Warrior_bash" .. handType]
-    WarriorBash:setBlendTime(3, 7)
-    WarriorBash:setBlendCurve("easeInOutSine")
+    WarriorBash:setBlendTime(3, 6)
+    WarriorBash:setBlendCurve("easeOutQuad")
+    WarriorUppercut = animations.model["Warrior_uppercut" .. handType]
+    WarriorUppercut:setBlendTime(3, 4.5)
+    WarriorUppercut:setBlendCurve("easeOutQuad")
+    WarriorScream = animations.model["Warrior_scream" .. handType]
+    WarriorScream:setBlendTime(3, 8)
+    WarriorScream:setBlendCurve("easeInOutSine")
 
     -- Mage ---------
     MageSwing1 = animations.model["Wand_Wave_1" .. handType]
@@ -326,7 +334,7 @@ function events.tick()
     end
 
     AllSpellAnimations = {
-        WarriorBash
+        WarriorBash, WarriorUppercut, WarriorScream
     }
 
     for i = 1, #AllSpellAnimations do
