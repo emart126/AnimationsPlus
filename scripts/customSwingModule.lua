@@ -134,13 +134,13 @@ function events.tick()
 
     -- Swing Priority -----------------------------------------------------------
     IsSwinging = isCustomSwinging()
-    IsCastingSpell = IsSpellCasting()
+    IsCastingSpell = IsSpellCastingAnimation()
 
-    AnimIdle:setPriority((IsSwinging and 1) or (IsCastingSpell and 2) or 0)
-    AnimCrouching:setPriority((IsSwinging and 1) or (IsCastingSpell and 2) or 0)
-    AnimFreeFalling:setPriority((IsSwinging and 1) or (IsCastingSpell and 2) or 0)
-    AnimLand:setPriority((IsSwinging and 1) or (IsCastingSpell and 2) or 0)
-    AnimFloat:setPriority((IsSwinging and 1) or (IsCastingSpell and 2) or 0)
+    AnimIdle:setPriority((IsSwinging and 1) or (IsCastingSpell and 1) or 0)
+    AnimCrouching:setPriority((IsSwinging and 1) or (IsCastingSpell and 1) or 0)
+    AnimFreeFalling:setPriority((IsSwinging and 1) or (IsCastingSpell and 1) or 0)
+    AnimLand:setPriority((IsSwinging and 1) or (IsCastingSpell and 1) or 0)
+    AnimFloat:setPriority((IsSwinging and 1) or (IsCastingSpell and 1) or 0)
 
     -- Handle Custom Attacking --------------------------------------------------
     local heldItem = player:getHeldItem()
@@ -153,6 +153,11 @@ function events.tick()
         -- Dont punch while holding a weapon
         if (WeaponClass ~= nil or heldItemIsSword) then
             StopHandPunchAnimations()
+        end
+
+        -- Dont swing if spell casting
+        if (IsMiddleSpellCast()) then
+            return
         end
 
         if ((readyToSwing) and

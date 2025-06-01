@@ -1,4 +1,4 @@
-local HUD_UNICODE_EXPRESSION = "[\0-\x7F\xC2-\xF4][\x80-\xBF]*"
+local HUD_UNICODE_EXPRESSION = "\xEE[\x80-\xBF]*"
 local SPELL_CODES_START = 0x0103
 local SPELL_CODES_END = 0x0105
 
@@ -38,14 +38,26 @@ local allSpells = {
     }
 }
 
+local foundSpell = false
 local currentSpell
 local oldCurrentSpell
 
-function IsSpellCasting()
+function IsSpellCastingAnimation()
     for i = 1, #AllSpellAnimations do
         if (AllSpellAnimations[i]:isPlaying()) then
             return true
         end
+    end
+    return false
+end
+
+function IsMiddleSpellCast()
+    if (currentSpell == nil or WeaponClass == nil) then
+        return false
+    end
+
+    if ((string.sub(currentSpell, 1, 1) ~= '-' or string.sub(currentSpell, 2, 2) ~= '-') and string.sub(currentSpell, 3, 3) == '-') then
+        return true
     end
     return false
 end
@@ -72,22 +84,31 @@ function events.tick()
     if (actionBar ~= nil) then
         -- Find Unicode for spells
         local input = 0
+        foundSpell = false
         for unicode in string.gmatch(actionBar, HUD_UNICODE_EXPRESSION) do
             local bytes = #unicode
 
             if (bytes == 3) then
                 -- utf8 Conversion
                 local c1, c2, c3 = string.match(unicode, "^(.)(.)(.)$")
-                local hudCode = (c2:byte() % 0x40) * 0x40 + (c3:byte() % 0x40)
+                if (c1 == '\xEE') then
+                    local hudCode = (c2:byte() % 0x40) * 0x40 + (c3:byte() % 0x40)
 
-                if (hudCode >= SPELL_CODES_START and hudCode <= SPELL_CODES_END) then
-                    input = input + 1
-                    spellArray[input] = spellChars[((hudCode - SPELL_CODES_START) % 3) + 1]
+                    if (hudCode >= SPELL_CODES_START and hudCode <= SPELL_CODES_END) then
+                        foundSpell = true
+                        input = input + 1
+                        spellArray[input] = spellChars[((hudCode - SPELL_CODES_START) % 3) + 1]
+                    end
                 end
             end
         end
 
-        currentSpell = spellArray[1] .. spellArray[2] .. spellArray[3]
+        if (foundSpell) then
+            currentSpell = spellArray[1] .. spellArray[2] .. spellArray[3]
+        else
+            currentSpell = '---'
+            foundSpell = false
+        end
     end
 
     -- Spell Animation Handling
@@ -112,7 +133,7 @@ function events.tick()
         end
     end
 
-    if (IsSpellCasting()) then
+    if (IsSpellCastingAnimation()) then
         StopAllSwingAnimations()
     end
 

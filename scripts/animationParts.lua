@@ -330,7 +330,7 @@ function events.tick()
     }
 
     for i = 1, #AllSpellAnimations do
-        AllSpellAnimations[i]:setPriority(2)
+        AllSpellAnimations[i]:setPriority(1)
     end
 
 end
