@@ -211,7 +211,7 @@ function events.tick()
     WarriorBash:setBlendTime(3, 6)
     WarriorBash:setBlendCurve("easeOutQuad")
     WarriorUppercut = animations.model["Warrior_uppercut" .. handType]
-    WarriorUppercut:setBlendTime(3, 4.5)
+    WarriorUppercut:setBlendTime(2, 8)
     WarriorUppercut:setBlendCurve("easeOutQuad")
     WarriorScream = animations.model["Warrior_scream" .. handType]
     WarriorScream:setBlendTime(3, 8)

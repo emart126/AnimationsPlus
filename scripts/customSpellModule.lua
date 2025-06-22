@@ -69,6 +69,13 @@ local function StopAllSwingAnimations()
     end
 end
 
+local function StopAllSpellAnimations()
+    for i = 1, #AllSpellAnimations do
+        AllSpellAnimations[i]:stop()
+        GSBlend.stopBlend(AllSpellAnimations[i])
+    end
+end
+
 local function CheckSpellAction(class, spellCombo)
     local classSpells = allSpells[class]
     if classSpells then
@@ -118,6 +125,7 @@ function events.tick()
             local class = string.sub(WeaponClass, 0, string.find(WeaponClass, "/") - 1)
             local spell = CheckSpellAction(class, currentSpell)
             -- print(spell)
+            StopAllSpellAnimations()
             ResetIdle()
 
             if (spell == "Bash") then
