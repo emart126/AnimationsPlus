@@ -91,12 +91,12 @@ local function playSpell(class, spell)
             Uppercut = WarriorUppercut,
             WarScream = WarriorScream
         },
-        -- Mage = {
-        --     Heal = ,
-        --     Meteor = ,
-        --     IceSnake = ,
-        --     Teleport = 
-        -- },
+        Mage = {
+            Heal = MageHeal,
+            -- Meteor = ,
+            -- IceSnake = ,
+            -- Teleport = 
+        },
         -- Assassin = {
         --     SpinAttack = ,
         --     MultiHit = ,
@@ -118,7 +118,7 @@ local function playSpell(class, spell)
     }
 
     local classSpellAnims = classSpellMap[class]
-    if classSpellAnims then
+    if (classSpellAnims ~= nil and classSpellAnims[spell] ~= nil) then
         classSpellAnims[spell]:play()
     end
 end

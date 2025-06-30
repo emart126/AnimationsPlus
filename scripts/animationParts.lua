@@ -228,6 +228,10 @@ function events.tick()
     MageSwing3:setBlendTime(3, 6.5)
     MageSwing3:setBlendCurve("easeInOutSine")
 
+    MageHeal = animations.model["Mage_heal" .. handType]
+    MageHeal:setBlendTime(3, 8)
+    MageHeal:setBlendCurve("easeInOutSine")
+
     -- Assassin -----
     AssassinSwing1 = animations.model["Sword_Swing_1" .. handType]
     AssassinSwing1:setBlendTime(3, 5.5)
@@ -334,7 +338,8 @@ function events.tick()
     end
 
     AllSpellAnimations = {
-        WarriorBash, WarriorUppercut, WarriorScream
+        WarriorBash, WarriorUppercut, WarriorScream,
+        MageHeal
     }
 
     for i = 1, #AllSpellAnimations do
