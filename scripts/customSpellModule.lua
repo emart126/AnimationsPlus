@@ -9,19 +9,19 @@ local allSpells = {
     Warrior = {
         RLR = "Bash",
         RLL = "Uppercut",
-        RRL = "War Scream",
+        RRL = "WarScream",
         RRR = "Charge"
     },
     Mage = {
         RLR = "Heal",
         RLL = "Meteor",
-        RRL = "Ice Snake",
+        RRL = "IceSnake",
         RRR = "Teleport"
     },
     Assassin = {
-        RLR = "Spin Attack",
-        RLL = "Multi Hit",
-        RRL = "Smoke Bomb",
+        RLR = "SpinAttack",
+        RLL = "MultiHit",
+        RRL = "SmokeBomb",
         RRR = "Dash"
     },
     Shaman = {
@@ -31,9 +31,9 @@ local allSpells = {
         RRR = "Haul"
     },
     Archer = {
-        LRL = "Arrow Storm",
-        LRR = "Arrow Bomb",
-        LLR = "Arrow Shield",
+        LRL = "ArrowStorm",
+        LRR = "ArrowBomb",
+        LLR = "ArrowShield",
         LLL = "Escape"
     }
 }
@@ -84,6 +84,45 @@ local function CheckSpellAction(class, spellCombo)
     return nil
 end
 
+local function playSpell(class, spell)
+    local classSpellMap = {
+        Warrior = {
+            Bash = WarriorBash,
+            Uppercut = WarriorUppercut,
+            WarScream = WarriorScream
+        },
+        -- Mage = {
+        --     Heal = ,
+        --     Meteor = ,
+        --     IceSnake = ,
+        --     Teleport = 
+        -- },
+        -- Assassin = {
+        --     SpinAttack = ,
+        --     MultiHit = ,
+        --     SmokeBomb = ,
+        --     Dash = 
+        -- },
+        -- Shaman = {
+        --     Totem = ,
+        --     Aura = ,
+        --     Uproot = ,
+        --     Haul = 
+        -- },
+        -- Archer = {
+        --     ArrowStorm = ,
+        --     ArrowBomb = ,
+        --     ArrowShield = ,
+        --     Escape = 
+        -- }
+    }
+
+    local classSpellAnims = classSpellMap[class]
+    if classSpellAnims then
+        classSpellAnims[spell]:play()
+    end
+end
+
 function events.tick()
 
     -- Parse Action Bar
@@ -128,18 +167,7 @@ function events.tick()
             StopAllSpellAnimations()
             ResetIdle()
 
-            if (spell == "Bash") then
-                -- print("Bash")
-                WarriorBash:play()
-            elseif (spell == "Uppercut") then
-                -- print("Uppercut")
-                WarriorUppercut:play()
-            elseif (spell == "War Scream") then
-                -- print("War Scream")
-                WarriorScream:play()
-            elseif (spell == "Charge") then
-                -- print("Charge")
-            end
+            playSpell(class, spell)
         end
     end
 
