@@ -93,8 +93,8 @@ local function playSpell(class, spell)
         },
         Mage = {
             Heal = MageHeal,
-            -- Meteor = ,
-            IceSnake = MageIceSnake,
+            Meteor = MageMeteor,
+            IceSnake = MageIceSnake
         },
         -- Assassin = {
         --     SpinAttack = ,

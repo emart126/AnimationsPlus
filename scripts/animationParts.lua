@@ -168,6 +168,7 @@ WarriorScream = nil
 
 MageHeal = nil
 MageIceSnake = nil
+MageMeteor = nil
 
 -- Collections --
 AllSwingingAnimations = nil
@@ -234,6 +235,9 @@ function events.tick()
     MageHeal = animations.model["Mage_heal" .. handType]
     MageHeal:setBlendTime(3, 8)
     MageHeal:setBlendCurve("easeInOutSine")
+    MageMeteor = animations.model["Mage_Meteor" .. handType]
+    MageMeteor:setBlendTime(5, 10)
+    MageMeteor:setBlendCurve("easeInOutSine")
     MageIceSnake = animations.model["Mage_IceSnake" .. handType]
     MageIceSnake:setBlendTime(2, 10)
     MageIceSnake:setBlendCurve("easeInOutSine")
@@ -345,7 +349,7 @@ function events.tick()
 
     AllSpellAnimations = {
         WarriorBash, WarriorUppercut, WarriorScream,
-        MageHeal, MageIceSnake
+        MageHeal, MageMeteor, MageIceSnake
     }
 
     for i = 1, #AllSpellAnimations do
