@@ -94,26 +94,22 @@ local function playSpell(class, spell)
         Mage = {
             Heal = MageHeal,
             -- Meteor = ,
-            -- IceSnake = ,
-            -- Teleport = 
+            IceSnake = MageIceSnake,
         },
         -- Assassin = {
         --     SpinAttack = ,
         --     MultiHit = ,
         --     SmokeBomb = ,
-        --     Dash = 
         -- },
         -- Shaman = {
         --     Totem = ,
         --     Aura = ,
         --     Uproot = ,
-        --     Haul = 
         -- },
         -- Archer = {
         --     ArrowStorm = ,
         --     ArrowBomb = ,
         --     ArrowShield = ,
-        --     Escape = 
         -- }
     }
 
