@@ -70,6 +70,22 @@ function events.tick()
         vanilla_model.ARMOR:setVisible(true)
     end
 
+    -- Skin layer visibility
+    ModelJacket:setVisible(player:isSkinLayerVisible("JACKET"))
+    ModelHat:setVisible(player:isSkinLayerVisible("HAT"))
+    ModelRightArmDefaultSleeveUpper:setVisible(player:isSkinLayerVisible("RIGHT_SLEEVE"))
+    ModelRightArmDefaultSleeveLower:setVisible(player:isSkinLayerVisible("RIGHT_SLEEVE"))
+    ModelRightArmSlimSleeveUpper:setVisible(player:isSkinLayerVisible("RIGHT_SLEEVE"))
+    ModelRightArmSlimSleeveLower:setVisible(player:isSkinLayerVisible("RIGHT_SLEEVE"))
+    ModelLeftArmDefaultSleeveUpper:setVisible(player:isSkinLayerVisible("LEFT_SLEEVE"))
+    ModelLeftArmDefaultSleeveLower:setVisible(player:isSkinLayerVisible("LEFT_SLEEVE"))
+    ModelLeftArmSlimSleeveUpper:setVisible(player:isSkinLayerVisible("LEFT_SLEEVE"))
+    ModelLeftArmSlimSleeveLower:setVisible(player:isSkinLayerVisible("LEFT_SLEEVE"))
+    ModelRightLegPantUpper:setVisible(player:isSkinLayerVisible("RIGHT_PANTS"))
+    ModelRightLegPantLower:setVisible(player:isSkinLayerVisible("RIGHT_PANTS"))
+    ModelLeftLegPantUpper:setVisible(player:isSkinLayerVisible("LEFT_PANTS"))
+    ModelLeftLegPantLower:setVisible(player:isSkinLayerVisible("LEFT_PANTS"))
+
 end
 
 -- Render model condtions using render function
