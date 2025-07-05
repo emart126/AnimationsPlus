@@ -26,12 +26,12 @@ function events.render(delta, context)
         armTarget = -3
     end
 
-    if (not IsSwinging and ((xvel >= -0.22 and xvel <= 0.22) or AnimFreeFalling:isPlaying())) then
-        rArm:berp(armTarget, 0.25, 0.01, 0.2)
-        lArm:berp(armTarget, 0.25, 0.01, 0.2)
-    else
+    if (IsSwinging or IsCastingSpell) then
         rArm:berp(0, 0.25, 0.01, 0.2)
         lArm:berp(0, 0.25, 0.01, 0.2)
+    else
+        rArm:berp(armTarget, 0.25, 0.01, 0.2)
+        lArm:berp(armTarget, 0.25, 0.01, 0.2)
     end
 
     -- Head physics -------------------------------------------------------------

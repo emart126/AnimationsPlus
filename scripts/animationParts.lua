@@ -2,9 +2,11 @@ local anims = require("libraries/EZAnims")
 GSBlend = require("libraries/GSAnimBlend")
 
 anims:setOneJump(true)
+anims:setFallVel(-0.6)
 
 local animModel = anims:addBBModel(animations.model)
 animModel:setBlendTimes(2,2)
+BlendController = anims:addBBModel(animations.model)
 
 local handType = "R"
 
@@ -175,10 +177,7 @@ AllSwingingAnimations = nil
 AllSpellAnimations = nil
 
 -- Animation overrides
-animModel:addExcluOverrider(
-    AnimFreeFalling,
-    AnimShortFalling
-)
+animModel:addExcluOverrider(AnimFreeFalling)
 animModel:addIncluOverrider()
 
 function events.tick()

@@ -1,6 +1,7 @@
 local PLAYER_WALK_SPEED = 4.65
 local PLAYER_SPRINT_SPEED = 3.565
 local PLAYER_CROUCH_WALK_SPEED = 15
+local FALL_TIME = 0.75
 
 local rightLeg = false
 local wasSprintJup = false
@@ -123,7 +124,7 @@ function events.render(delta, context)
     isSprintJup = AnimSprintJumpUp:isPlaying()
     isSprintJDown = AnimSprintJumpDown:isPlaying()
 
-    if wasSprintJup ~= isSprintJup and isSprintJup then
+    if wasSprintJup ~= isSprintJup and (isSprintJup and not isGrounded) then
         rightLeg = not rightLeg
         if (rightLeg) then
             AnimSprintJumpUp:setTime(0.0)
@@ -135,22 +136,11 @@ function events.render(delta, context)
         AnimSprintJumpDown:setTime(AnimSprintJumpUp:getTime())
     end
 
-    wasSprintJup = isSprintJup
+    wasSprintJup = isSprintJup and not isGrounded
     wasSprintJDown = isSprintJDown
 
-    -- Short Fall condition -----------------------------------------------------
-    if (player:getVelocity().y < 0 and not AnimClimb:isPlaying() and not player:isInWater() and (AnimWalk:isPlaying() or AnimShortFalling:isPlaying())) then
-        AnimShortFalling:play()
-    else
-        AnimShortFalling:stop()
-    end
-
     -- Falling condition --------------------------------------------------------
-    local airState = not (floating or (swimming and floating)) and not isGrounded and not ridingSeat and not sitting and not climbing and not (ridingSeat and walking)
-    yVel = player:getVelocity().y
-    if (yVel > 0 and oldYVel < 0) then
-        airState = false
-    end
+    local airState = not (floating or (swimming and floating)) and not isGrounded and not ridingSeat and not (ridingSeat and walking) and not sitting and not climbing
 
     if (airState) then
         if (not startedFall) then
@@ -159,8 +149,12 @@ function events.render(delta, context)
         end
         fallTimer = (client:getSystemTime() / 1000 - startFallTime)
 
-        if (fallTimer > 0.75) then
+        if (fallTimer > FALL_TIME) then
             AnimFreeFalling:play()
+            AnimJumpingUp:stop()
+            AnimJumpingDown:stop()
+            AnimSprintJumpUp:stop()
+            AnimSprintJumpDown:stop()
         end
     else
         if (AnimFreeFalling:isPlaying()) then
@@ -169,8 +163,6 @@ function events.render(delta, context)
         end
         startedFall = false
     end
-
-    oldYVel = yVel
 
     -- Horseback Riding ---------------------------------------------------------
     isRidingHorse = sitting and string.find(sitting:getType(), "horse")

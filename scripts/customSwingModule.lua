@@ -139,6 +139,7 @@ function events.tick()
 
     AnimIdle:setPriority((IsSwinging and 1) or (IsCastingSpell and 1) or 0)
     AnimCrouching:setPriority((IsSwinging and 1) or (IsCastingSpell and 1) or 0)
+    AnimCrouchWalk:setPriority((IsSwinging and 1) or (IsCastingSpell and 1) or 0)
     AnimFreeFalling:setPriority((IsSwinging and 1) or (IsCastingSpell and 1) or 0)
     AnimLand:setPriority((IsSwinging and 1) or (IsCastingSpell and 1) or 0)
     AnimFloat:setPriority((IsSwinging and 1) or (IsCastingSpell and 1) or 0)
