@@ -162,24 +162,24 @@ function events.tick()
             return
         end
 
-        if ((readyToSwing) and
-            WeaponClass == "Warrior/Knight") then
+        if (readyToSwing and WeaponClass == "Warrior/Knight") then
             currSwing = CheckAnimToPlayLeftClick({WarriorSwing1, WarriorSwing2, WarriorSwing3}, 3, currSwing)
         end
 
-        if ((readyToSwing) and
-            WeaponClass == "Mage/Dark Wizard") then
+        if (readyToSwing and WeaponClass == "Mage/Dark Wizard") then
             currSwing = CheckAnimToPlayLeftClick({MageSwing1, MageSwing2, MageSwing3}, 3, currSwing)
         end
 
-        if ((readyToSwing) and
-            (WeaponClass == "Assassin/Ninja" or heldItemIsSword)) then
-            currSwing = CheckAnimToPlayLeftClick({AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4}, 4, currSwing)
+        if (readyToSwing and WeaponClass == "Assassin/Ninja") then
+            currSwing = CheckAnimToPlayLeftClick({AssassinSwing1, AssassinSwing2, AssassinSwing3}, 3, currSwing)
         end
 
-        if ((readyToSwing) and
-            WeaponClass == "Shaman/Skyseer") then
+        if (readyToSwing and WeaponClass == "Shaman/Skyseer") then
             currSwing = CheckAnimToPlayLeftClick({ShamanSwing1, ShamanSwing2, ShamanSwing3}, 3, currSwing)
+        end
+
+        if (readyToSwing and heldItemIsSword) then
+            currSwing = CheckAnimToPlayLeftClick({AssassinSwing1, AssassinSwing2, AssassinSwing3, AssassinSwing4}, 4, currSwing)
         end
 
     end

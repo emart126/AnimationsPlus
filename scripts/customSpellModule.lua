@@ -96,11 +96,11 @@ local function playSpell(class, spell)
             Meteor = MageMeteor,
             IceSnake = MageIceSnake
         },
-        -- Assassin = {
-        --     SpinAttack = ,
-        --     MultiHit = ,
-        --     SmokeBomb = ,
-        -- },
+        Assassin = {
+            SpinAttack = AssassinSpin,
+            MultiHit = AssassinMultiHit,
+            -- SmokeBomb = ,
+        },
         -- Shaman = {
         --     Totem = ,
         --     Aura = ,
