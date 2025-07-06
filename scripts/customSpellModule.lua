@@ -99,7 +99,7 @@ local function playSpell(class, spell)
         Assassin = {
             SpinAttack = AssassinSpin,
             MultiHit = AssassinMultiHit,
-            -- SmokeBomb = ,
+            SmokeBomb = AssassinSmokeBomb
         },
         -- Shaman = {
         --     Totem = ,

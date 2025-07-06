@@ -262,6 +262,9 @@ function events.tick()
     AssassinMultiHit = animations.model["Assassin_MultiHit" .. handType]
     AssassinMultiHit:setBlendTime(1, 8)
     AssassinMultiHit:setBlendCurve("easeInOutSine")
+    AssassinSmokeBomb = animations.model["Assassin_SmokeBomb" .. handType]
+    AssassinSmokeBomb:setBlendTime(2, 8)
+    AssassinSmokeBomb:setBlendCurve("easeInOutSine")
 
     -- Shaman -------
     ShamanSwing1 = animations.model["Relik_Strike_1" .. handType]
@@ -358,7 +361,7 @@ function events.tick()
     AllSpellAnimations = {
         WarriorBash, WarriorUppercut, WarriorScream,
         MageHeal, MageMeteor, MageIceSnake,
-        AssassinSpin, AssassinMultiHit
+        AssassinSpin, AssassinMultiHit, AssassinSmokeBomb
     }
 
     for i = 1, #AllSpellAnimations do
