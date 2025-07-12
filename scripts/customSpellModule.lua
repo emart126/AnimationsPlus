@@ -103,7 +103,7 @@ local function playSpell(class, spell)
         },
         Shaman = {
             Totem = ShamanTotem,
-            -- Aura = ,
+            Aura = ShamanAura,
             -- Uproot = ,
         },
         -- Archer = {

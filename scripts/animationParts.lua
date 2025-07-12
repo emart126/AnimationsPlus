@@ -177,6 +177,7 @@ AssassinMultiHit = nil
 AssassinSmokeBomb = nil
 
 ShamanTotem = nil
+ShamanAura = nil
 
 -- Collections --
 AllSwingingAnimations = nil
@@ -283,6 +284,10 @@ function events.tick()
     ShamanTotem = animations.model["Shaman_Totem" .. handType]
     ShamanTotem:setBlendTime(3, 6)
     ShamanTotem:setBlendCurve("easeInOutSine")
+    ShamanAura = animations.model["Shaman_Aura" .. handType]
+    ShamanAura:setBlendTime(6, 8)
+    ShamanAura:setBlendCurve("easeInOutSine")
+
 
     -- Archer -------
     AnimBowShootHold = animations.model["bow" .. activeBowHandType]
@@ -369,7 +374,7 @@ function events.tick()
         WarriorBash, WarriorUppercut, WarriorScream,
         MageHeal, MageMeteor, MageIceSnake,
         AssassinSpin, AssassinMultiHit, AssassinSmokeBomb,
-        ShamanTotem
+        ShamanTotem, ShamanAura
     }
 
     for i = 1, #AllSpellAnimations do
