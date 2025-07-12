@@ -101,11 +101,11 @@ local function playSpell(class, spell)
             MultiHit = AssassinMultiHit,
             SmokeBomb = AssassinSmokeBomb
         },
-        -- Shaman = {
-        --     Totem = ,
-        --     Aura = ,
-        --     Uproot = ,
-        -- },
+        Shaman = {
+            Totem = ShamanTotem,
+            -- Aura = ,
+            -- Uproot = ,
+        },
         -- Archer = {
         --     ArrowStorm = ,
         --     ArrowBomb = ,
