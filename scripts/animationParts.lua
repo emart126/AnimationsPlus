@@ -178,6 +178,7 @@ AssassinSmokeBomb = nil
 
 ArcherArrowStorm = nil
 ArcherArrowBomb = nil
+ArcherArrowShield = nil
 
 ShamanTotem = nil
 ShamanAura = nil
@@ -320,6 +321,9 @@ function events.tick()
     ArcherArrowBomb = animations.model["Archer_ArrowBomb" .. handType]
     ArcherArrowBomb:setBlendTime(2, 8)
     ArcherArrowBomb:setBlendCurve("easeOutSine")
+    ArcherArrowShield = animations.model["Archer_ArrowShield" .. handType]
+    ArcherArrowShield:setBlendTime(2, 8)
+    ArcherArrowShield:setBlendCurve("easeInOutSine")
 
     -- Mining -------
     AnimPickaxe1 = animations.model["pickaxe_1" .. handType]
@@ -388,7 +392,7 @@ function events.tick()
         WarriorBash, WarriorUppercut, WarriorScream,
         MageHeal, MageMeteor, MageIceSnake,
         AssassinSpin, AssassinMultiHit, AssassinSmokeBomb,
-        ArcherArrowStorm, ArcherArrowBomb,
+        ArcherArrowStorm, ArcherArrowBomb, ArcherArrowShield,
         ShamanTotem, ShamanAura, ShamanUproot
     }
 
