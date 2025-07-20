@@ -106,11 +106,11 @@ local function playSpell(class, spell)
             Aura = ShamanAura,
             Uproot = ShamanUproot,
         },
-        -- Archer = {
-        --     ArrowStorm = ,
+        Archer = {
+            ArrowStorm = ArcherArrowStorm,
         --     ArrowBomb = ,
         --     ArrowShield = ,
-        -- }
+        }
     }
 
     local classSpellAnims = classSpellMap[class]
