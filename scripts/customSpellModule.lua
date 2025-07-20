@@ -108,7 +108,7 @@ local function playSpell(class, spell)
         },
         Archer = {
             ArrowStorm = ArcherArrowStorm,
-        --     ArrowBomb = ,
+            ArrowBomb = ArcherArrowBomb,
         --     ArrowShield = ,
         }
     }
