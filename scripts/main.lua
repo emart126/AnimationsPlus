@@ -19,6 +19,9 @@ require("scripts/actionWheel")
 
 -- Initial model conditions
 function events.entity_init()
+    -- New Armor Textures
+    -- print(player:getItem(6):toStackString())
+
     -- Hide vanilla model
     vanilla_model.PLAYER:setVisible(false)
     vanilla_model.CAPE:setVisible(false)
