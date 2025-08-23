@@ -21,6 +21,7 @@ require("scripts/actionWheel")
 function events.entity_init()
     -- New Armor Textures
     -- print(player:getItem(6):toStackString())
+    -- printTable(textures:getTextures())
 
     -- Hide vanilla model
     vanilla_model.PLAYER:setVisible(false)
