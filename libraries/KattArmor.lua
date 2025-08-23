@@ -76,7 +76,7 @@ end
 
 ---@type KattArmor.Instance[]
 local instances = {}
----@alias KattArmor.onRenderCallback fun(materialID:KattArmor.MaterialID, partID:KattArmor.ArmorPartID, item:ItemStack, visible:boolean, renderType:"EMISSIVE"|"GLINT", color:Vector3, texture:KattArmor.Material.Texture, textureType:"RESOURCE"|"CUSTOM"|nil, texture_e:KattArmor.Material.Texture, textureType_e:"RESOURCE"|"CUSTOM"|nil,damageOverlay:0|nil, trim:boolean, trimPattern:KattArmor.TrimPatternID?, trimMaterial:KattArmor.TrimMaterialID?, trimTexture:KattArmor.Material.Texture?, trimTextureType:"RESOURCE"|"CUSTOM"|nil, trimColor:Vector3?, trimUV:Matrix3?)
+---@alias KattArmor.onRenderCallback fun(materialID:KattArmor.MaterialID, partID:KattArmor.ArmorPartID, item:ItemStack, visible:boolean, renderType:"EMISSIVE"|"GLINT2", color:Vector3, texture:KattArmor.Material.Texture, textureType:"RESOURCE"|"CUSTOM"|nil, texture_e:KattArmor.Material.Texture, textureType_e:"RESOURCE"|"CUSTOM"|nil,damageOverlay:0|nil, trim:boolean, trimPattern:KattArmor.TrimPatternID?, trimMaterial:KattArmor.TrimMaterialID?, trimTexture:KattArmor.Material.Texture?, trimTextureType:"RESOURCE"|"CUSTOM"|nil, trimColor:Vector3?, trimUV:Matrix3?)
 local update = true
 local function forceUpdate()
   update = true
@@ -585,9 +585,9 @@ function events.TICK()
       )
       local renderType
       if materialData.forceGlint ~= nil then
-        renderType = materialData.forceGlint and "GLINT" or "EMISSIVE"
+        renderType = materialData.forceGlint and "GLINT2" or "EMISSIVE"
       else
-        renderType = item:hasGlint() and "GLINT" or "EMISSIVE"
+        renderType = item:hasGlint() and "GLINT2" or "EMISSIVE"
       end
 
       local damageOverlay = (not materialData.damageOverlay) and 0 or nil
