@@ -76,17 +76,42 @@ kattArmor.Materials.leather
         PModel.Lower.Leg_L.Knee_L.LeftBootArmorLeather:setPrimaryTexture("RESOURCE", leather1)
     )
 
--- kattArmor.registerOnChange(function(partID, item)
---     -- print(item:toStackString())
---     print("===")
+kattArmor.Materials.diamond
+    :setTexture("minecraft:textures/entity/equipment/humanoid/diamond.png")
+    :setTextureLayer2("minecraft:textures/entity/equipment/humanoid_leggings/diamond.png")
 
---     local materialAsset = item:toStackString():match(("^.*asset_id:\"minecraft:(.-)\"\"*."))
---     -- print("Asset Id:",  materialAsset)
---     if (materialAsset ~= nil) then
---         return materialAsset
---     end
--- end)
+kattArmor.registerOnChange(function(partID, item)
+    -- print(item:toStackString())
+    -- print("===")
+
+    local materialAsset = item:toStackString():match(("^.*asset_id:\"minecraft:(.-)\"\"*."))
+    -- print("Asset Id:",  materialAsset)
+    if (materialAsset ~= nil) then
+        return materialAsset
+    end
+end)
+
+-- Wynncraft Armor
+local wynncraftArmor = {
+    ["leather"] = "leather",
+    ["chainmail"] = "chainmail",
+    ["gold"] = "gold",
+    ["iron"] = "iron",
+    ["diamond"] = "diamond",
+    ["netherite"] = "netherite",
+    ["infernal"] = "infernal",
+    ["tan"] = "tan",
+    ["shaman"] = "shaman"
+}
+
+local wynncraftArmorPathLayer1 = "minecraft:textures/entity/equipment/humanoid/%s.png"
+local wynncraftArmorPathLayer2 = "minecraft:textures/entity/equipment/humanoid_leggings/%s.png"
+for material, materialItem in pairs(wynncraftArmor) do
+    kattArmor.Materials[material]
+        :setTexture(wynncraftArmorPathLayer1:format(materialItem))
+        :setTextureLayer2(wynncraftArmorPathLayer2:format(materialItem))
+end
 
 -- kattArmor.registerOnRender(function (materialID, partID, item, visible, renderType, color, texture, textureType, texture_e, textureType_e, damageOverlay, trim, trimPattern, trimMaterial, trimTexture, trimTextureType, trimColor, trimUV)
---     print(texture);
+--     print(texture)
 -- end)
