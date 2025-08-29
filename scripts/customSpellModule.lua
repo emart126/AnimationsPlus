@@ -1,5 +1,5 @@
 local HUD_UNICODE_EXPRESSION = "\xEE[\x80-\xBF]*"
-local SPELL_CODES_START = 0x0103
+local SPELL_CODES_START = 0x0100
 local SPELL_CODES_END = 0x0105
 
 local spellChars = {"L","R","-"}
