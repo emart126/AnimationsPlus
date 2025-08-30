@@ -12,7 +12,6 @@ kattArmor.Armor.Helmet
 kattArmor.Armor.Chestplate
     :addParts(
         PModel.Upper.body.Chestplate,
-        PModel.Upper.body.ChestplateLeather,
         PModel.Upper.body.Arms.Arm_R.RightArmArmor,
         PModel.Upper.body.Arms.Arm_R.Elbow_R.RightLimbArmor,
         PModel.Upper.body.Arms.Arm_L.LeftArmArmor,
@@ -76,16 +75,9 @@ kattArmor.Materials.leather
         PModel.Lower.Leg_L.Knee_L.LeftBootArmorLeather:setPrimaryTexture("RESOURCE", leather1)
     )
 
-kattArmor.Materials.diamond
-    :setTexture("minecraft:textures/entity/equipment/humanoid/diamond.png")
-    :setTextureLayer2("minecraft:textures/entity/equipment/humanoid_leggings/diamond.png")
-
 kattArmor.registerOnChange(function(partID, item)
-    -- print(item:toStackString())
-    -- print("===")
-
     local materialAsset = item:toStackString():match(("^.*asset_id:\"minecraft:(.-)\"\"*."))
-    -- print("Asset Id:",  materialAsset)
+    -- print(materialAsset)
     if (materialAsset ~= nil) then
         return materialAsset
     end
@@ -93,12 +85,20 @@ end)
 
 -- Wynncraft Armor
 local wynncraftArmor = {
+    ["hidden"] = "hidden",
     ["leather"] = "leather",
+    ["copper"] = "copper",
     ["chainmail"] = "chainmail",
     ["gold"] = "gold",
     ["iron"] = "iron",
     ["diamond"] = "diamond",
     ["netherite"] = "netherite",
+    ["pale_leather"] = "pale_leather",
+    ["pale_copper"] = "pale_copper",
+    ["pale_chainmail"] = "pale_chainmail",
+    ["pale_gold"] = "pale_gold",
+    ["pale_iron"] = "pale_iron",
+    ["pale_diamond"] = "pale_diamond",
     ["infernal"] = "infernal",
     ["tan"] = "tan",
     ["shaman"] = "shaman"
@@ -112,6 +112,11 @@ for material, materialItem in pairs(wynncraftArmor) do
         :setTextureLayer2(wynncraftArmorPathLayer2:format(materialItem))
 end
 
--- kattArmor.registerOnRender(function (materialID, partID, item, visible, renderType, color, texture, textureType, texture_e, textureType_e, damageOverlay, trim, trimPattern, trimMaterial, trimTexture, trimTextureType, trimColor, trimUV)
---     print(texture)
--- end)
+kattArmor.Materials.pale_leather:setDefaultColor(0xA06540)
+
+kattArmor.registerOnRender(function (materialID, partID, item, visible, renderType, color, texture, textureType, texture_e, textureType_e, damageOverlay, trim, trimPattern, trimMaterial, trimTexture, trimTextureType, trimColor, trimUV)
+    -- print(item:toStackString())
+    -- print(texture, color, damageOverlay)
+end)
+
+-- Leather armor color = 0xA06540
