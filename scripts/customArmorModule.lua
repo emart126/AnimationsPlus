@@ -78,7 +78,7 @@ kattArmor.Materials.leather
 kattArmor.registerOnChange(function(partID, item)
     local materialAsset = item:toStackString():match(("^.*asset_id:\"minecraft:(.-)\"\"*."))
     -- print(materialAsset)
-    if (materialAsset ~= nil) then
+    if (materialAsset ~= nil and materialAsset ~= 'elytra') then
         return materialAsset
     end
 end)
