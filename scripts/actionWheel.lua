@@ -1,9 +1,9 @@
-isActionWheelOpen = nil
+IsActionWheelOpen = nil
 local wheelCheck
 local oldWheelCheck
 
 function pings.syncAcitonWheel(bool)
-    isActionWheelOpen = bool
+    IsActionWheelOpen = bool
 end
 
 function events.render(delta, context)
@@ -158,6 +158,13 @@ local setting2 = settingPage:newAction()
     :toggled(IdleAnimationSetting)
 
 local setting3 = settingPage:newAction()
+    :title("Enable New Armor")
+    :toggleTitle("Disable New Armor")
+    :item("minecraft:diamond_chestplate")
+    :hoverColor(1, 1, 1)
+    :onToggle(pings.actionArmorTexture)
+    :toggled(NewTextureSetting)
+
 local setting4 = settingPage:newAction()
 local setting5 = settingPage:newAction()
 local setting6 = settingPage:newAction()

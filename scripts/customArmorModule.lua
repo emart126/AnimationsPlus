@@ -1,3 +1,4 @@
+NewTextureSetting = true
 local kattArmor = require("libraries/KattArmor")()
 
 kattArmor.Armor.Helmet
@@ -106,6 +107,9 @@ local wynncraftArmor = {
 
 local wynncraftArmorPathLayer1 = "minecraft:textures/entity/equipment/humanoid/%s.png"
 local wynncraftArmorPathLayer2 = "minecraft:textures/entity/equipment/humanoid_leggings/%s.png"
+local oldWynncraftArmorPathLayer1 = "minecraft:textures/models/armor/%s_layer_1.png"
+local oldWwynncraftArmorPathLayer2 = "minecraft:textures/models/armor/%s_layer_2.png"
+
 for material, materialItem in pairs(wynncraftArmor) do
     kattArmor.Materials[material]
         :setTexture(wynncraftArmorPathLayer1:format(materialItem))
@@ -114,9 +118,24 @@ end
 
 kattArmor.Materials.pale_leather:setDefaultColor(0xA06540)
 
-kattArmor.registerOnRender(function (materialID, partID, item, visible, renderType, color, texture, textureType, texture_e, textureType_e, damageOverlay, trim, trimPattern, trimMaterial, trimTexture, trimTextureType, trimColor, trimUV)
-    -- print(item:toStackString())
-    -- print(texture, color, damageOverlay)
-end)
-
--- Leather armor color = 0xA06540
+function OldTexture(bool)
+    NewTextureSetting = bool
+    if (NewTextureSetting) then
+        for material, materialItem in pairs(wynncraftArmor) do
+            kattArmor.Materials[material]
+                :setTexture(wynncraftArmorPathLayer1:format(materialItem))
+                :setTextureLayer2(wynncraftArmorPathLayer2:format(materialItem))
+        end
+    else
+        for material, materialItem in pairs(wynncraftArmor) do
+            local paleStart, paleEnd = string.find(materialItem, 'pale_')
+            if (paleStart ~= nil and paleEnd ~= nil) then
+                materialItem = string.sub(materialItem, paleEnd + 1)
+            end
+            kattArmor.Materials[material]
+                :setTexture(oldWynncraftArmorPathLayer1:format(materialItem))
+                :setTextureLayer2(oldWwynncraftArmorPathLayer2:format(materialItem))
+    end
+    end
+end
+pings.actionArmorTexture = OldTexture

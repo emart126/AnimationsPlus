@@ -116,7 +116,7 @@ local useKey = keybinds:of("Use",keybinds:getVanillaKey("key.use"))
 function pings.onRightClickDo()
     ResetIdle()
 
-    if (not isActionWheelOpen and not IsMiddleSpellCast()) then
+    if (not IsActionWheelOpen and not IsMiddleSpellCast()) then
 
         if (WeaponClass == "Archer/Hunter") then
             ArcherShoot:play()
