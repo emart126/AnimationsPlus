@@ -39,6 +39,8 @@ local allSpells = {
 }
 
 local foundSpell = false
+local spellToPing
+local oldSpellToPing
 local currentSpell
 local oldCurrentSpell
 
@@ -119,8 +121,8 @@ local function playSpell(class, spell)
     end
 end
 
-function pings.syncCurrentSpell(classSpell)
-    currentSpell = classSpell
+function pings.syncCurrentSpell(spellGiven)
+    currentSpell = spellGiven
 end
 
 function events.tick()
@@ -150,9 +152,9 @@ function events.tick()
         end
 
         if (foundSpell) then
-            currentSpell = spellArray[1] .. spellArray[2] .. spellArray[3]
+            spellToPing = spellArray[1] .. spellArray[2] .. spellArray[3]
         else
-            currentSpell = '---'
+            spellToPing = '---'
             foundSpell = false
         end
     end
@@ -176,4 +178,14 @@ function events.tick()
     end
 
     oldCurrentSpell = currentSpell
+end
+
+function events.render(delta, context)
+
+    -- Sync Spell Animation
+    if (spellToPing ~= oldSpellToPing) then
+        pings.syncCurrentSpell(spellToPing)
+    end
+    oldSpellToPing = spellToPing
+
 end
