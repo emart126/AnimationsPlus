@@ -127,57 +127,59 @@ end
 
 function events.tick()
 
-    -- Parse Action Bar
-    local actionBar = client:getActionbar()
-    if (actionBar ~= nil) then
-        -- Find Unicode for spells
-        local input = 0
-        foundSpell = false
-        for unicode in string.gmatch(actionBar, HUD_UNICODE_EXPRESSION) do
-            local bytes = #unicode
+    if (host:isHost()) then
+        -- Parse Action Bar
+        local actionBar = client:getActionbar()
+        if (actionBar ~= nil) then
+            -- Find Unicode for spells
+            local input = 0
+            foundSpell = false
+            for unicode in string.gmatch(actionBar, HUD_UNICODE_EXPRESSION) do
+                local bytes = #unicode
 
-            if (bytes == 3) then
-                -- utf8 Conversion
-                local c1, c2, c3 = string.match(unicode, "^(.)(.)(.)$")
-                if (c1 == '\xEE') then
-                    local hudCode = (c2:byte() % 0x40) * 0x40 + (c3:byte() % 0x40)
+                if (bytes == 3) then
+                    -- utf8 Conversion
+                    local c1, c2, c3 = string.match(unicode, "^(.)(.)(.)$")
+                    if (c1 == '\xEE') then
+                        local hudCode = (c2:byte() % 0x40) * 0x40 + (c3:byte() % 0x40)
 
-                    if (hudCode >= SPELL_CODES_START and hudCode <= SPELL_CODES_END) then
-                        foundSpell = true
-                        input = input + 1
-                        spellArray[input] = spellChars[((hudCode - SPELL_CODES_START) % 3) + 1]
+                        if (hudCode >= SPELL_CODES_START and hudCode <= SPELL_CODES_END) then
+                            foundSpell = true
+                            input = input + 1
+                            spellArray[input] = spellChars[((hudCode - SPELL_CODES_START) % 3) + 1]
+                        end
                     end
                 end
             end
+
+            if (foundSpell) then
+                spellToPing = spellArray[1] .. spellArray[2] .. spellArray[3]
+            else
+                spellToPing = '---'
+                foundSpell = false
+            end
         end
 
-        if (foundSpell) then
-            spellToPing = spellArray[1] .. spellArray[2] .. spellArray[3]
-        else
-            spellToPing = '---'
-            foundSpell = false
+        -- Spell Animation Handling
+        if (WeaponClass ~= nil and currentSpell ~= nil and currentSpell ~= oldCurrentSpell) then
+            -- print(string.sub(currentSpell, 1, 1), string.sub(currentSpell, 2, 2), string.sub(currentSpell, 3, 3))
+            if (string.sub(currentSpell, 3, 3) ~= "-") then
+                pings.syncCurrentSpell(currentSpell)
+                local class = string.sub(WeaponClass, 0, string.find(WeaponClass, "/") - 1)
+                local spell = CheckSpellAction(class, currentSpell)
+                StopAllSpellAnimations()
+                ResetIdle()
+
+                playSpell(class, spell)
+            end
         end
-    end
 
-    -- Spell Animation Handling
-    if (WeaponClass ~= nil and currentSpell ~= nil and currentSpell ~= oldCurrentSpell) then
-        -- print(string.sub(currentSpell, 1, 1), string.sub(currentSpell, 2, 2), string.sub(currentSpell, 3, 3))
-        if (string.sub(currentSpell, 3, 3) ~= "-") then
-            pings.syncCurrentSpell(currentSpell)
-            local class = string.sub(WeaponClass, 0, string.find(WeaponClass, "/") - 1)
-            local spell = CheckSpellAction(class, currentSpell)
-            StopAllSpellAnimations()
-            ResetIdle()
-
-            playSpell(class, spell)
+        if (IsSpellCastingAnimation()) then
+            StopAllSwingAnimations()
         end
-    end
 
-    if (IsSpellCastingAnimation()) then
-        StopAllSwingAnimations()
+        oldCurrentSpell = currentSpell
     end
-
-    oldCurrentSpell = currentSpell
 end
 
 function events.render(delta, context)
