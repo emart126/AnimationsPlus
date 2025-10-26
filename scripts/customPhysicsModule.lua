@@ -43,9 +43,4 @@ function events.render(delta, context)
         headTarget = -10
     end
 
-    -- Ignore stair/slab step
-    -- if (headTarget > -10) then
-    --     head:berp(headTarget, 0.25, 0.01, 0.4)
-    -- end
-
 end

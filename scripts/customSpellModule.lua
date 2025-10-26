@@ -163,7 +163,6 @@ function events.tick()
 
     -- Spell Animation Handling
     if (WeaponClass ~= nil and currentSpell ~= nil and currentSpell ~= oldCurrentSpell) then
-        -- print(string.sub(currentSpell, 1, 1), string.sub(currentSpell, 2, 2), string.sub(currentSpell, 3, 3))
         if (string.sub(currentSpell, 3, 3) ~= "-") then
             pings.syncCurrentSpell(currentSpell)
             local class = string.sub(WeaponClass, 0, string.find(WeaponClass, "/") - 1)
