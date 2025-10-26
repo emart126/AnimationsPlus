@@ -68,7 +68,7 @@ it requires a high permission set. This may get fixed in a possible future versi
 
 ![WynnWeaponAnimationDemo](https://github.com/user-attachments/assets/c0dde7a0-a790-4948-9594-f4780c846d73)
 
-### Other Added Feature (Figura Action Wheel)
+### Other Added Features (Figura Action Wheel)
 The Figura action wheel has temporary taunt animations\
 that will get future updates but animations are still\
 in development.\
