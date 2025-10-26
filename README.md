@@ -4,8 +4,9 @@ This Figura avatar makes any normal Minecraft player avatar have\
 arm and leg limbs and adds numerous animations that replace\
 the normal Minecraft animations. The avatar applies limbs to any\
 skin and works for slim variants. This avatar also allows left handed\
-users to play. This avatar was made using\
-Figura versions 0.1.5b\
+users to play. Other additions include cape compatibility, armor\
+enchantments, armor trims and armor color. This avatar was made using\
+Figura version 0.1.5b\
 Now works with Minecraft version 1.21.4
 
 ![MovementAnimationDemo](https://github.com/user-attachments/assets/41b536db-2b6a-4b43-9a12-8ff1803bbbde)
