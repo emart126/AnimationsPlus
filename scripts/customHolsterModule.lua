@@ -150,7 +150,6 @@ if (host:isHost()) then
             customModelData = customModelData.floats[1]
             itemID = itemInFirst.id.."[custom_model_data={floats:["..customModelData.."]}]"
             local classItem = CheckClassItem(itemInFirstStack)
-            print(customModelData)
 
             -- Edit scale and rotation depending on its customModelData value
             local matchedKey
