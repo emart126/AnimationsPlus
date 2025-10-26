@@ -1,6 +1,6 @@
 # Wynn Extra Bends
 Figura Animation Overhaul Avatar made particularly for Wynncraft.\
-This figura avatar makes any normal Minecraft player avatar have\
+This Figura avatar makes any normal Minecraft player avatar have\
 arm and leg limbs and adds numerous animations that replace\
 the normal Minecraft animations. The avatar applies limbs to any\
 skin and works for slim variants. This avatar also allows left handed\
@@ -43,7 +43,15 @@ Now works with Minecraft version 1.21.4
 ![CombatAnimationDemo](https://github.com/user-attachments/assets/ca303b64-ce86-458d-836e-3a3254cc5f08)
 ![ToolAnimationDemo](https://github.com/user-attachments/assets/b37a8173-3299-4c96-8895-2eabd5b3ce22)
 
-### Wynncraft Added Features
+### Multiplayer
+If your playing with friends you will be able to see the full moveset across\
+different players. Thanks to Figura's cloud capabilities features like idle\
+animations and attacking animations are synced up albeit with a small server delay.\
+If your trouble seeing your friends avatar, ensure to got to the Figura settings\
+page, under the permissions tab set players to Max. Since this avatar is resource heavy\
+it requires a high permission set. This may get fixed in a possible future version. 
+
+# Wynncraft Added Features
 +Warrior Swing Attacks\
 +Warrior Bash, Uppercut and War Scream spell attacks\
 +Mage Swing Attacks\
@@ -61,7 +69,7 @@ Now works with Minecraft version 1.21.4
 ![WynnWeaponAnimationDemo](https://github.com/user-attachments/assets/c0dde7a0-a790-4948-9594-f4780c846d73)
 
 ### Other Added Feature (Figura Action Wheel)
-The firgura action wheel has temporary taunt animations\
+The Figura action wheel has temporary taunt animations\
 that will get future updates but animations are still\
 in development.\
 The second page allows you to change various avatar settings\
