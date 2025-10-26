@@ -17,6 +17,48 @@ local oldWeapon
 local taskRotation
 local taskPosition
 
+local classDefaults = {
+    ["Archer/Hunter"] = "bows",
+    ["Assassin/Ninja"] = "daggers",
+    ["Mage/Dark Wizard"] = "wands",
+    ["Shaman/Skyseer"] = "reliks",
+    ["Warrior/Knight"] = "spears"
+}
+
+local weaponCustomModelIDs = {
+    scythes = {1662, 1663, 1664},
+    swordsSpears = {1687, 1695, 1730},
+    shortWands = {1489, 1497, 1500},
+    shortDaggers = {1400, 1401, 1408, 1414, 1417},
+    frontClaws = {1405, 1406, 1407, 1411, 1412, 1413},
+    sideClaws = {},
+    lanternReliks = {},
+    crossbows = {1321, 1322, 1323},
+    longbows = {},
+    handCannons = {}
+}
+
+-- Weapon Orientation ((Position x, y, z), (Roation x, y, z))
+local weaponOrientations = {
+    spears        = {{0, 20, 4}, {0, 90, 125}},
+    scythes       = {{0, 15, 4}, {0, 270, 50}},
+    swordsSpears  = {{5, 25, 4}, {0, 90, 135}},
+    wands         = {{0, 20, 4}, {0, 90, 125}},
+    shortWands    = {{5, 25, 4}, {0, 90, 135}},
+    daggers       = {{5, 25, 4}, {0, 90, 130}},
+    shortDaggers  = {{4.9, 12, -2}, {120, 0, 0}},
+    frontClaws    = {{0, 20, 5.5}, {90, 0, 320}},
+    sideClaws     = {{0, 18, 5.5}, {90, 90, 320}},
+    reliks        = {{4, 20, 4}, {0, 270, 135}},
+    lanternReliks = {{5, 16, 0}, {0, 90, -30}},
+    bows          = {{6, 17.5, 4}, {25, 90, 340}},
+    crossbows     = {{3, 20, 4}, {90, 0, 315}},
+    longbows      = {{3, 18, 4}, {25, 90, 340}},
+    handCannons   = {{3, 23, 4}, {90, 0, 315}},
+}
+
+local weaponOffsetIDs = {1491, 1687}
+
 function pings.updateItemID(id)
     syncedItemID = id
 end
@@ -72,6 +114,18 @@ local function NumInArray(num, arr)
     return false
 end
 
+-- Set position/rotation of itemTask by key
+local function ApplyOrientation(key)
+    local orient = weaponOrientations[key]
+    if orient then
+        local pos, rot = orient[1], orient[2]
+        task:setPos(pos[1], pos[2], pos[3])
+        task:setRot(rot[1], rot[2], rot[3])
+        return true
+    end
+    return false
+end
+
 
 function events.entity_init() --=====================================================================================================================
     task = PModel.Upper.body.SheathedWeapon:newItem("weapon")
@@ -81,124 +135,67 @@ end
 if (host:isHost()) then
     function events.render()
 
-        if (WeaponHolsterSetting) then
-            -- Sync item id and damage value
-            local itemInFirst = host:getSlot(0)
-            local itemInFirstStack = itemInFirst:toStackString()
-
-            local itemID = itemInFirst.id
-            local customModelData = itemInFirst["tag"]["CustomModelData"]
-
-            if (customModelData ~= nil and customModelData.floats ~= nil) then
-                customModelData = customModelData.floats[1]
-                itemID = itemInFirst.id.."[custom_model_data={floats:["..customModelData.."]}]"
-                local classItem = CheckClassItem(itemInFirstStack)
-
-                -- Edit scale and rotation depending on its customModelData value
-                if (classItem == "Archer/Hunter") then  -- (data = 189->208)
-                    if (NumInArray(customModelData, {194, 195, 196})) then
-                        -- Crossbows
-                        task:setPos(3, 20, 4)
-                        task:setRot(90, 0, 315)
-                    elseif (NumInArray(customModelData, {})) then
-                        -- Hand Cannon
-                        task:setPos(3, 23, 4)
-                        task:setRot(90, 0, 315)
-                    elseif (NumInArray(customModelData, {})) then
-                        -- Long Bow
-                        task:setPos(3, 18, 4)
-                        task:setRot(25, 90, 340)
-                    else
-                        -- Bows
-                        task:setPos(6, 17.5, 4)
-                        task:setRot(25, 90, 340)
-                    end
-                elseif (classItem == "Assassin/Ninja") then  -- (data = 259->278)
-                    if (NumInArray(customModelData, {259, 260, 267})) then
-                        -- Short Dagger
-                        task:setPos(4.9, 12, -2)
-                        task:setRot(120, 0, 0)
-                    elseif (NumInArray(customModelData, {264, 265, 266, 270, 271, 272})) then
-                        -- Front Claw
-                        task:setPos(0, 20, 5.5)
-                        task:setRot(90, 0, 320)
-                    elseif (NumInArray(customModelData, {})) then
-                        -- Side Claw
-                        task:setPos(0, 18, 5.5)
-                        task:setRot(90, 90, 320)
-                    else
-                        -- Dagger
-                        task:setPos(5, 25, 4)
-                        task:setRot(0, 90, 130)
-                    end
-                elseif (classItem == "Mage/Dark Wizard") then  -- (data = 331->351)
-                    if (NumInArray(customModelData, {334, 342, 343, 344, 345})) then
-                        -- Short Wand
-                        task:setPos(5, 25, 4)
-                        task:setRot(0, 90, 135)
-                    else
-                        -- Wand
-                        task:setPos(0, 20, 4)
-                        task:setRot(0, 90, 125)
-                    end
-                elseif (classItem == "Shaman/Skyseer") then -- (data = 404->423)
-                    if (NumInArray(customModelData, {})) then
-                        -- Lantern
-                    else
-                        -- Relik
-                        task:setPos(4, 20, 4)
-                        task:setRot(0, 270, 135)
-                        if (NumInArray(customModelData, {})) then -- Hand Offset Models
-                            task:setPos(4, 20, 2)
-                            task:setRot(0, 270, 135)
-                        end
-                    end
-                elseif (classItem == "Warrior/Knight") then  -- (data = 476->495)
-                    if (NumInArray(customModelData, {478, 479, 480})) then
-                        -- Scythe
-                        task:setPos(0, 15, 4)
-                        task:setRot(0, 270, 50)
-                        if (customModelData == 480) then -- lvl3 Air Scythe
-                            task:setPos(5, 15, 4)
-                        end
-                    elseif (NumInArray(customModelData, {})) then
-                        -- Sword
-                        task:setPos(5, 25, 4)
-                        task:setRot(0, 90, 135)
-                    else
-                        -- Spear
-                        task:setPos(0, 20, 4)
-                        task:setRot(0, 90, 125)
-                    end
-                end
-
-                -- Hand Offset Models
-                if (NumInArray(customModelData, {})) then
-                    task:setPos(task:getPos().x, task:getPos().y, 6)
-                end
-            end
-
-            -- ping only when item has changed
-            if (oldItemInFirst ~= itemInFirst or (changedToEmpty == false and itemInFirst.id == 'minecraft:air')) then
-                changedToEmpty = true
-                if (oldItemInFirst ~= itemInFirst) then
-                    changedToEmpty = false
-                end
-
-                oldItemInFirst = itemInFirst
-
-                -- Sync item identifier
-                pings.updateItemID(itemID)
-
-                -- Sync bool check if itemstack is weapon
-                local hasClassStr = CheckClassItem(itemInFirstStack)
-                pings.updateWeaponClass(hasClassStr)
-
-                -- Sync item task vectors
-                pings.updateWeaponTask(task:getRot()[1], task:getRot()[2], task:getRot()[3], task:getPos()[1], task:getPos()[2], task:getPos()[3])
-            end
-
+        if (not WeaponHolsterSetting) then
+            return
         end
+
+        -- Sync item id and damage value
+        local itemInFirst = host:getSlot(0)
+        local itemInFirstStack = itemInFirst:toStackString()
+
+        local itemID = itemInFirst.id
+        local customModelData = itemInFirst["tag"]["CustomModelData"]
+
+        if (customModelData ~= nil and customModelData.floats ~= nil) then
+            customModelData = customModelData.floats[1]
+            itemID = itemInFirst.id.."[custom_model_data={floats:["..customModelData.."]}]"
+            local classItem = CheckClassItem(itemInFirstStack)
+            print(customModelData)
+
+            -- Edit scale and rotation depending on its customModelData value
+            local matchedKey
+            for key, idList in pairs(weaponCustomModelIDs) do
+                if NumInArray(customModelData, idList) then
+                    matchedKey = key
+                    break
+                end
+            end
+
+            if matchedKey then
+                ApplyOrientation(matchedKey)
+            else
+                local fallback = classDefaults[classItem]
+                if fallback then
+                    ApplyOrientation(fallback)
+                end
+            end
+
+            -- Hand Offset Models
+            if NumInArray(customModelData, weaponOffsetIDs) then
+                task:setPos(task:getPos().x, task:getPos().y, 5)
+            end
+        end
+
+        -- ping only when item has changed
+        if (oldItemInFirst ~= itemInFirst or (changedToEmpty == false and itemInFirst.id == 'minecraft:air')) then
+            changedToEmpty = true
+            if (oldItemInFirst ~= itemInFirst) then
+                changedToEmpty = false
+            end
+
+            oldItemInFirst = itemInFirst
+
+            -- Sync item identifier
+            pings.updateItemID(itemID)
+
+            -- Sync bool check if itemstack is weapon
+            local hasClassStr = CheckClassItem(itemInFirstStack)
+            pings.updateWeaponClass(hasClassStr)
+
+            -- Sync item task vectors
+            pings.updateWeaponTask(task:getRot()[1], task:getRot()[2], task:getRot()[3], task:getPos()[1], task:getPos()[2], task:getPos()[3])
+        end
+
     end
 
     -- Sync selected slot
