@@ -17,6 +17,11 @@ local oldWeapon
 local taskRotation
 local taskPosition
 
+local currItemHeld = nil
+local oldItemHeld = nil
+local currItemHeldSlot = nil
+local oldItemHeldSlot = nil
+
 local classDefaults = {
     ["Archer/Hunter"] = "bows",
     ["Assassin/Ninja"] = "daggers",
@@ -38,6 +43,8 @@ local weaponCustomModelIDs = {
     handCannons = {}
 }
 
+local weaponOffsetIDs = {1491, 1687}
+
 -- Weapon Orientation ((Position x, y, z), (Roation x, y, z))
 local weaponOrientations = {
     spears        = {{0, 20, 4}, {0, 90, 125}},
@@ -56,8 +63,6 @@ local weaponOrientations = {
     longbows      = {{3, 18, 4}, {25, 90, 340}},
     handCannons   = {{3, 23, 4}, {90, 0, 315}},
 }
-
-local weaponOffsetIDs = {1491, 1687}
 
 function pings.updateItemID(id)
     syncedItemID = id
@@ -126,7 +131,6 @@ local function ApplyOrientation(key)
     return false
 end
 
-
 function events.entity_init() --=====================================================================================================================
     task = PModel.Upper.body.SheathedWeapon:newItem("weapon")
     task:setDisplayMode("THIRD_PERSON_RIGHT_HAND")
@@ -139,28 +143,43 @@ if (host:isHost()) then
             return
         end
 
-        -- Sync item id and damage value
-        local itemInFirst = host:getSlot(0)
-        local itemInFirstStack = itemInFirst:toStackString()
+        currItemHeld = player:getHeldItem()
+        currItemHeldSlot = player:getNbt().SelectedItemSlot
 
-        local itemID = itemInFirst.id
-        local customModelData = itemInFirst["tag"]["CustomModelData"]
+        if (oldItemHeld == nil) then
+            oldItemHeld = currItemHeld
+            oldItemHeldSlot = currItemHeldSlot
+            return
+        end
+
+        if (oldItemHeld == currItemHeld) then
+            return
+        end
+
+        print (oldItemHeldSlot, oldItemHeld)
+
+        -- Sync item id and damage value
+        local itemWeapon = oldItemHeld
+        local itemWeaponStack = itemWeapon:toStackString()
+
+        local itemID = itemWeapon.id
+        local customModelData = itemWeapon["tag"]["CustomModelData"]
 
         if (customModelData ~= nil and customModelData.floats ~= nil) then
             customModelData = customModelData.floats[1]
-            itemID = itemInFirst.id.."[custom_model_data={floats:["..customModelData.."]}]"
-            local classItem = CheckClassItem(itemInFirstStack)
+            itemID = itemWeapon.id.."[custom_model_data={floats:["..customModelData.."]}]"
+            local classItem = CheckClassItem(itemWeaponStack)
 
             -- Edit scale and rotation depending on its customModelData value
             local matchedKey
             for key, idList in pairs(weaponCustomModelIDs) do
-                if NumInArray(customModelData, idList) then
+                if (NumInArray(customModelData, idList)) then
                     matchedKey = key
                     break
                 end
             end
 
-            if matchedKey then
+            if (matchedKey) then
                 ApplyOrientation(matchedKey)
             else
                 local fallback = classDefaults[classItem]
@@ -170,104 +189,44 @@ if (host:isHost()) then
             end
 
             -- Hand Offset Models
-            if NumInArray(customModelData, weaponOffsetIDs) then
+            if (NumInArray(customModelData, weaponOffsetIDs)) then
                 task:setPos(task:getPos().x, task:getPos().y, 5)
             end
         end
 
         -- ping only when item has changed
-        if (oldItemInFirst ~= itemInFirst or (changedToEmpty == false and itemInFirst.id == 'minecraft:air')) then
-            changedToEmpty = true
-            if (oldItemInFirst ~= itemInFirst) then
-                changedToEmpty = false
-            end
 
-            oldItemInFirst = itemInFirst
+        -- Sync item identifier
+        pings.updateItemID(itemID)
 
-            -- Sync item identifier
-            pings.updateItemID(itemID)
+        -- Sync bool check if itemstack is weapon
+        local hasClassStr = CheckClassItem(itemWeaponStack)
+        pings.updateWeaponClass(hasClassStr)
 
-            -- Sync bool check if itemstack is weapon
-            local hasClassStr = CheckClassItem(itemInFirstStack)
-            pings.updateWeaponClass(hasClassStr)
+        -- Sync item task vectors
+        pings.updateWeaponTask(task:getRot()[1], task:getRot()[2], task:getRot()[3], task:getPos()[1], task:getPos()[2], task:getPos()[3])
 
-            -- Sync item task vectors
-            pings.updateWeaponTask(task:getRot()[1], task:getRot()[2], task:getRot()[3], task:getPos()[1], task:getPos()[2], task:getPos()[3])
-        end
-
+        oldItemHeld = currItemHeld
+        oldItemHeldSlot = currItemHeldSlot
     end
 
     -- Sync selected slot
-    function events.MOUSE_SCROLL(delta)
-        if (not player:isLoaded() or host:getScreen() ~= nil or IsActionWheelOpen) then
-            return
-        end
-
-        local eventCurrSlot = player:getNbt().SelectedItemSlot
-        if (delta < 0) then
-            if (eventCurrSlot == 8) then
-                eventCurrSlot = 0
-            else
-                eventCurrSlot = eventCurrSlot + 1
-            end
-        else
-            if (eventCurrSlot == 0) then
-                eventCurrSlot = 8
-            else
-                eventCurrSlot = eventCurrSlot - 1
-            end
-        end
-
-        -- ping only when mouse scrolled over 0
-        if (eventCurrSlot == 0 or eventCurrSlot == 1 or eventCurrSlot == 8) then
-            pings.updateSlot(eventCurrSlot)
-        end
-    end
 
     -- Handle changing slot on keypress
-    local slotOneKey = keybinds:newKeybind("hotbar1", keybinds:getVanillaKey("key.hotbar.1"))
-    slotOneKey.press = pings.updateSlotKey
-    local slotTwoKey = keybinds:newKeybind("hotbar2", keybinds:getVanillaKey("key.hotbar.2"))
-    local slotThreeKey = keybinds:newKeybind("hotbar3", keybinds:getVanillaKey("key.hotbar.3"))
-    local slotFourKey = keybinds:newKeybind("hotbar4", keybinds:getVanillaKey("key.hotbar.4"))
-    local slotFiveKey = keybinds:newKeybind("hotbar5", keybinds:getVanillaKey("key.hotbar.5"))
-    local slotSixKey = keybinds:newKeybind("hotbar6", keybinds:getVanillaKey("key.hotbar.6"))
-    local slotSevenKey = keybinds:newKeybind("hotbar7", keybinds:getVanillaKey("key.hotbar.7"))
-    local slotEightKey = keybinds:newKeybind("hotbar8", keybinds:getVanillaKey("key.hotbar.8"))
-    local slotNineKey = keybinds:newKeybind("hotbar9", keybinds:getVanillaKey("key.hotbar.9"))
-    slotTwoKey.press = pings.updateSlotNonZeroKey
-    slotThreeKey.press = pings.updateSlotNonZeroKey
-    slotFourKey.press = pings.updateSlotNonZeroKey
-    slotFiveKey.press = pings.updateSlotNonZeroKey
-    slotSixKey.press = pings.updateSlotNonZeroKey
-    slotSevenKey.press = pings.updateSlotNonZeroKey
-    slotEightKey.press = pings.updateSlotNonZeroKey
-    slotNineKey.press = pings.updateSlotNonZeroKey
+
 end
 
 function events.tick()
-    if (WeaponHolsterSetting) then
-        if ((syncedPlayerSlot ~= oldSlot and (syncedPlayerSlot == 0 or oldSlot == 0)) or (currWeapon ~= oldWeapon) or (syncedItemID ~= oldItemID)) then
-            if (currWeapon ~= nil) then
-                task:setItem(syncedItemID)
-                task:setRot(taskRotation)
-                task:setPos(taskPosition)
-            else
-                task:setItem("minecraft:air")
-            end
-        end
-
-        -- holding/not holding weapon
-        if (syncedPlayerSlot == 0) then
-            task:setVisible(false)
-        else
-            task:setVisible(true)
-        end
-
-        oldItemID = syncedItemID
-        oldSlot = syncedPlayerSlot
-        oldWeapon = currWeapon
-    else
+    if (not WeaponHolsterSetting) then
         task:setVisible(false)
+        return
+    end
+
+    if (currItemHeld ~= "minecraft:air" and currItemHeld) then
+        task:setItem(syncedItemID)
+        task:setRot(taskRotation)
+        task:setPos(taskPosition)
+    else
+        task:setItem("minecraft:air")
     end
 end
