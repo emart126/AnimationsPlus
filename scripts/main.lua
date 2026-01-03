@@ -92,6 +92,9 @@ end
 -- Render model condtions using render function
 function events.render(delta, context)
 
+    vanilla_model.LEFT_SLEEVE:setVisible(player:isSkinLayerVisible("LEFT_SLEEVE"))
+    vanilla_model.RIGHT_SLEEVE:setVisible(player:isSkinLayerVisible("RIGHT_SLEEVE"))
+
     -- First person hand model
     if (player:isLeftHanded()) then
         vanilla_model.LEFT_ARM:setVisible(renderer:isFirstPerson() and context == "FIRST_PERSON")
