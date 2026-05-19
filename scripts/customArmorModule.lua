@@ -1,4 +1,8 @@
 NewTextureSetting = true
+HelmetUnhidden = false
+ChestplateUnhidden = false
+LeggingsUnhidden = false
+BootsUnhidden = false
 local kattArmor = require("libraries/KattArmor")()
 
 kattArmor.Armor.Helmet
@@ -139,3 +143,35 @@ function OldTexture(bool)
     end
 end
 pings.actionArmorTexture = OldTexture
+
+-- -- Wynncraft Hide/Unhide armour --
+-- function events.render(delta, context)
+--     -- Handle Helmet/Hat visibility
+--     -- if (string.find(player:getItem(6).id, "helmet") ~= nil) then
+--         vanilla_model.ARMOR:setVisible(false)
+--     -- else
+--         -- vanilla_model.ARMOR:setVisible(true)
+--     -- end
+
+--     -- Helmet
+--     kattArmor.Armor.PModel.Upper.head.Helmet:setVisible(not HelmetUnhidden)
+--     kattArmor.Armor.PModel.Upper.head.HelmetHat:setVisible(not HelmetUnhidden)
+
+--     -- Chestplate
+--     kattArmor.Armor.PModel.Upper.body.Chestplate:setVisible(not ChestplateUnhidden)
+--     kattArmor.Armor.PModel.Upper.body.Arms.Arm_R.RightArmArmor:setVisible(not ChestplateUnhidden)
+--     kattArmor.Armor.PModel.Upper.body.Arms.Arm_R.Elbow_R.RightLimbArmor:setVisible(not ChestplateUnhidden)
+--     kattArmor.Armor.PModel.Upper.body.Arms.Arm_L.LeftArmArmor:setVisible(not ChestplateUnhidden)
+--     kattArmor.Armor.PModel.Upper.body.Arms.Arm_L.Elbow_L.LeftLimbArmor:setVisible(not ChestplateUnhidden)
+
+--     -- Leggings
+--     kattArmor.Armor.PModel.Upper.body.Belt:setVisible(not LeggingsUnhidden)
+--     kattArmor.Armor.PModel.Lower.Leg_R.RightLeggingsArmor:setVisible(not LeggingsUnhidden)
+--     kattArmor.Armor.PModel.Lower.Leg_R.Knee_R.RightAnkleArmor:setVisible(not LeggingsUnhidden)
+--     kattArmor.Armor.PModel.Lower.Leg_L.LeftLeggingsArmor:setVisible(not LeggingsUnhidden)
+--     kattArmor.Armor.PModel.Lower.Leg_L.Knee_L.LeftAnkleArmor:setVisible(not LeggingsUnhidden)
+
+--     -- Boots
+--     kattArmor.Armor.PModel.Lower.Leg_R.Knee_R.RightBootArmor:setVisible(not BootsUnhidden)
+--     kattArmor.Armor.PModel.Lower.Leg_L.Knee_L.LeftBootArmor:setVisible(not BootsUnhidden)
+-- end
