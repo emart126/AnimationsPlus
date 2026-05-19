@@ -64,13 +64,6 @@ function events.tick()
         ModelCape:setPos(0,0,0)
     end
 
-    -- Handle Helmet/Hat visibility
-    if (string.find(player:getItem(6).id, "helmet") ~= nil) then
-        vanilla_model.ARMOR:setVisible(false)
-    else
-        vanilla_model.ARMOR:setVisible(true)
-    end
-
     -- Skin layer visibility
     ModelJacket:setVisible(player:isSkinLayerVisible("JACKET"))
     ModelHat:setVisible(player:isSkinLayerVisible("HAT"))
@@ -91,6 +84,9 @@ end
 
 -- Render model condtions using render function
 function events.render(delta, context)
+
+    vanilla_model.LEFT_SLEEVE:setVisible(player:isSkinLayerVisible("LEFT_SLEEVE"))
+    vanilla_model.RIGHT_SLEEVE:setVisible(player:isSkinLayerVisible("RIGHT_SLEEVE"))
 
     -- First person hand model
     if (player:isLeftHanded()) then
