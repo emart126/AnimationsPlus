@@ -26,6 +26,26 @@ function IdleAnimation(bool)
 end
 pings.actionIdleAnims = IdleAnimation
 
+function HideHelmet(bool)
+    HelmetUnhidden = bool
+end
+pings.actionHideHelmet = HideHelmet
+
+function HideChestplate(bool)
+    ChestplateUnhidden = bool
+end
+pings.actionHideChestplate = HideChestplate
+
+function HideLeggings(bool)
+    LeggingsUnhidden = bool
+end
+pings.actionHideLeggings = HideLeggings
+
+function HideBoots(bool)
+    BootsUnhidden = bool
+end
+pings.actionHideBoots = HideBoots
+
 -- Action Wheel Taunt actions
 function pings.taunt1Dance()
     if (not AnimTaunt1:isPlaying()) then
@@ -158,14 +178,46 @@ local setting2 = settingPage:newAction()
     :toggled(IdleAnimationSetting)
 
 local setting3 = settingPage:newAction()
-    :title("Enable New Armor")
-    :toggleTitle("Disable New Armor")
+    :title("Wynncraft: Enable New Armor")
+    :toggleTitle("Wynncraft: Disable New Armor")
     :item("minecraft:diamond_chestplate")
+    :toggleItem("minecraft:leather_chestplate[minecraft:equippable={asset_id:\"minecraft:diamond\",slot:\"chest\"},minecraft:custom_model_data={floats:[8.0f]}]")
     :hoverColor(1, 1, 1)
     :onToggle(pings.actionArmorTexture)
     :toggled(NewTextureSetting)
 
 local setting4 = settingPage:newAction()
+    :title("Hide Boots")
+    :toggleTitle("Unhide Boots")
+    :item("minecraft:iron_boots")
+    :toggleItem("minecraft:chainmail_boots")
+    :hoverColor(1, 1, 1)
+    :onToggle(pings.actionHideBoots)
+    :toggled(BootsUnhidden)
+
 local setting5 = settingPage:newAction()
+    :title("Hide Leggings")
+    :toggleTitle("Unhide Leggings")
+    :item("minecraft:iron_leggings")
+    :toggleItem("minecraft:chainmail_leggings")
+    :hoverColor(1, 1, 1)
+    :onToggle(pings.actionHideLeggings)
+    :toggled(LeggingsUnhidden)
+
 local setting6 = settingPage:newAction()
+    :title("Hide Chestplate")
+    :toggleTitle("Unhide Chestplate")
+    :item("minecraft:iron_chestplate")
+    :toggleItem("minecraft:chainmail_chestplate")
+    :hoverColor(1, 1, 1)
+    :onToggle(pings.actionHideChestplate)
+    :toggled(ChestplateUnhidden)
+
 local setting7 = settingPage:newAction()
+    :title("Hide Helmet")
+    :toggleTitle("Unhide Helmet")
+    :item("minecraft:iron_helmet")
+    :toggleItem("minecraft:chainmail_helmet")
+    :hoverColor(1, 1, 1)
+    :onToggle(pings.actionHideHelmet)
+    :toggled(HelmetUnhidden)
