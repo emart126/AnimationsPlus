@@ -1,4 +1,3 @@
-NewTextureSetting = true
 HelmetUnhidden = false
 ChestplateUnhidden = false
 LeggingsUnhidden = false
@@ -121,28 +120,6 @@ for material, materialItem in pairs(wynncraftArmor) do
 end
 
 kattArmor.Materials.pale_leather:setDefaultColor(0xA06540)
-
-function OldTexture(bool)
-    NewTextureSetting = bool
-    if (NewTextureSetting) then
-        for material, materialItem in pairs(wynncraftArmor) do
-            kattArmor.Materials[material]
-                :setTexture(wynncraftArmorPathLayer1:format(materialItem))
-                :setTextureLayer2(wynncraftArmorPathLayer2:format(materialItem))
-        end
-    else
-        for material, materialItem in pairs(wynncraftArmor) do
-            local paleStart, paleEnd = string.find(materialItem, 'pale_')
-            if (paleStart ~= nil and paleEnd ~= nil) then
-                materialItem = string.sub(materialItem, paleEnd + 1)
-            end
-            kattArmor.Materials[material]
-                :setTexture(oldWynncraftArmorPathLayer1:format(materialItem))
-                :setTextureLayer2(oldWwynncraftArmorPathLayer2:format(materialItem))
-    end
-    end
-end
-pings.actionArmorTexture = OldTexture
 
 -- -- Wynncraft Hide/Unhide armour --
 -- function events.render(delta, context)
