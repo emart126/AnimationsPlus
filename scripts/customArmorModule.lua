@@ -126,6 +126,7 @@ OldLeggingsUnhidden = false
 OldBootsUnhidden = false
 function events.render(delta, context)
 
+    vanilla_model.ARMOR:setVisible(false)
     Changed = (OldHelmetUnhidden ~= HelmetUnhidden)
             or (OldChestplateUnhidden ~= ChestplateUnhidden)
             or (OldLeggingsUnhidden ~= LeggingsUnhidden)
@@ -136,40 +137,21 @@ function events.render(delta, context)
     end
 
     -- Handle Helmet/Hat visibility
-    -- if (string.find(player:getItem(6).id, "helmet") ~= nil) then
-        vanilla_model.ARMOR:setVisible(false)
-    -- else
+    kattArmor.Armor.Helmet:setMaterial(HelmetUnhidden or nil)
+    kattArmor.Armor.Chestplate:setMaterial(ChestplateUnhidden or nil)
+    kattArmor.Armor.Leggings:setMaterial(LeggingsUnhidden or nil)
+    kattArmor.Armor.Boots:setMaterial(BootsUnhidden or nil)
+
+    if (string.find(player:getItem(6).id, "helmet") ~= nil or (not HelmetUnhidden)) then
         -- vanilla_model.ARMOR:setVisible(true)
-    -- end
+        vanilla_model.HELMET_ITEM:setVisible(true)
+        -- ModelHead.HelmetItemPivot:setScale(1, 1, 1)
+    else
+        -- vanilla_model.ARMOR:setVisible(false)
+        vanilla_model.HELMET_ITEM:setVisible(false)
+        -- ModelHead.HelmetItemPivot:setScale(0, 0, 0)
+    end
     -- print(HelmetUnhidden, ChestplateUnhidden, LeggingsUnhidden, BootsUnhidden)
-
-
-    -- -- Helmet
-    -- ModelHead.Helmet:setVisible(not HelmetUnhidden)
-    -- ModelHead.HelmetHat:setVisible(not HelmetUnhidden)
-    -- ModelHead.HelmetLeather:setVisible(not HelmetUnhidden)
-    -- ModelHead.HelmetHatLeather:setVisible(not HelmetUnhidden)
-    -- ModelHead.HelmetTrim:setVisible(not HelmetUnhidden)
-    -- ModelHead.HelmetHatTrim:setVisible(not HelmetUnhidden)
-
-    -- -- Chestplate
-    -- ModelMainBody.body.Chestplate:setVisible(not ChestplateUnhidden)
-    -- ModelMainBody.body.Chestplate:setVisible(not ChestplateUnhidden)
-    -- ModelMainBody.body.Arms.Arm_R.RightArmArmor:setVisible(not ChestplateUnhidden)
-    -- ModelMainBody.body.Arms.Arm_R.Elbow_R.RightLimbArmor:setVisible(not ChestplateUnhidden)
-    -- ModelMainBody.body.Arms.Arm_L.LeftArmArmor:setVisible(not ChestplateUnhidden)
-    -- ModelMainBody.body.Arms.Arm_L.Elbow_L.LeftLimbArmor:setVisible(not ChestplateUnhidden)
-
-    -- -- Leggings
-    -- kattArmor.Armor.PModel.Upper.body.Belt:setVisible(not LeggingsUnhidden)
-    -- kattArmor.Armor.PModel.Lower.Leg_R.RightLeggingsArmor:setVisible(not LeggingsUnhidden)
-    -- kattArmor.Armor.PModel.Lower.Leg_R.Knee_R.RightAnkleArmor:setVisible(not LeggingsUnhidden)
-    -- kattArmor.Armor.PModel.Lower.Leg_L.LeftLeggingsArmor:setVisible(not LeggingsUnhidden)
-    -- kattArmor.Armor.PModel.Lower.Leg_L.Knee_L.LeftAnkleArmor:setVisible(not LeggingsUnhidden)
-
-    -- -- Boots
-    -- kattArmor.Armor.PModel.Lower.Leg_R.Knee_R.RightBootArmor:setVisible(not BootsUnhidden)
-    -- kattArmor.Armor.PModel.Lower.Leg_L.Knee_L.LeftBootArmor:setVisible(not BootsUnhidden)
 
     OldHelmetUnhidden = HelmetUnhidden
     OldChestplateUnhidden = ChestplateUnhidden
